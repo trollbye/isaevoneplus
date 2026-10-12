@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Правила безопасности: странице разрешено брать скрипты, стили, шрифты и картинки только из папки самого сайта.
+       Чужой скрипт, даже если его как-то подсунут в страницу, браузер не выполнит -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>OnePlus Open — обзор модели</title>
+  <meta name="description" content="OnePlus Open: складной телефон, который раскрывается в планшет. Два экрана, три окна сразу, петля на миллион сгибаний, камера Hasselblad и сравнение с iPhone 15 Pro Max и Galaxy Z Fold5.">
+  <meta name="theme-color" content="#04060c">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- шрифты лежат в папке сайта (fonts/); два главных начинают грузиться сразу, чтобы заголовки не «прыгали» -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=1">
+  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="stylesheet" href="open.css?v=34">
+</head>
+<!-- data-phone — ключ модели в data.js; класс is-open включает оформление этой страницы из open.css -->
+<body class="is-open" data-phone="open">
+
+  <a class="skip-link" href="#specs">Перейти к характеристикам</a>
+
+  <header class="bar" id="bar">
+    <a class="brand" href="index.html" aria-label="Ко всем моделям OnePlus">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4H4v24h24V11" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M14.5 21.5v-10l-3 1.6M11 21.5h7M26 2v7M22.5 5.5h7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span id="brandName">OnePlus Open</span>
+    </a>
+    <nav class="bar-nav">
+      <a href="index.html">Все модели</a>
+      <a href="#inside">Внутри</a>
+      <a href="#outside">Снаружи</a>
+      <a href="#hinge">Петля</a>
+      <a href="#camera">Камера</a>
+      <a href="#versus">Сравнение</a>
+    </nav>
+  </header>
+
+  <!-- Боковая навигация: точка текущего раздела вытягивается и показывает название -->
+  <nav class="rail" id="rail" aria-label="Разделы страницы">
+    <a href="#inside"><span>Внутри</span></a>
+    <a href="#outside"><span>Снаружи</span></a>
+    <a href="#hinge"><span>Петля</span></a>
+    <a href="#camera"><span>Камера</span></a>
+    <a href="#photos"><span>Снимки</span></a>
+    <a href="#power"><span>Начинка</span></a>
+    <a href="#specs"><span>Цифры</span></a>
+    <a href="#versus"><span>Сравнение</span></a>
+  </nav>
+
+  <main id="top">
+
+    <!-- ===== Первый экран: телефон раскрывается. Это ролик из кадров официального видео OnePlus ===== -->
+    <!-- Каждая .scene задаёт длину прокрутки, а .pin внутри «прилипает» к экрану на это время -->
+    <!-- Ролик — обычное видео без звука: open.js один раз запускает его, когда страница загрузилась, и он замирает -->
+    <!-- на последнем кадре. До запуска виден первый кадр (poster). Слово за кадрами делится пополам, и половинки -->
+    <!-- разъезжаются вместе с телефоном (анимация в open.css) -->
+    <section class="scene scene-hero scene-unfold" data-scene="unfold">
+      <div class="pin">
+        <div class="unfold-frames" id="unfoldFrames" aria-hidden="true">
+          <video src="assets/open/unfold.mp4?v=3" poster="assets/open/unfold-first.webp?v=3" data-last="assets/open/unfold-last.webp?v=3" width="1280" height="720" muted playsinline preload="auto" disablepictureinpicture disableremoteplayback tabindex="-1"></video>
+        </div>
+        <div class="unfold-shade" aria-hidden="true"></div>
+        <!-- шторка слева: темнеет, только пока на экране стоит текст, чтобы буквы не ложились на кадр -->
+        <div class="unfold-curtain" id="unfoldCurtain" aria-hidden="true"></div>
+        <div class="bigword" id="heroWord" aria-hidden="true"></div>
+        <div class="hero-copy" id="heroCopy">
+          <p class="kicker" id="heroKicker"></p>
+          <h1 id="heroName"></h1>
+          <p class="lead" id="heroLead"></p>
+          <ul class="facts" id="heroFacts"></ul>
+        </div>
+        <!-- второй текст первого экрана: появляется, когда телефон раскрылся -->
+        <div class="hero-after" id="heroAfter">
+          <p class="kicker">Раскрытие</p>
+          <h2>Был телефон — стал планшет</h2>
+          <p class="shot-text">Половинки расходятся и ложатся в один плоский лист толщиной 5,8 мм. Складка посередине почти не видна.</p>
+          <ul class="stats">
+            <li><b>5,8</b><span>мм раскрытый</span></li>
+            <li><b>11,7</b><span>мм сложенный</span></li>
+            <li><b>239</b><span>граммов</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Внутри: раскрытый телефон из двух половинок. Он распрямляется, потом на экране по очереди встают одно, два и три окна ===== -->
+    <!-- Каждая половинка — своя половина официального снимка; в ней три снимка лежат стопкой. Двигает open.js -->
+    <section class="scene scene-book" id="inside" data-scene="book">
+      <div class="pin">
+        <div class="glow glow-book" aria-hidden="true"></div>
+        <div class="book" id="book" role="img" aria-label="Раскрытый OnePlus Open: на большом экране одно, два и три окна приложений">
+          <div class="book-half is-left">
+            <img decoding="async" src="assets/open/book-1.jpg" alt="" width="1100" height="1176">
+            <img decoding="async" src="assets/open/book-2.jpg" alt="" width="1100" height="1176" loading="lazy">
+            <img decoding="async" src="assets/open/book-3.jpg" alt="" width="1100" height="1176" loading="lazy">
+          </div>
+          <div class="book-half is-right">
+            <img decoding="async" src="assets/open/book-1.jpg" alt="" width="1100" height="1176">
+            <img decoding="async" src="assets/open/book-2.jpg" alt="" width="1100" height="1176" loading="lazy">
+            <img decoding="async" src="assets/open/book-3.jpg" alt="" width="1100" height="1176" loading="lazy">
+          </div>
+        </div>
+        <div class="spin-copy">
+          <p class="kicker">Экран внутри</p>
+          <h2>Планшет в кармане</h2>
+          <ul class="steps">
+            <li><b>7,82 дюйма</b><span>Экран 2K, 120 Гц и яркость до 2800 нит. Игры и фильмы — на весь разворот.</span></li>
+            <li><b>Два окна</b><span>Режим Open Canvas ставит приложения рядом: слева звонок, справа фотографии.</span></li>
+            <li><b>Три окна</b><span>Третье приложение ждёт сбоку: коснись его, и оно выедет на место.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Снаружи: сложенный телефон. Он объёмный: поворачивается спинкой, ребром и экраном на крышке ===== -->
+    <!-- Телефон собран из официальных снимков, его рисует open-turn.js -->
+    <section class="scene scene-outside" id="outside" data-scene="outside">
+      <div class="pin">
+        <div class="glow glow-outside" aria-hidden="true"></div>
+        <div class="outside-stage"><img class="poster" src="assets/open/poster-turn.webp" alt="Сложенный OnePlus Open в цвете Emerald Dusk, вид сзади" width="660" height="1410" loading="lazy" decoding="async"><canvas id="outsideCanvas" aria-hidden="true"></canvas></div>
+        <div class="spin-copy">
+          <p class="kicker">Снаружи</p>
+          <h2>Сложил — снова телефон</h2>
+          <ul class="steps">
+            <li><b>Emerald Dusk</b><span>Матовое зелёное стекло и круглый блок камер Hasselblad.</span></li>
+            <li><b>11,7 мм</b><span>Толщина в сложенном виде. Половинки смыкаются плотно, без щели.</span></li>
+            <li><b>6,31 дюйма</b><span>Экран на крышке таких же пропорций, как у обычного телефона: почти всё можно делать, не раскрывая.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- тёмные кадры «Петля» и «Камера»: их собирает page.js из data.js -->
+    <div id="shots"></div>
+
+    <!-- ===== Снимки: шесть официальных фотографий сложены гармошкой. Наведи или нажми — снимок раскроется ===== -->
+    <section class="section section-line" id="photos">
+      <div class="wrap">
+        <p class="kicker reveal">Снято на OnePlus Open</p>
+        <h2 class="section-title reveal">Раскрой кадр</h2>
+        <div class="fan reveal" id="fan">
+          <figure class="is-on" tabindex="0"><div class="fan-photo"><img decoding="async" src="assets/open/photo-1.jpg" alt="Вулкан на рассвете, снято с высоты" loading="lazy"></div><figcaption><b>01</b><span>Вулкан на рассвете</span></figcaption></figure>
+          <figure tabindex="0"><div class="fan-photo"><img decoding="async" src="assets/open/photo-2.jpg" alt="Скалы и звёздное небо отражаются в озере" loading="lazy"></div><figcaption><b>02</b><span>Ночь в горах</span></figcaption></figure>
+          <figure tabindex="0"><div class="fan-photo"><img decoding="async" src="assets/open/photo-3.jpg" alt="Шмель на цветке вишни" loading="lazy"></div><figcaption><b>03</b><span>Шмель крупным планом</span></figcaption></figure>
+          <figure tabindex="0"><div class="fan-photo"><img decoding="async" src="assets/open/photo-4.jpg" alt="Портрет мужчины в тёмной комнате" loading="lazy"></div><figcaption><b>04</b><span>Портрет в полутьме</span></figcaption></figure>
+          <figure tabindex="0"><div class="fan-photo"><img decoding="async" src="assets/open/photo-5.jpg" alt="Человек сидит на берегу горного озера" loading="lazy"></div><figcaption><b>05</b><span>Горное озеро</span></figcaption></figure>
+          <figure tabindex="0"><div class="fan-photo"><img decoding="async" src="assets/open/photo-6.jpg" alt="Изогнутое дерево на закате" loading="lazy"></div><figcaption><b>06</b><span>Дерево на закате</span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Начинка: два кадра как разворот книги. Страницы раскрываются от середины, когда блок появляется на экране ===== -->
+    <section class="section" id="power">
+      <div class="wrap">
+        <p class="kicker reveal">Начинка</p>
+        <h2 class="section-title reveal">По батарее в каждой половинке</h2>
+        <div class="spread">
+          <figure class="reveal is-left">
+            <div class="spread-photo"><img decoding="async" src="assets/open/tile-chip.jpg" alt="Процессор Snapdragon 8 Gen 2 на плате OnePlus Open" width="1300" height="1057" loading="lazy"></div>
+            <figcaption><b>Snapdragon 8 Gen 2</b><span>Флагманский процессор 2023 года и 16 ГБ оперативной памяти: три приложения на экране работают без запинок.</span></figcaption>
+          </figure>
+          <figure class="reveal is-right">
+            <div class="spread-photo"><img decoding="async" src="assets/open/tile-battery.jpg" alt="OnePlus Open в разрезе: батарея и красный кабель зарядки" width="1272" height="1239" loading="lazy"></div>
+            <figcaption><b>4805 мА·ч и 67 Вт</b><span>Батарея из двух частей, по одной в каждой половинке. От 1 до 100% — за 42 минуты.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Цифры ===== -->
+    <section class="section section-line" id="specs">
+      <div class="wrap">
+        <p class="kicker reveal">В цифрах</p>
+        <h2 class="section-title reveal" id="specsTitle"></h2>
+        <div class="spec-grid" id="specGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== Сравнение с теми, кто уже продавался, когда OnePlus Open вышел ===== -->
+    <section class="section section-line" id="versus">
+      <div class="wrap">
+        <h2 class="section-title versus-title reveal">Против iPhone 15 Pro Max<br>и Galaxy Z Fold5</h2>
+        <!-- счёт побед и сама таблица: их собирает page.js из data.js -->
+        <div class="score" id="score"></div>
+        <div class="versus" id="versusTable"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <span class="footer-brand">OnePlus Open</span>
+      <p>Неофициальный фан-сайт, не связан с компанией OnePlus. Кадры раскрытия, изображения телефона и снимки с его камеры — с официального сайта oneplus.com. Характеристики из открытых источников, цены стартовые для США. Соперники — модели, которые уже продавались, когда OnePlus Open вышел.</p>
+    </div>
+  </footer>
+
+  <script src="data.js?v=33"></script>
+  <!-- open.js добавляет сцены этой страницы, поэтому стоит перед общим page.js -->
+  <script src="open.js?v=32"></script>
+  <script src="page.js?v=29"></script>
+  <!-- объёмный телефон раздела «Снаружи» (open-turn.js) подгружает open.js, когда до раздела долистали -->
+</body>
+</html>

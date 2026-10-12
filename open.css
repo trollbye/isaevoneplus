@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Страница OnePlus Open. Тема та же, что у всего сайта. Её отличие — «раскрытие»:
+   всё на странице раскрывается, как сам телефон. Первый экран — кадры официального ролика,
+   где из щели между половинками льётся свет; дальше разворот с экраном, гармошка снимков
+   и плитки-страницы. Телефон на всей странице зелёный (Emerald Dusk), акцент — изумрудный.
+   ========================================================================== */
+
+.is-open {
+  --em: #7fd8bd; /* изумрудный: цвет света и акцентов этой страницы */
+  --em-rgb: 127 216 189;
+  --col: calc(100vw - 2 * var(--side)); /* ширина колонки, в которой стоит всё содержимое */
+  --clear: max(var(--side), 190px); /* отступ справа: там стоит боковая навигация, под её подписью картинок быть не должно */
+}
+
+.is-open .kicker::before { background: var(--em); }
+.is-open ::selection { background: #1f6f5e; }
+.is-open .steps li.is-on { border-color: var(--em); }
+
+/* ---------- Первый экран: телефон раскрывается (ролик запускает open.js, тексты он двигает по прокрутке) ---------- */
+
+/* Ролик играет сам, прокрутка на первом экране только меняет тексты, поэтому он недлинный */
+.is-open .scene-hero { height: 190vh; }
+/* Ролик во весь экран, сдвинут вправо (слева стоит текст) и чуть увеличен. Внутри обычное видео; пока оно не началось,
+   на его месте первый кадр (poster), после конца — последний. Ролик стоит на месте и ничем не двигается: и отъезд
+   кадра запечён в сам файл. Проверено замером: если увеличенное видео ещё и двигать на каждом кадре экрана,
+   встроенная видеокарта при 180 Гц не успевает и теряет каждый четвёртый кадр ролика */
+.unfold-frames { position: absolute; inset: 0; transform: translate3d(13vw, 0, 0) scale(1.1); }
+.unfold-frames video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+/* Пока ролик идёт (4 секунды), половинки слова за ним расходятся и гаснут: анимация той же длины, что и ролик */
+@keyframes unfold-left { 0% { transform: none; opacity: 1; } 16% { opacity: 1; } 50% { opacity: 0; } 52%, 100% { transform: translate3d(-9vw, 0, 0); opacity: 0; } }
+@keyframes unfold-right { 0% { transform: none; opacity: 1; } 16% { opacity: 1; } 50% { opacity: 0; } 52%, 100% { transform: translate3d(9vw, 0, 0); opacity: 0; } }
+/* сверху, снизу и у левого края (кадр сдвинут вправо, слева он кончается) кадр плавно уходит в фон */
+.unfold-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--bg) 10%, transparent 28%),
+    linear-gradient(0deg, var(--bg), transparent 16%, transparent 84%, var(--bg));
+}
+/* Шторка слева: под колонкой текста она сплошная, дальше сходит на нет. Её прозрачность выставляет open.js:
+   шторка видна, только пока на экране стоит текст, а в середине сцены кадр открыт целиком */
+.unfold-curtain {
+  --text: calc(var(--side) + min(460px, 32vw)); /* правый край колонки текста */
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--bg) calc(var(--text) + 1vw), rgb(4 6 12 / 0.84) calc(var(--text) + 7vw), transparent calc(var(--text) + 26vw));
+  will-change: opacity;
+}
+/* слово стоит там, где на кадре щель между половинками телефона: она проходит между его половинками */
+.is-open .bigword { right: auto; left: 63vw; display: flex; gap: 0.1em; translate: -50% -50%; font-size: min(20vh, 11.4vw); line-height: 1; letter-spacing: 0.02em; background: none; transform: none; }
+.is-open .bigword span { background: linear-gradient(180deg, rgb(255 255 255 / 0.26), rgb(255 255 255 / 0.05) 80%); -webkit-background-clip: text; background-clip: text; color: transparent; will-change: transform, opacity; }
+.scene-unfold.is-playing .bigword span:first-child { animation: unfold-left 4s cubic-bezier(0.3, 0, 0.6, 1) both; }
+.scene-unfold.is-playing .bigword span:last-child { animation: unfold-right 4s cubic-bezier(0.3, 0, 0.6, 1) both; }
+.scene-unfold.is-done .bigword span { opacity: 0; }
+/* текст занимает узкую колонку слева: название переносится на две строки и не доходит до слова */
+.is-open .hero-copy { max-width: min(460px, 32vw); }
+.is-open .facts { flex-wrap: wrap; gap: 18px 32px; }
+.is-open .hero-after { max-width: min(430px, 32vw); }
+
+/* ---------- Внутри: раскрытый телефон из двух половинок (двигает open.js) ---------- */
+
+.scene-book { height: 440vh; }
+.scene-book .spin-copy, .scene-outside .spin-copy { max-width: 400px; }
+.glow-book { background: radial-gradient(38% 50% at 66% 50%, rgb(var(--em-rgb) / 0.12), transparent 72%); }
+/* perspective — «расстояние до глаз»: от него зависит, как сильно сужаются повёрнутые половинки */
+.book { position: absolute; top: 52%; right: var(--clear); width: min(calc(100vw - var(--side) - 470px - var(--clear)), 80vh); aspect-ratio: 1100 / 1176; translate: 0 -50%; perspective: 1700px; will-change: transform, opacity; }
+/* Половинка: рамка, которая показывает свою половину снимка. Внешние углы скруглены по форме телефона
+   (у снимков белый фон). Угол поворота выставляет open.js: половинки вращаются вокруг линии сгиба */
+.book-half { position: absolute; top: 0; bottom: 0; width: 50%; overflow: hidden; backface-visibility: hidden; will-change: transform; }
+.book-half.is-left { left: 0; transform-origin: 100% 50%; border-radius: 11.6% 0 0 11.6% / 5.5% 0 0 5.5%; }
+.book-half.is-right { right: 0; transform-origin: 0 50%; border-radius: 0 11.6% 11.6% 0 / 0 5.5% 5.5% 0; }
+/* три снимка экрана лежат стопкой: прозрачность второго и третьего выставляет open.js */
+.book-half img { position: absolute; top: 0; width: 200%; max-width: none; height: 100%; opacity: 0; will-change: opacity; }
+.book-half img:first-child { opacity: 1; }
+.book-half.is-left img { left: 0; }
+.book-half.is-right img { right: 0; }
+/* пока экран согнут, он в тени: темнее всего у линии сгиба. --shade выставляет open.js */
+.book-half::after { content: ""; position: absolute; inset: 0; opacity: var(--shade, 0); pointer-events: none; }
+.book-half.is-left::after { background: linear-gradient(90deg, rgb(0 0 0 / 0.5), #000); }
+.book-half.is-right::after { background: linear-gradient(270deg, rgb(0 0 0 / 0.5), #000); }
+
+/* ---------- Снаружи: сложенный объёмный телефон (его рисует open-turn.js) ---------- */
+
+.scene-outside { height: 360vh; }
+.glow-outside { background: radial-gradient(30% 46% at 66% 52%, rgb(var(--em-rgb) / 0.2), transparent 72%); }
+/* телефон стоит по середине места между текстом и боковой навигацией */
+.outside-stage { position: absolute; top: 50%; left: calc((var(--side) + 470px + 100vw - var(--clear)) / 2); height: 94vh; aspect-ratio: 440 / 940; translate: -50% -50%; will-change: opacity; }
+.outside-stage canvas { position: relative; display: block; width: 100%; height: 100%; }
+
+/* ---------- Тёмные кадры «Петля» и «Камера» (общая сцена из style.css) ---------- */
+
+/* петля на снимке стоит в правой половине: в кадр попадает она, а не пустая левая часть */
+.is-open #hinge .shot-image { object-position: 78% 50%; }
+/* под колонкой текста кадр закрыт сплошной тенью: буквы стоят на тёмном, а не на снимке */
+@media (min-width: 901px), (orientation: landscape) and (max-height: 480px) {
+  .is-open .shot-shade {
+    background:
+      linear-gradient(90deg, var(--bg) calc(var(--side) + 450px), rgb(4 6 12 / 0.86) calc(var(--side) + 530px), transparent calc(var(--side) + 820px)),
+      linear-gradient(0deg, var(--bg), transparent 20%, transparent 78%, var(--bg));
+  }
+}
+
+/* ---------- Снимки: гармошка. Раскрыт один снимок, остальные сложены в узкие полоски ---------- */
+
+/* справа остаётся место под подпись боковой навигации: она не должна ложиться на картинку */
+.fan { display: flex; gap: 12px; height: min(64vh, 580px); margin: 72px calc(var(--clear) - var(--side)) 0 0; }
+.fan figure { display: flex; flex: 1 1 0; flex-direction: column; min-width: 0; cursor: pointer; transition: flex-grow 0.7s var(--ease); }
+.fan figure.is-on { flex-grow: 7; cursor: default; }
+.fan figure:focus-visible { outline: none; }
+.fan figure:focus-visible .fan-photo { outline: 2px solid var(--em); outline-offset: 4px; }
+.fan-photo { position: relative; flex: 1; min-height: 0; border-radius: 16px; overflow: hidden; }
+.fan img { width: 100%; height: 100%; object-fit: cover; }
+/* сложенные снимки приглушены */
+.fan-photo::after { content: ""; position: absolute; inset: 0; background: rgb(4 6 12 / 0.5); transition: opacity 0.5s; }
+.fan figure.is-on .fan-photo::after { opacity: 0; }
+/* подпись стоит под снимком: у сложенного виден только номер */
+.fan figcaption { display: flex; align-items: baseline; gap: 14px; height: 30px; margin-top: 16px; overflow: hidden; font-size: 13px; white-space: nowrap; color: var(--muted); }
+.fan figcaption b { font-family: var(--display); font-size: 17px; font-weight: 300; color: var(--muted); transition: color 0.4s; }
+.fan figcaption span { opacity: 0; transition: opacity 0.4s; }
+.fan figure.is-on figcaption b { color: var(--em); }
+.fan figure.is-on figcaption span { opacity: 1; transition-delay: 0.25s; }
+
+/* ---------- Начинка: два кадра как разворот книги ---------- */
+
+.spread { display: grid; grid-template-columns: 1fr 1fr; gap: 0 3px; margin: 72px calc(var(--clear) - var(--side)) 0 0; perspective: 1900px; }
+/* страницы раскрываются от линии сгиба, когда блок появляется на экране */
+.spread figure.is-left { transform-origin: 100% 50%; }
+.spread figure.is-right { transform-origin: 0 50%; }
+.spread figure.reveal { transition: opacity 0.7s var(--ease), transform 1.3s var(--ease); }
+.spread figure.is-left.reveal:not(.visible) { opacity: 0; transform: rotateY(78deg); }
+.spread figure.is-right.reveal:not(.visible) { opacity: 0; transform: rotateY(-78deg); }
+.spread-photo { aspect-ratio: 1.12; overflow: hidden; }
+.spread .is-left .spread-photo { border-radius: 24px 0 0 24px; }
+.spread .is-right .spread-photo { border-radius: 0 24px 24px 0; }
+.spread img { width: 100%; height: 100%; object-fit: cover; }
+.spread figcaption { display: grid; gap: 8px; margin-top: 28px; padding: 0 28px 0 20px; border-left: 1px solid var(--em); }
+.spread b { font-family: var(--display); font-size: clamp(19px, 2vw, 30px); font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; }
+.spread span { max-width: 440px; font-size: 16px; color: var(--muted); }
+
+/* ---------- Цифры и сравнение ---------- */
+
+.is-open .spec::before { background: var(--em); }
+.is-open .spec i { color: var(--em); }
+.is-open .spec:hover { border-color: rgb(var(--em-rgb) / 0.6); }
+.is-open .vgroup h3 i { color: var(--em); }
+
+/* ---------- Окно уже 1180: в сцене «Внутри» текст встаёт сверху, телефон под ним ---------- */
+
+@media (max-width: 1180px) {
+  .scene-book .spin-copy { top: 13vh; right: var(--side); left: var(--side); max-width: none; translate: none; }
+  .scene-book h2 { margin-top: 14px; }
+  /* видна только та подпись, которая сейчас активна */
+  .scene-book .steps { position: absolute; top: 100%; right: 0; left: 0; margin-top: 12px; }
+  .scene-book .steps li { position: absolute; top: 0; right: 0; left: 0; margin: 0; opacity: 0; }
+  .scene-book .steps li.is-on { opacity: 1; }
+  .book { top: auto; right: auto; bottom: 6vh; left: 50%; width: min(calc(var(--col) - 260px), 50vh); translate: -50% 0; }
+}
+
+/* ---------- Узкие экраны: картинка сверху, текст внизу ---------- */
+
+@media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
+  .is-open .scene-hero { height: 180vh; }
+  /* Кадр занимает верх экрана, текст стоит под ним на тёмном. --frame — где кончается кадр:
+     на невысоком экране он ниже не опускается, чтобы под ним поместился текст (ему нужно около 470 точек) */
+  .is-open .scene-hero .pin { --frame: clamp(26%, calc(100% - 470px), 46%); }
+  .unfold-frames { bottom: auto; height: calc(var(--frame) + 4%); transform: scale(1.1); }
+  .unfold-shade { background: linear-gradient(0deg, var(--bg) calc(100% - var(--frame)), transparent calc(114% - var(--frame)), transparent 90%, var(--bg)); }
+  .unfold-curtain { display: none; }
+  .is-open .bigword { top: calc(var(--frame) / 2 + 2%); left: 50%; font-size: 13vw; }
+  .is-open .hero-copy, .is-open .hero-after { max-width: none; }
+  .is-open .facts { gap: 12px 22px; }
+
+  .scene-book { height: 380vh; }
+  .scene-book .spin-copy { top: 11vh; right: 22px; left: 22px; }
+  .book { bottom: 7vh; width: min(100vw - 44px, 46vh); }
+
+  /* телефон сверху, под ним заголовок и одна активная подпись */
+  .scene-outside { height: 320vh; }
+  .outside-stage { top: 9vh; left: 50%; height: 50vh; translate: -50% 0; }
+  .scene-outside .spin-copy { top: 61vh; right: 22px; left: 22px; max-width: none; translate: none; }
+
+  .fan { flex-direction: column; gap: 8px; height: auto; margin: 40px 0 0; }
+  .fan figure { flex: none; }
+  .fan-photo { flex: none; height: 56px; border-radius: 12px; transition: height 0.6s var(--ease); }
+  .fan figure.is-on .fan-photo { height: 62vw; }
+  .fan figcaption { display: none; }
+  .fan figure.is-on figcaption { display: flex; height: auto; margin: 10px 0 6px; }
+
+  .spread { grid-template-columns: 1fr; gap: 36px; margin: 40px 0 0; }
+  .spread figure.is-left, .spread figure.is-right { transform-origin: 50% 0; }
+  .spread figure.is-left.reveal:not(.visible), .spread figure.is-right.reveal:not(.visible) { transform: rotateX(-60deg); }
+  .spread .is-left .spread-photo, .spread .is-right .spread-photo { border-radius: 16px; }
+  .spread figcaption { margin-top: 20px; padding: 0 0 0 14px; }
+  .spread span { font-size: 14px; }
+}
+
+/* ---------- Без анимаций: всё видно сразу ---------- */
+
+.no-motion .is-open .bigword { display: none; }
+.no-motion .spread figure.reveal { opacity: 1 !important; transform: none !important; }
+
+/* ---------- Телефон боком: тексты сцен короче по высоте, чтобы не уходили под шапку ---------- */
+
+@media (orientation: landscape) and (max-height: 480px) {
+  .is-open .hero-after h2, .is-open .shot-copy h2 { font-size: 20px; }
+  .is-open .shot-text { margin-top: 6px; font-size: 12px; line-height: 1.4; }
+  .is-open .stats { gap: 2px 18px; margin-top: 8px; padding-top: 8px; }
+  .is-open .stats b { font-size: 19px; }
+}

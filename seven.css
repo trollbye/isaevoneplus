@@ -1,0 +1,159 @@
+/* ==========================================================================
+   Страница OnePlus 7 Pro. Тема та же, что у всего сайта. Её отличие — «рентген»:
+   телефон будто просвечивают в лаборатории. Тонкие светящиеся линии, уголки-прицелы,
+   сканирующая полоса света. Изюминка страницы — выдвижная камера и её механизм,
+   цвет света — фиолетово-синий, как у фирменной расцветки Nebula Blue.
+   ========================================================================== */
+
+.is-7pro {
+  --neb: #8f7dff;
+  --neb-soft: #cdc6ff;
+  --neb-rgb: 143 125 255;
+}
+
+.is-7pro .kicker { color: var(--neb-soft); }
+.is-7pro .kicker::before { background: var(--neb); }
+.is-7pro ::selection { background: var(--neb); }
+.is-7pro .steps li.is-on { border-color: var(--neb); }
+
+/* ---------- Первый экран: живой телефон (его рисует seven-hero.js; общие правила лежат в style.css) ---------- */
+
+/* сцена длинная: пока её листают, телефон разворачивается экраном и выпускает камеру */
+.is-7pro .scene-hero { height: 320vh; }
+.is-7pro .glow-hero {
+  background:
+    radial-gradient(40% 56% at 72% 50%, rgb(var(--neb-rgb) / 0.24), transparent 70%),
+    radial-gradient(24% 36% at 76% 60%, rgb(234 217 192 / 0.16), transparent 72%);
+}
+/* уголки-прицелы вокруг телефона, как рамка сканера */
+.is-7pro .hero-phone.is-live::before {
+  content: "";
+  position: absolute;
+  inset: 9% -4% 5%; /* сверху отступ больше: уголки не должны прятаться под шапкой */
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    linear-gradient(var(--neb), var(--neb)) top left / 26px 1px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) top left / 1px 26px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) top right / 26px 1px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) top right / 1px 26px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) bottom left / 26px 1px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) bottom left / 1px 26px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) bottom right / 26px 1px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) bottom right / 1px 26px no-repeat;
+}
+
+/* ---------- Механизм: выдвижная камера и рентген корпуса (двигает seven.js) ---------- */
+
+.scene-xray { height: 520vh; }
+.glow-xray { background: radial-gradient(44% 56% at 62% 46%, rgb(var(--neb-rgb) / 0.2), transparent 72%); }
+/* Сцена нарисована в координатах 1920 × 1000 и масштабируется целиком:
+   --s (масштаб) и --x (место по горизонтали) считает seven.js под размер окна */
+.xray-stage { position: absolute; top: 50%; left: var(--x, 30vw); width: 1920px; height: 1000px; transform-origin: 0 50%; transform: translateY(-50%) scale(var(--s, 0.6)); }
+.xray-stage > * { position: absolute; }
+/* электроника внутри корпуса: официальный снимок, виден только в рентгене */
+.xray-inside { top: 320px; left: 236px; width: 1684px; height: 680px; object-fit: cover; opacity: 0; -webkit-mask-image: linear-gradient(90deg, #000 60%, transparent), linear-gradient(#000 50%, transparent); mask-image: linear-gradient(90deg, #000 60%, transparent), linear-gradient(#000 50%, transparent); -webkit-mask-composite: source-in; mask-composite: intersect; }
+/* линии схемы: силуэт телефона и механизм */
+.xray-lines { inset: 0; width: 1920px; height: 1000px; overflow: visible; opacity: 0; stroke: var(--neb-soft); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; will-change: opacity; }
+.xray-lines .is-dim { stroke: var(--neb); stroke-width: 1.6; opacity: 0.8; }
+.xray-lines .is-thin { stroke-width: 1.4; opacity: 0.5; }
+#xrayThread { stroke: var(--neb-soft); stroke-linecap: butt; opacity: 0.9; }
+/* блок камеры едет вверх из-за верхней грани: сдвиг выставляет seven.js */
+.xray-module { top: 308px; left: 750px; width: 450px; height: 279px; will-change: transform; }
+/* угол телефона вырезан по контуру (у снимка белый фон) и плавно гаснет книзу, где снимок кончается */
+.xray-body {
+  top: 300px; left: 0;
+  width: 1920px; height: 343px;
+  clip-path: path("M191 343V300L192 266 195 238 199 210 205 182 214 154 227 126 245 98 271 70 302 49 338 32 386 17 452 7 512 3H770L790 12H1152L1170 4 1920 2V343Z");
+  -webkit-mask-image: linear-gradient(#000 52%, transparent 98%);
+  mask-image: linear-gradient(#000 52%, transparent 98%);
+  will-change: opacity;
+}
+/* полоса сканера: проходит сверху вниз в тот момент, когда корпус становится прозрачным */
+.xray-scan { top: 0; left: 120px; width: 1800px; height: 3px; opacity: 0; background: linear-gradient(90deg, transparent, var(--neb-soft) 12%, #fff 50%, var(--neb-soft) 88%, transparent); box-shadow: 0 0 40px 10px rgb(var(--neb-rgb) / 0.55); will-change: transform, opacity; }
+/* Подписи к деталям: точка-маркер и две строки. Сцена бывает сильно уменьшена, поэтому размер букв
+   умножается на --k (его считает seven.js): на экране подпись не становится мельче читаемого */
+.xray-tag { --title: calc(28px * var(--k, 1)); padding-left: 26px; font-size: calc(23px * var(--k, 1)); line-height: 1.3; white-space: nowrap; color: var(--neb-soft); opacity: 0; will-change: opacity, transform; }
+/* к точке подходит линия-выноска, поэтому точка стоит на месте, а первая строка выравнивается по ней при любом размере букв */
+.xray-tag::before { content: ""; position: absolute; top: 12px; left: 0; width: 12px; height: 12px; border: 2px solid var(--neb-soft); border-radius: 50%; box-shadow: 0 0 14px rgb(var(--neb-rgb) / 0.9); }
+.xray-tag b { display: block; margin-top: calc((28px - var(--title)) * 0.65); font-family: var(--display); font-size: var(--title); font-weight: 400; letter-spacing: -0.02em; color: var(--text); }
+.xray-tag span { letter-spacing: 0.02em; }
+/* подпись над деталью: текст по центру, точка под ним */
+.xray-tag.is-top { padding-left: 0; text-align: center; translate: -50% 0; }
+.xray-tag.is-top::before { top: auto; bottom: -22px; left: 50%; translate: -50% 0; }
+/* мелкая сцена: остаются только названия деталей */
+.xray-stage.is-compact .xray-tag span, .xray-stage.is-compact .is-extra { display: none; }
+
+/* ---------- Сканер: полоса света проявляет снимок сверху вниз (двигает seven.js) ---------- */
+
+.scene-hud { height: 240vh; }
+.glow-hud { background: radial-gradient(34% 48% at 64% 50%, rgb(var(--neb-rgb) / 0.2), transparent 72%); }
+/* снимок стоит чуть ниже середины: сверху место занимает шапка */
+.hud { position: absolute; top: 52%; left: 64%; height: 80vh; aspect-ratio: var(--ratio, 0.6); translate: -50% -50%; }
+/* уголки-прицелы вокруг снимка */
+.hud::before {
+  content: "";
+  position: absolute;
+  inset: -2.5% -9%;
+  pointer-events: none;
+  opacity: 0.6;
+  background:
+    linear-gradient(var(--neb), var(--neb)) top left / 26px 1px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) top left / 1px 26px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) top right / 26px 1px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) top right / 1px 26px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) bottom left / 26px 1px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) bottom left / 1px 26px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) bottom right / 26px 1px no-repeat,
+    linear-gradient(var(--neb), var(--neb)) bottom right / 1px 26px no-repeat;
+}
+/* рамка со снимками: она нужна, чтобы обрезать или погасить снимок, не трогая уголки и полосу сканера */
+.hud-clip { position: absolute; inset: 0; }
+.hud img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+/* у фотографий на белом фоне рамка обрезает снимок по контуру телефона: размеры сняты с самого снимка */
+.hud-clip.is-photo { clip-path: inset(0.4% 0.8% round 11.6% / 5.5%); }
+/* снимок, обрезанный снизу, плавно гаснет; телефон на нём стоит правее середины, поэтому снимок сдвинут влево */
+.hud-clip.is-fade { -webkit-mask-image: linear-gradient(#000 66%, transparent 97%); mask-image: linear-gradient(#000 66%, transparent 97%); }
+.hud-clip.is-fade img { translate: -14% 0; }
+/* верхний снимок открывается сверху вниз вслед за полосой */
+.hud-top { clip-path: inset(0 0 100% 0); will-change: clip-path; }
+.hud-line { position: absolute; top: 0; right: -9%; left: -9%; height: 2px; opacity: 0; background: linear-gradient(90deg, transparent, var(--neb-soft) 14%, #fff 50%, var(--neb-soft) 86%, transparent); box-shadow: 0 0 30px 8px rgb(var(--neb-rgb) / 0.5); will-change: transform, opacity; }
+.is-7pro .scene-hud .shot-copy { max-width: min(440px, 36vw); }
+
+/* ---------- Тёмный кадр «Экран» ---------- */
+
+/* кадр увеличивается от своей верхней трети: так верх телефона не уходит под шапку */
+.is-7pro #display .shot-image { transform-origin: 72% 30%; }
+
+/* ---------- Цифры и сравнение ---------- */
+
+.is-7pro .spec::before { background: var(--neb); }
+.is-7pro .spec:hover { border-color: rgb(var(--neb-rgb) / 0.7); }
+.is-7pro .vgroup h3 i { color: var(--neb-soft); }
+
+/* ---------- Узкие экраны: сцена сверху, текст под ней ---------- */
+
+@media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
+  .is-7pro .scene-hero { height: 280vh; }
+  .is-7pro .hero-phone.is-live::before { inset: 4% -8%; }
+
+  .scene-xray { height: 460vh; }
+  .xray-stage { top: 66%; }
+
+  .scene-hud { height: 210vh; }
+  .hud { top: 31vh; left: 50%; height: 44vh; }
+  .is-7pro .scene-hud .shot-copy { max-width: none; }
+
+  /* на узком экране от широкого кадра остаётся середина, а телефоны стоят справа: сдвигаем кадр к ним */
+  .is-7pro #display .shot-image { top: 5vh; object-position: 92% 50%; transform-origin: 50% 30%; }
+}
+
+/* ---------- Без анимаций: всё видно сразу ---------- */
+
+.no-motion .hud-top { clip-path: none; }
+/* механизм показан в конечном виде: корпус прозрачный, камера поднята */
+.no-motion .xray-lines, .no-motion .xray-tag { opacity: 1; }
+.no-motion .xray-body { opacity: 0.12; }
+.no-motion .xray-inside { opacity: 0.75; }
+.no-motion .xray-module, .no-motion .xray-tag.is-ride, .no-motion #xrayCarriage { transform: translateY(-230px); }
+.no-motion #xrayCable { d: path("M975 576C975 808 860 814 860 948"); }

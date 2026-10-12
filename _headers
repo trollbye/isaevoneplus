@@ -1,0 +1,19 @@
+# Заголовки безопасности для хостинга, который читает этот файл (Cloudflare Pages, Netlify).
+# GitHub Pages его не читает: там те же правила, насколько это возможно, заданы прямо в страницах (тег meta в начале каждой).
+# Если меняется строка importmap в 13.html, отпечаток sha256 ниже и в 13.html нужно пересчитать.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-kjmc6gSqmHKVRrkVj9nGN+Iw9sO8PhWdPS/j5aCY2Uk=' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+
+# шрифты и библиотека не меняются: браузер может хранить их год
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*
+  Cache-Control: public, max-age=2592000

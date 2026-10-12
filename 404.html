@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Правила безопасности: странице разрешено брать скрипты, стили, шрифты и картинки только из папки самого сайта.
+       Чужой скрипт, даже если его как-то подсунут в страницу, браузер не выполнит -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Такой страницы нет</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#04060c">
+  <!-- Эту страницу хостинг показывает, когда адрес набран с ошибкой. Адреса здесь от корня сайта не пишутся:
+       сайт может лежать в подпапке, поэтому всё нужное подключено относительно этой страницы -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="fonts/fonts.css?v=1">
+  <link rel="stylesheet" href="style.css?v=34">
+</head>
+<body class="home lost">
+
+  <header class="bar is-scrolled">
+    <a class="brand" href="index.html" aria-label="OnePlus, главная страница">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4H4v24h24V11" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M14.5 21.5v-10l-3 1.6M11 21.5h7M26 2v7M22.5 5.5h7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span>OnePlus</span>
+    </a>
+  </header>
+
+  <main>
+    <section class="home-top lost-top">
+      <div class="glow glow-home" aria-hidden="true"></div>
+      <div class="home-word" aria-hidden="true">404</div>
+      <div class="wrap home-head">
+        <p class="kicker">Ошибка 404</p>
+        <h1>Такой страницы<br>здесь нет</h1>
+        <p class="home-sub">Адрес набран с ошибкой или страница переехала</p>
+        <a class="lost-link" href="index.html">Ко всем моделям</a>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

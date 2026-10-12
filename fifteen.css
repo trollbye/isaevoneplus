@@ -1,0 +1,291 @@
+/* ==========================================================================
+   Страница OnePlus 15. Тема та же, что у всего сайта. Её отличие — «самая современная»:
+   живой телефон, который можно крутить, текст, который загорается при прокрутке, серия снимков,
+   три чипа, батарея с полосками и шкала частоты экрана. Изюминка страницы — холодный синий свет.
+   У каждого раздела свой приём: соседние не повторяются. Текст всегда стоит рядом с картинкой, а не на ней.
+   ========================================================================== */
+
+.is-15 {
+  --tone: 214 190 150; /* цвет свечения под выбранный цвет корпуса, его выставляет page.js */
+  --cold: #8fb0ff; /* холодный синий этой страницы */
+  --clear: calc(var(--side) + 480px); /* левее этой черты стоит текст, правее — картинка раздела */
+}
+
+/* ---------- Первый экран: живой телефон (его рисует hero-live.js; общие правила для него и кнопок цвета лежат в style.css) ---------- */
+
+/* сцена длиннее обычной: пока её листают, телефон успевает развернуться экраном */
+.is-15 .scene-hero { height: 290vh; }
+.is-15 .glow-hero {
+  background:
+    radial-gradient(40% 56% at 72% 50%, rgb(76 125 255 / 0.2), transparent 70%),
+    radial-gradient(26% 40% at 74% 58%, rgb(var(--tone) / 0.22), transparent 72%);
+}
+
+/* ---------- Текст, который загорается: слова проявляются по мере прокрутки (fifteen.js) ---------- */
+
+.scene-lit { height: 250vh; }
+.glow-lit { background: radial-gradient(50% 60% at 30% 50%, rgb(76 125 255 / 0.12), transparent 72%); }
+.lit {
+  position: absolute;
+  top: 50%; right: var(--side); left: var(--side);
+  translate: 0 -50%;
+  font-family: var(--display);
+  font-size: clamp(26px, 4.6vw, 92px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.035em;
+}
+.lit span { opacity: 0.12; will-change: opacity; }
+/* главные цифры светятся холодным светом */
+.lit .is-key { white-space: nowrap; color: transparent; background: linear-gradient(100deg, var(--cold), #ffffff 55%, var(--sand)); -webkit-background-clip: text; background-clip: text; }
+
+/* ---------- Общее для разделов этой страницы ---------- */
+
+/* текст раздела: колонка слева по центру высоты */
+.side-copy { position: absolute; top: 50%; left: var(--side); width: min(400px, 100% - 2 * var(--side)); translate: 0 -50%; will-change: opacity; }
+/* тёмная подложка под колонкой текста: картинка раздела под текст не заходит */
+.side-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, var(--bg) calc(var(--clear) - 140px), rgb(4 6 12 / 0.85) calc(var(--clear) - 30px), rgb(4 6 12 / 0.45) calc(var(--clear) + 130px), transparent calc(var(--clear) + 340px)), linear-gradient(0deg, var(--bg), transparent 18%, transparent 84%, var(--bg)); }
+
+/* ---------- Дизайн: живой телефон (холст сюда переносит hero-live.js) ---------- */
+
+.turn-phone { position: absolute; top: 50%; left: calc((var(--clear) + 100vw - var(--side)) / 2); height: 94vh; aspect-ratio: 440 / 940; translate: -50% -50%; will-change: opacity; }
+.turn-phone canvas { position: relative; display: block; width: 100%; height: 100%; }
+.is-15 .spin-copy { max-width: 400px; }
+.is-15 .spin-copy .hero-colors { margin-top: 34px; }
+/* подсказка под телефоном: пропадает, когда его покрутили */
+.spin-hint { position: absolute; bottom: 3.4vh; left: calc((var(--clear) + 100vw - var(--side)) / 2); display: flex; align-items: center; gap: 12px; translate: -50% 0; font-size: 11px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; white-space: nowrap; color: var(--muted); pointer-events: none; transition: opacity 0.4s; }
+.spin-hint::before { content: ""; width: 26px; height: 26px; border: 1px solid currentColor; border-radius: 50%; background: radial-gradient(circle, currentColor 2px, transparent 3px); }
+.was-spun .spin-hint { opacity: 0; }
+
+/* ---------- Серия: десять кадров стопкой, под ними лента (fifteen.js) ---------- */
+
+.scene-burst { height: 330vh; }
+.glow-burst { background: radial-gradient(46% 54% at 68% 46%, rgb(76 125 255 / 0.16), transparent 72%); }
+.burst-view { position: absolute; top: 50%; right: var(--side); left: var(--clear); display: grid; justify-items: center; gap: 2.4vh; translate: 0 -50%; will-change: transform, opacity; }
+/* рамка кадра с уголками, как в видоискателе */
+.burst-frame { position: relative; width: min(100%, 60vh * 1270 / 872); aspect-ratio: 1270 / 872; border-radius: 14px; background: var(--bg-2); box-shadow: 0 40px 80px -40px #000; }
+.burst-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; opacity: 0; }
+.burst-frame img.is-on { opacity: 1; }
+.burst-frame::before, .burst-frame::after { content: ""; position: absolute; z-index: 1; width: 34px; height: 34px; border: 2px solid var(--cold); pointer-events: none; }
+.burst-frame::before { top: -9px; left: -9px; border-right: 0; border-bottom: 0; border-radius: 6px 0 0 0; }
+.burst-frame::after { right: -9px; bottom: -9px; border-top: 0; border-left: 0; border-radius: 0 0 6px 0; }
+/* лента: все десять кадров мелко, текущий подсвечен */
+.burst-strip { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; width: min(100%, 60vh * 1270 / 872); list-style: none; }
+.burst-strip li { position: relative; aspect-ratio: 1270 / 872; border-radius: 5px; overflow: hidden; opacity: 0.34; transition: opacity 0.25s, translate 0.25s var(--ease); }
+.burst-strip li::after { content: ""; position: absolute; inset: 0; border: 2px solid transparent; border-radius: inherit; transition: border-color 0.25s; }
+.burst-strip li.is-on { opacity: 1; translate: 0 -4px; }
+.burst-strip li.is-on::after { border-color: var(--cold); }
+.burst-strip img { width: 100%; height: 100%; object-fit: cover; }
+/* счётчик кадра */
+.burst-count { display: flex; align-items: baseline; gap: 12px; margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line); }
+.burst-count b { font-family: var(--display); font-size: clamp(40px, 4.6vw, 76px); font-weight: 300; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: transparent; background: linear-gradient(100deg, var(--cold), #ffffff 70%); -webkit-background-clip: text; background-clip: text; }
+.burst-count span { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- Снимки: плитка из шести официальных фотографий ---------- */
+
+.mosaic { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: clamp(120px, 14.4vw, 246px); gap: 14px; margin-top: 64px; }
+.tile { position: relative; margin: 0; border: 1px solid var(--line); border-radius: 22px; overflow: hidden; background: var(--bg-2); }
+.tile img { width: 100%; height: 100%; object-fit: cover; transition: scale 0.9s var(--ease); }
+.tile:hover img, .tile:active img { scale: 1.05; }
+.tile figcaption { position: absolute; right: 0; bottom: 0; left: 0; padding: 46px 22px 18px; font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); background: linear-gradient(0deg, rgb(4 6 12 / 0.82), transparent); pointer-events: none; }
+.tile.is-night { grid-column: 1 / 8; grid-row: 1 / 3; }
+.tile.is-neon { grid-column: 8 / 13; grid-row: 1 / 4; }
+.tile.is-macro { grid-column: 1 / 5; grid-row: 3; }
+.tile.is-portrait { grid-column: 5 / 8; grid-row: 3; }
+.tile.is-selfie { grid-column: 1 / 5; grid-row: 4 / 7; }
+.tile.is-selfie img { object-position: 50% 30%; }
+.tile.is-group { grid-column: 5 / 13; grid-row: 4 / 6; }
+/* плитка с текстом про фронтальную камеру: в ряд со снимками, как плитки с цифрами ниже */
+.tile.is-note { grid-column: 5 / 13; grid-row: 6; display: flex; align-items: center; gap: clamp(18px, 2.6vw, 40px); padding: 0 clamp(20px, 2.6vw, 40px); background: linear-gradient(160deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.01) 60%); }
+.tile.is-note::before { content: ""; position: absolute; top: 0; left: 26px; width: 34px; height: 2px; background: var(--cold); }
+.tile.is-note b { flex: none; font-family: var(--display); font-size: clamp(34px, 4.4vw, 76px); font-weight: 400; line-height: 1; letter-spacing: -0.04em; white-space: nowrap; }
+.tile.is-note p { max-width: 560px; font-size: clamp(14px, 1.2vw, 17px); color: #b3bacb; }
+
+/* ---------- Мощность: три чипа над светящимся подиумом (fifteen.js) ---------- */
+
+.scene-chips { height: 340vh; }
+/* подиум со светом лежит под чипами; его края растворяются в фоне, чтобы не было видно границ картинки */
+.chips-floor { position: absolute; top: -52%; left: -30%; width: 160%; max-width: none; height: auto; -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 96%), radial-gradient(50% 72% at 50% 60%, #000 52%, transparent 100%); mask-image: linear-gradient(180deg, #000 70%, transparent 96%), radial-gradient(50% 72% at 50% 60%, #000 52%, transparent 100%); -webkit-mask-composite: source-in; mask-composite: intersect; will-change: opacity; }
+.chips-stage { position: absolute; top: 48%; left: calc((var(--clear) + 100vw - var(--side)) / 2); width: min(100vw - var(--clear) - var(--side), 108vh); aspect-ratio: 2 / 1; translate: -50% -50%; }
+.chip { position: absolute; top: 50%; z-index: 1; height: auto; will-change: transform, opacity; }
+.chip.is-main { left: 50%; width: 36%; margin: -16% 0 0 -18%; }
+.chip.is-wifi { left: 15%; width: 30%; margin: -17% 0 0 -15%; }
+.chip.is-touch { left: 85%; width: 30%; margin: -17% 0 0 -15%; }
+.scene-chips .steps b { font-size: 21px; }
+
+/* ---------- Батарея: телефон без крышки и полоски ёмкости (fifteen.js) ---------- */
+
+.scene-cell { height: 320vh; }
+.glow-cell { background: radial-gradient(34% 34% at 66% 50%, rgb(60 140 255 / 0.5), transparent 72%); will-change: opacity; }
+/* число огромными буквами проезжает за телефоном */
+.cell-word { position: absolute; bottom: 2vh; left: 0; font-family: var(--display); font-size: 26vh; font-weight: 800; line-height: 1; letter-spacing: -0.05em; white-space: nowrap; color: transparent; background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.03)); -webkit-background-clip: text; background-clip: text; pointer-events: none; will-change: transform; }
+.cell-phone { position: absolute; top: 50%; left: calc((var(--clear) + 100vw - var(--side)) / 2); width: min((100vw - var(--clear) - var(--side)) * 1.34, 150vh); height: auto; margin-left: 3%; translate: -50% -50%; will-change: transform, opacity; }
+/* полоски: имя, число и дорожка, которая заполняется на долю --fill */
+.bars { display: grid; gap: 16px; margin-top: 30px; list-style: none; }
+.bars li { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 8px 12px; }
+.bars span { font-size: 14px; color: var(--muted); }
+.bars b { font-family: var(--display); font-size: 18px; font-weight: 400; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: #8f97ab; }
+.bars i { grid-column: 1 / -1; height: 6px; border-radius: 6px; background: rgb(255 255 255 / 0.08); overflow: hidden; }
+.bars i::after { content: ""; display: block; height: 100%; border-radius: inherit; background: #59627a; transform: scaleX(var(--fill, 0)); transform-origin: left; }
+.bars .is-lead span { color: var(--text); }
+.bars .is-lead b { font-size: 26px; color: var(--text); }
+.bars .is-lead i { height: 10px; }
+.bars .is-lead i::after { background: linear-gradient(90deg, #3c7bff, #7fd0ff); box-shadow: 0 0 18px rgb(80 160 255 / 0.8); }
+.scene-cell .stats { margin-top: 28px; }
+.scene-cell .stats b { font-size: clamp(24px, 2.4vw, 38px); }
+
+/* ---------- Экран: надпись «165Hz», телефон и шкала частоты (fifteen.js) ---------- */
+
+.scene-hz { height: 320vh; }
+.hz-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; will-change: opacity; }
+.hz-word { position: absolute; top: 9vh; left: calc(var(--clear) - 6vw); width: calc(100vw - var(--clear) + 2vw); height: auto; will-change: transform, opacity; }
+.hz-phone { position: absolute; top: 55%; left: calc(var(--clear) - 2vw); width: calc(100vw - var(--clear) - 2vw); aspect-ratio: 1786 / 546; translate: 0 -50%; will-change: transform, opacity; }
+.hz-phone img { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* шкала: крупное число, под ним линейка с отметками и бегущей стрелкой. --at (0..1) выставляет fifteen.js */
+.dial { margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--line); }
+.dial-now { display: flex; align-items: baseline; gap: 10px; }
+.dial-now b { font-family: var(--display); font-size: clamp(46px, 5vw, 84px); font-weight: 300; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.dial-now span { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.dial-now em { margin-left: auto; font-size: 13px; font-style: normal; text-align: right; color: var(--sand); }
+.dial-scale { --at: 0; position: relative; height: 44px; margin-top: 16px; background: repeating-linear-gradient(90deg, rgb(255 255 255 / 0.22) 0 1px, transparent 1px calc(100% / 21)) 0 0 / 100% 9px no-repeat; border-top: 1px solid var(--line); }
+.dial-scale i { position: absolute; top: -5px; left: calc(var(--at) * 100%); width: 2px; height: 20px; margin-left: -1px; border-radius: 2px; background: var(--sand); box-shadow: 0 0 14px var(--sand); transition: background 0.3s, box-shadow 0.3s; }
+.dial-scale.is-top i { background: var(--gold); box-shadow: 0 0 20px var(--gold); }
+.dial-scale span { position: absolute; top: 20px; font-family: var(--display); font-size: 12px; font-weight: 400; color: var(--muted); }
+.dial-scale .is-60 { left: 0; }
+.dial-scale .is-120 { left: calc(60 / 105 * 100%); translate: -50% 0; }
+.dial-scale .is-165 { right: 0; color: var(--gold); }
+
+/* ---------- Цифры: плитки разного размера, свет следует за курсором (fifteen.js) ---------- */
+
+.is-15 .spec-grid { grid-auto-rows: minmax(170px, auto); grid-auto-flow: dense; }
+.is-15 .spec { display: grid; align-content: end; border-radius: 26px; }
+.is-15 .spec.is-big { grid-column: span 2; grid-row: span 2; }
+.is-15 .spec.is-wide { grid-column: span 2; }
+.is-15 .spec.is-big b { font-size: clamp(52px, 8vw, 132px); }
+.is-15 .spec.is-wide b { font-size: clamp(42px, 5.4vw, 92px); }
+.is-15 .spec.is-big::before, .is-15 .spec.is-wide::before { background: var(--cold); }
+.spec em { display: block; margin-top: 12px; font-size: 15px; font-style: normal; color: var(--sand); }
+/* пятно света в том месте плитки, над которым курсор: --mx и --my выставляет fifteen.js */
+.is-15 .spec::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%), rgb(76 125 255 / 0.22), transparent 70%); opacity: 0; transition: opacity 0.4s; }
+.is-15 .spec-grid:hover .spec::after { opacity: 1; }
+.is-15 .spec:hover { border-color: rgb(143 176 255 / 0.6); }
+
+/* видеокарта не смогла нарисовать объёмный разбор камеры — раздел с ним не показывается */
+.no-3d .scene-teardown { display: none; }
+
+/* ---------- Окно поуже: колонка текста уже, картинкам больше места ---------- */
+
+@media (max-width: 1180px) {
+  .is-15 { --clear: calc(var(--side) + 400px); }
+  .side-copy, .is-15 .spin-copy { width: auto; max-width: 340px; }
+}
+
+/* ---------- Узкие экраны: картинка сверху, текст снизу ---------- */
+
+@media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
+  .is-15 .scene-hero { height: 250vh; }
+
+  .scene-lit { height: 220vh; }
+  .lit { right: 22px; left: 22px; font-size: clamp(24px, 7.4vw, 44px); }
+
+  .side-copy { top: auto; right: 22px; bottom: 6vh; left: 22px; width: auto; max-width: none; translate: none; }
+  .side-shade { background: linear-gradient(0deg, var(--bg) 50%, transparent 64%, transparent 90%, var(--bg)); }
+
+  /* Дизайн: сверху заголовок, кнопки цвета и подпись к текущему шагу, ниже телефон */
+  .turn-phone { top: 64%; left: 50%; height: 50vh; }
+  .is-15 .spin-copy { max-width: none; }
+  .is-15 .spin-copy .hero-colors { margin-top: 8px; }
+  .spin-hint { bottom: 2.4vh; left: 50%; }
+
+  /* Серия: кадр и лента сверху, текст снизу */
+  .scene-burst { height: 300vh; }
+  .burst-view { top: 11vh; right: 22px; left: 22px; gap: 12px; translate: none; }
+  .burst-frame, .burst-strip { width: 100%; }
+  /* лента в два ряда по пять: кадры на ней крупнее, а между лентой и текстом не остаётся пустоты */
+  .burst-strip { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .burst-frame::before, .burst-frame::after { width: 22px; height: 22px; }
+  .burst-frame::before { top: -6px; left: -6px; }
+  .burst-frame::after { right: -6px; bottom: -6px; }
+  .burst-count { margin-top: 16px; padding-top: 12px; }
+  .burst-count b { font-size: 40px; }
+
+  /* Снимки: две колонки */
+  .mosaic { grid-template-columns: 1fr 1fr; grid-auto-rows: 29vw; gap: 10px; margin-top: 40px; }
+  .tile { border-radius: 16px; }
+  .tile figcaption { padding: 34px 14px 12px; font-size: 11px; }
+  .tile.is-night { grid-column: 1 / 3; grid-row: 1 / 3; }
+  .tile.is-neon { grid-column: 1; grid-row: 3 / 6; }
+  .tile.is-selfie { grid-column: 2; grid-row: 3 / 6; }
+  .tile.is-macro { grid-column: 1 / 3; grid-row: 6 / 8; }
+  .tile.is-portrait { grid-column: 1 / 3; grid-row: 8 / 10; }
+  .tile.is-group { grid-column: 1 / 3; grid-row: 10 / 12; }
+  .tile.is-note { grid-column: 1 / 3; grid-row: auto; flex-direction: column; align-items: flex-start; gap: 12px; padding: 26px 18px 22px; }
+  .tile.is-note::before { left: 18px; }
+
+  /* Мощность: заголовок и подпись сверху, чипы ниже */
+  .scene-chips { height: 300vh; }
+  .chips-stage { top: 64%; left: 50%; width: 146vw; }
+  .scene-chips .steps b { font-size: 19px; }
+
+  /* Батарея: телефон сверху, текст и полоски снизу */
+  .scene-cell { height: 280vh; }
+  .glow-cell { background: radial-gradient(70% 26% at 50% 30%, rgb(60 140 255 / 0.5), transparent 72%); }
+  .cell-word { top: 3vh; bottom: auto; font-size: 13vh; }
+  .cell-phone { top: 31%; left: 50%; width: 190vw; margin: 0; }
+  .bars { gap: 10px; margin-top: 16px; }
+  .bars span { font-size: 13px; }
+  .bars .is-lead b { font-size: 21px; }
+  .scene-cell .stats { margin-top: 16px; padding-top: 12px; }
+  .scene-cell .shot-text { font-size: 14px; }
+
+  /* Экран: надпись и телефон сверху, текст и шкала снизу */
+  .scene-hz { height: 280vh; }
+  .hz-bg { height: 64%; }
+  .hz-word { top: 15vh; left: -3vw; width: 106vw; }
+  /* телефон виден целиком, от края до края */
+  .hz-phone { top: 41%; left: 2vw; width: 96vw; }
+  .dial { margin-top: 14px; padding-top: 12px; }
+  .dial-now b { font-size: 42px; }
+  .dial-scale { margin-top: 10px; }
+
+  .is-15 .spec-grid { grid-auto-rows: minmax(120px, auto); }
+  .is-15 .spec.is-big { grid-row: span 1; }
+  .spec em { font-size: 13px; }
+}
+
+/* ---------- Телефон боком: широкая раскладка, но текст и отступы мельче ---------- */
+
+@media (orientation: landscape) and (max-height: 480px) {
+  .is-15 { --clear: calc(var(--side) + 44vw); }
+  .lit { font-size: clamp(20px, 7.4vh, 34px); }
+  .side-copy, .is-15 .spin-copy { width: auto; max-width: 40vw; }
+  .is-15 .spin-copy .hero-colors { margin-top: 8px; }
+  .spin-hint { display: none; }
+  .burst-view { gap: 8px; }
+  .burst-frame, .burst-strip { width: min(100%, 62vh * 1270 / 872); }
+  .burst-count { margin-top: 10px; padding-top: 8px; }
+  .burst-count b { font-size: 30px; }
+  .scene-chips .steps b { font-size: 15px; }
+  .bars { gap: 6px; margin-top: 10px; }
+  .bars span { font-size: 12px; }
+  .bars b { font-size: 14px; }
+  .bars .is-lead b { font-size: 17px; }
+  .bars i, .bars .is-lead i { height: 5px; }
+  .scene-cell .stats { margin-top: 10px; padding-top: 8px; }
+  .scene-cell .stats b { font-size: 18px; }
+  .dial { margin-top: 10px; padding-top: 8px; }
+  .dial-now b { font-size: 32px; }
+  .dial-scale { height: 34px; margin-top: 8px; }
+  .mosaic { margin-top: 28px; grid-auto-rows: 15vw; }
+}
+
+/* ещё для телефона боком: батарея и разбор камеры */
+@media (orientation: landscape) and (max-height: 480px) {
+  .scene-cell .shot-text, .cell-word { display: none; }
+  .bars { margin-top: 8px; }
+}
+
+/* ---------- Без анимаций ---------- */
+
+.no-motion .lit span { opacity: 1; }
+.no-motion .burst-view, .no-motion .side-copy, .no-motion .turn-phone, .no-motion .chip, .no-motion .cell-phone, .no-motion .hz-phone, .no-motion .hz-word { opacity: 1; }

@@ -1,0 +1,246 @@
+/* ==========================================================================
+   Страница OnePlus One. Тема та же, что у всего сайта: тёмный фон, песок и золото.
+   Её отличие — ретро-настроение 2014 года: «машинописные» подписи, листы каталога песочного цвета
+   с типографскими метками, контурные цифры года и лёгкое зерно. Изюминка страницы — фирменный
+   красный OnePlus тех лет: его совсем немного, только точки и номера листов.
+   ========================================================================== */
+
+.is-one {
+  --red: #eb0028;
+  --paper: #e9e0cf;
+  --ink: #1d1911;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+  --col: calc(100vw - 2 * var(--side)); /* ширина колонки с содержимым */
+  --edge: 300px; /* на таком расстоянии от левого края колонки начинается лист: заголовок чуть заходит на него */
+}
+
+/* зерно, как на старой плёнке: одна неподвижная картинка поверх страницы */
+.is-one::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* подписи «машинописным» шрифтом; перед каждой — красная точка вместо линии */
+.is-one .kicker { gap: 12px; font-family: var(--mono); font-weight: 500; letter-spacing: 0.16em; }
+.is-one .kicker::before { width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
+.is-one .facts span, .is-one .stats span, .is-one .spec span, .is-one .rail a, .is-one .score-note, .is-one .versus-label { font-family: var(--mono); letter-spacing: 0.08em; }
+.is-one .steps li.is-on { border-color: var(--red); }
+.is-one ::selection { background: var(--red); }
+
+/* ---------- Первый экран ---------- */
+
+.is-one .glow-hero {
+  background:
+    radial-gradient(50% 58% at 66% 52%, rgb(217 205 187 / 0.2), transparent 70%),
+    radial-gradient(26% 30% at 80% 66%, rgb(240 196 104 / 0.1), transparent 70%);
+}
+/* год контуром, как оттиск: заливки нет, только тонкая песочная линия */
+.is-one .bigword {
+  right: -3vw;
+  font-size: 42vh;
+  -webkit-text-stroke-color: rgb(217 205 187 / 0.3);
+}
+/* Контурные надписи. У шрифта Unbounded буквы собраны из перекрывающихся частей, и если просто обвести текст,
+   внутри букв видны лишние линии. Поэтому обводка рисуется под заливкой, а заливка — цвета фона: она закрывает
+   всё лишнее внутри, и остаётся чистый внешний контур. Надписи лежат ниже свечения сцены (z-index: -1),
+   поэтому заливка не заметна и там, где фон подсвечен. Буквы стоят свободнее, чтобы не наезжать друг на друга */
+.is-one .bigword, .is-one .spin-word, .plate-word {
+  z-index: -1;
+  letter-spacing: -0.01em;
+  background: none;
+  color: var(--bg);
+  paint-order: stroke fill;
+  -webkit-text-stroke-width: 3px; /* внутреннюю половину закрывает заливка, видно полтора пикселя */
+}
+/* снимок лежащего телефона широкий, поэтому размер задан шириной. Снимок и текст делят колонку:
+   тексту достаётся левая часть, снимку правая, поэтому при любой ширине окна они не заходят друг на друга */
+.is-one .hero-phone { right: calc(var(--side) - 6vw); width: min(112vh, calc(var(--col) * 0.62)); height: auto; aspect-ratio: 1483 / 1165; translate: 0 -48%; }
+.is-one .hero-phone img { filter: drop-shadow(0 46px 60px rgb(0 0 0 / 0.6)); }
+.is-one .hero-copy { max-width: min(500px, calc(var(--col) * 0.42)); }
+.is-one .facts li:first-child b { color: var(--gold); }
+
+/* ---------- Дизайн: объёмный телефон (его рисует one-turn.js) ---------- */
+
+.scene-turn { height: 380vh; }
+.glow-turn { background: radial-gradient(34% 46% at 60% 52%, rgb(217 205 187 / 0.2), transparent 72%); }
+.is-one .spin-word { -webkit-text-stroke-color: rgb(217 205 187 / 0.22); }
+.turn-canvas { position: absolute; top: 50%; left: 60%; height: 94vh; aspect-ratio: 440 / 940; translate: -50% -50%; }
+/* в рамке лежит снимок-заглушка, поверх него холст с живым телефоном */
+.turn-canvas canvas { position: relative; display: block; width: 100%; height: 100%; }
+/* размерная линия справа от телефона, как на чертеже: высота корпуса */
+.dim { position: absolute; top: calc(50% + 1.3vh); left: calc(60% + 23vh); width: 1px; height: 77.6vh; translate: 0 -50%; background: rgb(217 205 187 / 0.45); }
+.dim::before, .dim::after { content: ""; position: absolute; left: -6px; width: 13px; height: 1px; background: var(--sand); }
+.dim::before { top: 0; }
+.dim::after { bottom: 0; }
+.dim span { position: absolute; top: 50%; left: 14px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; white-space: nowrap; color: var(--sand); writing-mode: vertical-rl; translate: 0 -50%; }
+
+/* ---------- Листы каталога ---------- */
+
+.scene-plate { height: 230vh; }
+/* крупная контурная надпись проезжает за листом: сдвиг выставляет one.js */
+.plate-word {
+  position: absolute;
+  top: 5vh; left: 0;
+  font-family: var(--display);
+  font-size: 24vh;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  -webkit-text-stroke-color: rgb(217 205 187 / 0.2);
+  pointer-events: none;
+  will-change: transform;
+}
+/* сам лист: песочная бумага, метки по углам и подпись снизу. Въезжает и ложится по команде one.js.
+   Он стоит выше белого текста и закрывает ту его часть, что зашла на бумагу */
+.sheet {
+  position: absolute;
+  top: 50%; left: calc(var(--side) + var(--edge));
+  z-index: 2;
+  width: min(calc(var(--col) - var(--edge) - 3.5vw), calc(74vh * var(--ratio, 1.33)));
+  aspect-ratio: var(--ratio, 1.33);
+  translate: 0 -50%;
+  overflow: hidden;
+  color: var(--ink);
+  border-radius: 5px;
+  background: linear-gradient(160deg, #f1e9d9, var(--paper) 55%, #ddd2bd);
+  box-shadow: 0 46px 90px -34px #000, 0 2px 0 rgb(255 255 255 / 0.5) inset;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+/* типографские метки: по уголку в каждом углу листа */
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+  opacity: 0.4;
+  background:
+    linear-gradient(var(--ink), var(--ink)) top left / 14px 1px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) top left / 1px 14px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) top right / 14px 1px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) top right / 1px 14px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) bottom left / 14px 1px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) bottom left / 1px 14px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) bottom right / 14px 1px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) bottom right / 1px 14px no-repeat;
+}
+/* слева на листе оставлено поле: на него заходит заголовок */
+.sheet img { position: absolute; top: 9%; left: 18%; width: 77%; height: 72%; object-fit: contain; }
+/* у снимка на белом фоне белое сливается с бумагой */
+.sheet.is-multiply img { mix-blend-mode: multiply; }
+.sheet figcaption {
+  position: absolute;
+  right: 34px; bottom: 26px; left: 34px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgb(29 25 17 / 0.4);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.sheet figcaption b { font-weight: 500; color: var(--red); }
+
+/* паспорт телефона: строки с отточиями */
+.sheet-table { position: absolute; top: 13%; right: 8%; bottom: 20%; left: 20%; display: grid; align-content: center; gap: clamp(8px, 1.7vh, 18px); font-family: var(--mono); font-size: clamp(12px, 1.15vw, 19px); }
+.sheet-table div { display: flex; align-items: baseline; gap: 10px; }
+.sheet-table i { flex: 1; min-width: 20px; border-bottom: 1px dotted currentColor; opacity: 0.45; translate: 0 -4px; }
+.sheet-table dd { font-weight: 500; white-space: nowrap; }
+
+/* Текст рядом с листом. Заголовок шире, чем расстояние до листа, поэтому заходит на бумагу */
+.is-one .scene-plate .shot-copy { z-index: 1; width: 430px; max-width: none; }
+.is-one .scene-plate .shot-text { max-width: 340px; }
+
+/* Двухцветный текст. Белый текст стоит под листом, а внутри листа лежит его тёмная копия ровно на том же месте
+   (её создаёт и удерживает на месте one.js). Поэтому там, где буквы заходят на бумагу, они тёмные,
+   даже если край листа режет букву пополам */
+.sheet-ink { position: absolute; inset: 0; pointer-events: none; will-change: transform; }
+.ink-copy { position: absolute; top: 50%; left: calc(-1 * var(--edge)); width: 430px; translate: 0 -50%; color: var(--ink); will-change: transform, opacity; }
+.is-one .ink-copy .kicker, .is-one .ink-copy .shot-text, .is-one .ink-copy .stats span { color: var(--ink); }
+.ink-copy .stats { border-color: rgb(29 25 17 / 0.3); }
+
+/* Широкие снимки (экран, профиль): текст стоит сверху в две колонки, лист — под ним во всю ширину колонки.
+   Так текст и снимок не пересекаются */
+.scene-plate.is-wide .sheet { top: auto; bottom: 6vh; left: 50%; width: min(var(--col), calc(50vh * var(--ratio, 2))); translate: -50% 0; }
+.scene-plate.is-wide .sheet img { top: 8%; left: 5%; width: 90%; height: 73%; }
+.is-one .scene-plate.is-wide .shot-copy {
+  top: 13vh; right: var(--side);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "kicker text" "title text" "title stats";
+  grid-template-rows: auto 1fr auto;
+  column-gap: 5vw;
+  width: auto;
+  translate: none;
+}
+.is-wide .shot-copy .kicker { grid-area: kicker; }
+.is-wide .shot-copy h2 { grid-area: title; }
+.is-one .scene-plate.is-wide .shot-text { grid-area: text; align-self: end; max-width: 520px; margin-top: 0; }
+.is-wide .shot-copy .stats { grid-area: stats; margin-top: 22px; padding-top: 18px; }
+
+/* ---------- Цифры и сравнение ---------- */
+
+.is-one .spec { border-radius: 8px; }
+.is-one .spec::before { background: var(--red); }
+.is-one .vgroup h3 i { font-family: var(--mono); color: var(--red); }
+
+/* ---------- Узкие экраны: лист сверху, текст под ним, они не пересекаются ---------- */
+
+@media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
+  .is-one .bigword { right: 50%; translate: 50% -78%; font-size: 26vh; }
+  .is-one .hero-phone { top: 12vh; right: 50%; width: 104vw; translate: 50% 0; }
+
+  .scene-turn { height: 320vh; }
+  .turn-canvas { top: 60%; left: 50%; height: 58vh; }
+  .dim { top: calc(60% + 0.8vh); left: calc(50% + 14.6vh); height: 47.9vh; }
+  .dim span { font-size: 10px; }
+
+  .scene-plate { height: 210vh; }
+  .plate-word { top: 3vh; font-size: 12vh; }
+  /* лист стоит в верхней половине экрана по центру своей зоны, какой бы формы он ни был */
+  .sheet, .scene-plate.is-wide .sheet { top: 30vh; bottom: auto; left: 50%; width: min(90vw, calc(34vh * var(--ratio, 1.33))); translate: -50% -50%; }
+  .sheet::before { inset: 8px; }
+  .sheet img, .scene-plate.is-wide .sheet img { top: 9%; left: 6%; width: 88%; height: 72%; }
+  .sheet figcaption { right: 16px; bottom: 12px; left: 16px; padding-top: 6px; font-size: 8px; letter-spacing: 0.06em; }
+  .sheet figcaption span:nth-child(2) { display: none; }
+  .sheet-table { right: 9%; left: 9%; font-size: clamp(10px, 3vw, 14px); gap: 6px; }
+  .sheet-ink { display: none; }
+  .is-one .scene-plate .shot-copy, .is-one .scene-plate.is-wide .shot-copy { top: auto; right: 22px; display: block; width: auto; }
+  .is-one .scene-plate .shot-text, .is-one .scene-plate.is-wide .shot-text { max-width: none; margin-top: 14px; }
+  .is-wide .shot-copy .stats { margin-top: 20px; padding-top: 16px; }
+}
+
+/* окно поуже: лист ниже ростом, и цифры под текстом не заходят на лист — иначе они ложились на его подпись */
+@media (max-width: 1180px) {
+  .is-one .scene-plate .stats, .ink-copy .stats { max-width: calc(var(--edge) - 24px); }
+}
+
+/* ---------- Телефон боком: текст и лист стоят рядом и не пересекаются ---------- */
+
+@media (orientation: landscape) and (max-height: 480px) {
+  .is-one { --edge: 42vw; }
+  .is-one .scene-plate .shot-copy, .ink-copy { width: 38vw; }
+  .is-one .scene-plate .shot-text { max-width: 36vw; }
+  .sheet { width: min(calc(var(--col) - var(--edge)), calc(72vh * var(--ratio, 1.33))); }
+  .sheet::before { inset: 8px; }
+  .sheet figcaption { right: 16px; bottom: 10px; left: 16px; padding-top: 5px; font-size: 9px; letter-spacing: 0.06em; }
+  .sheet-table { font-size: 11px; gap: 5px; }
+  /* широкие листы (экран, профиль): текст сверху в две колонки, лист ниже и пониже ростом */
+  .scene-plate.is-wide .sheet { bottom: 4vh; width: min(var(--col), calc(42vh * var(--ratio, 2))); }
+  .is-one .scene-plate.is-wide .shot-copy { top: 15vh; column-gap: 4vw; width: auto; }
+  .is-one .scene-plate.is-wide .shot-text { max-width: none; font-size: 12px; }
+  .is-wide .shot-copy .stats { margin-top: 6px; padding-top: 6px; }
+}
+
+/* ---------- Без анимаций: листы видны сразу ---------- */
+
+.no-motion .sheet { opacity: 1; }
+.no-motion .steps li { opacity: 1; }

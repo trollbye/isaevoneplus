@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Правила безопасности: странице разрешено брать скрипты, стили, шрифты и картинки только из папки самого сайта.
+       Чужой скрипт, даже если его как-то подсунут в страницу, браузер не выполнит -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>OnePlus One — обзор модели</title>
+  <meta name="description" content="OnePlus One, первый телефон компании: экран, камера с шестью линзами, начинка, звук и сравнение с iPhone 5s и Galaxy S5.">
+  <meta name="theme-color" content="#04060c">
+  <!-- JetBrains Mono — «машинописный» шрифт подписей, он есть только на этой странице -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- шрифты лежат в папке сайта (fonts/); два главных начинают грузиться сразу, чтобы заголовки не «прыгали» -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=1">
+  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="stylesheet" href="one.css?v=31">
+  <link rel="preload" as="image" href="assets/one/back.webp">
+</head>
+<!-- data-phone — ключ модели в data.js; класс is-one включает оформление этой страницы из one.css -->
+<body class="is-one" data-phone="one">
+
+  <a class="skip-link" href="#specs">Перейти к характеристикам</a>
+
+  <header class="bar" id="bar">
+    <a class="brand" href="index.html" aria-label="Ко всем моделям OnePlus">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4H4v24h24V11" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M14.5 21.5v-10l-3 1.6M11 21.5h7M26 2v7M22.5 5.5h7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span id="brandName">OnePlus One</span>
+    </a>
+    <nav class="bar-nav">
+      <a href="index.html">Все модели</a>
+      <a href="#design">Дизайн</a>
+      <a href="#display">Экран</a>
+      <a href="#camera">Камера</a>
+      <a href="#power">Начинка</a>
+      <a href="#versus">Сравнение</a>
+    </nav>
+  </header>
+
+  <!-- Боковая навигация: точка текущего раздела вытягивается и показывает название -->
+  <nav class="rail" id="rail" aria-label="Разделы страницы">
+    <a href="#design"><span>Дизайн</span></a>
+    <a href="#display"><span>Экран</span></a>
+    <a href="#camera"><span>Камера</span></a>
+    <a href="#sensor"><span>Сенсор</span></a>
+    <a href="#power"><span>Начинка</span></a>
+    <a href="#sound"><span>Звук</span></a>
+    <a href="#body"><span>Корпус</span></a>
+    <a href="#specs"><span>Цифры</span></a>
+    <a href="#versus"><span>Сравнение</span></a>
+  </nav>
+
+  <main id="top">
+
+    <!-- ===== Первый экран: официальный снимок белого OnePlus One и контурные цифры года за ним ===== -->
+    <!-- Каждая .scene задаёт длину прокрутки, а .pin внутри «прилипает» к экрану на это время -->
+    <section class="scene scene-hero" data-scene="hero">
+      <div class="pin">
+        <div class="glow glow-hero" aria-hidden="true"></div>
+        <div class="bigword" id="heroWord" aria-hidden="true"></div>
+        <div class="hero-phone" id="heroPhone"><img decoding="async" id="heroImage" src="assets/one/back.webp" alt="OnePlus One в цвете Silk White, вид сзади" width="1483" height="1165"></div>
+        <div class="hero-copy" id="heroCopy">
+          <p class="kicker" id="heroKicker"></p>
+          <h1 id="heroName"></h1>
+          <p class="lead" id="heroLead"></p>
+          <ul class="facts" id="heroFacts"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Дизайн: объёмный телефон поворачивается от спинки к экрану, пока страницу листают ===== -->
+    <!-- Телефон рисует one-turn.js, подписи по очереди включает one.js -->
+    <section class="scene scene-turn" id="design" data-scene="turn">
+      <div class="pin">
+        <div class="glow glow-turn" aria-hidden="true"></div>
+        <div class="spin-word" aria-hidden="true">Silk White</div>
+        <div class="turn-canvas"><img class="poster" src="assets/one/poster-turn.webp" alt="OnePlus One в цвете Silk White, вид сзади" width="660" height="1410" loading="lazy" decoding="async"><canvas id="turnCanvas" aria-hidden="true"></canvas></div>
+        <!-- размерная линия, как на чертеже -->
+        <div class="dim" aria-hidden="true"><span>152,9 мм</span></div>
+        <div class="spin-copy">
+          <p class="kicker">Дизайн</p>
+          <h2>Со всех сторон</h2>
+          <ul class="steps">
+            <li><b>Silk White</b><span>Матовая белая спинка, чуть выпуклая: телефон удобно лежит в руке.</span></li>
+            <li><b>8,9 мм</b><span>Толщина корпуса. К краям он сужается до 4,6 мм.</span></li>
+            <li><b>5,5″</b><span>Экран почти во всю переднюю панель. Весит телефон 162 грамма.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Листы каталога: официальный снимок на песочном листе, рядом текст и цифры ===== -->
+    <!-- --ratio — пропорции листа; is-multiply убирает белый фон у снимка; is-wide — широкий снимок:
+         текст стоит над листом. У остальных листов заголовок чуть заходит на бумагу и на ней становится тёмным -->
+
+    <section class="scene scene-plate is-wide" id="display" data-scene="plate">
+      <div class="pin">
+        <div class="plate-word" aria-hidden="true">5,5″</div>
+        <figure class="sheet" style="--ratio: 2.3">
+          <img decoding="async" src="assets/one/display.webp" alt="OnePlus One лежит экраном вверх, поверх экрана размерная сетка" loading="lazy">
+          <figcaption><b>Лист 02</b><span>OnePlus One · A0001</span><span>Экран</span></figcaption>
+        </figure>
+        <div class="shot-copy">
+          <p class="kicker">Экран</p>
+          <h2>Пять с половиной дюймов</h2>
+          <p class="shot-text">Экран Full HD под стеклом Gorilla Glass 3. В 2014 году такой большой и чёткий ставили только в самые дорогие телефоны.</p>
+          <ul class="stats">
+            <li><b>5,5</b><span>дюйма</span></li>
+            <li><b>1080p</b><span>Full HD</span></li>
+            <li><b>401</b><span>точка на дюйм</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene scene-plate" id="camera" data-scene="plate">
+      <div class="pin">
+        <div class="plate-word" aria-hidden="true">f/2.0</div>
+        <figure class="sheet is-multiply" style="--ratio: 1.357">
+          <img decoding="async" src="assets/one/lens.jpg" alt="Объектив камеры OnePlus One в разобранном виде: шесть линз над сенсором" loading="lazy">
+          <figcaption><b>Лист 03</b><span>OnePlus One · A0001</span><span>Объектив</span></figcaption>
+        </figure>
+        <div class="shot-copy">
+          <p class="kicker">Камера</p>
+          <h2>Шесть линз в объективе</h2>
+          <p class="shot-text">На снимке объектив разобран: шесть линз стоят друг за другом над сенсором. Диафрагма f/2.0 пропускает много света, поэтому кадры в сумерках выходят светлее.</p>
+          <ul class="stats">
+            <li><b>13</b><span>Мп</span></li>
+            <li><b>6</b><span>линз</span></li>
+            <li><b>f/2.0</b><span>диафрагма</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- тёмный кадр с сенсором: его собирает page.js из data.js -->
+    <div id="shots"></div>
+
+    <!-- лист без снимка: паспорт телефона с отточиями, как в старой инструкции -->
+    <section class="scene scene-plate" id="power" data-scene="plate">
+      <div class="pin">
+        <div class="plate-word" aria-hidden="true">801</div>
+        <figure class="sheet" style="--ratio: 1.3">
+          <dl class="sheet-table">
+            <div><dt>Процессор</dt><i></i><dd>Snapdragon 801</dd></div>
+            <div><dt>Частота</dt><i></i><dd>2,5 ГГц, 4 ядра</dd></div>
+            <div><dt>Память</dt><i></i><dd>3 ГБ</dd></div>
+            <div><dt>Накопитель</dt><i></i><dd>16 или 64 ГБ</dd></div>
+            <div><dt>Батарея</dt><i></i><dd>3100 мА·ч</dd></div>
+            <div><dt>Система</dt><i></i><dd>CyanogenMod 11S</dd></div>
+          </dl>
+          <figcaption><b>Лист 04</b><span>OnePlus One · A0001</span><span>Паспорт</span></figcaption>
+        </figure>
+        <div class="shot-copy">
+          <p class="kicker">Начинка</p>
+          <h2>Железо флагмана</h2>
+          <p class="shot-text">Процессор тот же, что в самых дорогих телефонах 2014 года, а оперативной памяти даже больше. Батареи хватало на полный день.</p>
+          <ul class="stats">
+            <li><b>801</b><span>Snapdragon</span></li>
+            <li><b>3</b><span>ГБ памяти</span></li>
+            <li><b>3100</b><span>мА·ч</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene scene-plate" id="sound" data-scene="plate">
+      <div class="pin">
+        <div class="plate-word" aria-hidden="true">Stereo</div>
+        <figure class="sheet" style="--ratio: 1.25">
+          <img decoding="async" src="assets/one/speaker.webp" alt="Нижний торец OnePlus One: два динамика по бокам от разъёма" loading="lazy">
+          <figcaption><b>Лист 05</b><span>OnePlus One · A0001</span><span>Динамики</span></figcaption>
+        </figure>
+        <div class="shot-copy">
+          <p class="kicker">Звук</p>
+          <h2>Два динамика снизу</h2>
+          <p class="shot-text">Стереодинамики настроены вместе с JBL и стоят на нижнем торце, поэтому ладонь и стол их не закрывают. Три микрофона убирают шум во время разговора.</p>
+          <ul class="stats">
+            <li><b>2</b><span>динамика</span></li>
+            <li><b>3</b><span>микрофона</span></li>
+            <li><b>JBL</b><span>настройка звука</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene scene-plate is-wide" id="body" data-scene="plate">
+      <div class="pin">
+        <div class="plate-word" aria-hidden="true">8,9 мм</div>
+        <figure class="sheet" style="--ratio: 3">
+          <img decoding="async" src="assets/one/profile.webp" alt="OnePlus One сбоку в двух отделках: белой и чёрной" loading="lazy">
+          <figcaption><b>Лист 06</b><span>OnePlus One · A0001</span><span>Профиль</span></figcaption>
+        </figure>
+        <div class="shot-copy">
+          <p class="kicker">Корпус</p>
+          <h2>Тоньше, чем кажется</h2>
+          <p class="shot-text">Корпус сужается к краям, поэтому в руке телефон кажется тоньше своих 8,9 мм. Выпускался в двух отделках: белой Silk White и чёрной шершавой Sandstone Black.</p>
+          <ul class="stats">
+            <li><b>8,9</b><span>мм</span></li>
+            <li><b>162</b><span>грамма</span></li>
+            <li><b>2</b><span>отделки</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Цифры ===== -->
+    <section class="section" id="specs">
+      <div class="wrap">
+        <p class="kicker reveal">В цифрах</p>
+        <h2 class="section-title reveal" id="specsTitle"></h2>
+        <div class="spec-grid" id="specGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== Сравнение с теми, кто уже продавался весной 2014 года ===== -->
+    <section class="section section-line" id="versus">
+      <div class="wrap">
+        <h2 class="section-title versus-title reveal">Против iPhone 5s<br>и Galaxy S5</h2>
+        <!-- счёт побед и сама таблица: их собирает page.js из data.js -->
+        <div class="score" id="score"></div>
+        <div class="versus" id="versusTable"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <span class="footer-brand">OnePlus One</span>
+      <p>Неофициальный фан-сайт, не связан с компанией OnePlus. Изображения телефона — с официального сайта oneplus.com и из пресс-материалов OnePlus. Характеристики и цены — на момент выхода, весна 2014 года; цены стартовые для США.</p>
+    </div>
+  </footer>
+
+  <script src="data.js?v=33"></script>
+  <!-- one.js добавляет сцены этой страницы, поэтому стоит перед общим page.js -->
+  <script src="one.js?v=11"></script>
+  <script src="page.js?v=29"></script>
+  <!-- объёмный телефон раздела «Дизайн» (one-turn.js) подгружает one.js, когда до раздела долистали -->
+</body>
+</html>

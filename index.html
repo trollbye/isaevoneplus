@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Правила безопасности: странице разрешено брать скрипты, стили, шрифты и картинки только из папки самого сайта.
+       Чужой скрипт, даже если его как-то подсунут в страницу, браузер не выполнит -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Одиннадцать лет в шести телефонах</title>
+  <meta name="description" content="Шесть телефонов OnePlus за одиннадцать лет: от первого OnePlus One до OnePlus 15. Выбери модель и посмотри её со всех сторон.">
+  <meta name="theme-color" content="#04060c">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- шрифты лежат в папке сайта (fonts/); два главных начинают грузиться сразу, чтобы заголовки не «прыгали» -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=1">
+  <link rel="stylesheet" href="style.css?v=34">
+</head>
+<body class="home">
+
+  <a class="skip-link" href="#models">Перейти к моделям</a>
+
+  <header class="bar is-scrolled">
+    <a class="brand" href="index.html" aria-label="OnePlus, главная страница">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4H4v24h24V11" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M14.5 21.5v-10l-3 1.6M11 21.5h7M26 2v7M22.5 5.5h7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span>OnePlus</span>
+    </a>
+  </header>
+
+  <main>
+    <section class="home-top">
+      <div class="glow glow-home" aria-hidden="true"></div>
+      <div class="home-word" aria-hidden="true">ONEPLUS</div>
+      <div class="wrap home-head">
+        <p class="kicker">Коллекция</p>
+        <h1>Одиннадцать лет<br>в шести телефонах</h1>
+        <p class="home-sub">От первого до последнего</p>
+      </div>
+    </section>
+
+    <!-- ===== Шесть телефонов: три в ряд, два ряда, по годам. Телефоны показывает phones3d.js ===== -->
+    <!-- data-model — ключ модели в phones3d.js, --glow — цвет свечения под телефоном -->
+    <section class="wrap models" id="models">
+
+      <div class="unit is-ready" data-model="one" style="--glow:230 230 235">
+        <a class="unit-hit" href="one.html">
+          <span class="unit-title"><small>2014</small>OnePlus One</span>
+          <span class="unit-stage"><img class="poster" src="assets/home/poster-one.webp" alt="OnePlus One, вид сзади" width="440" height="940" decoding="async"><canvas aria-hidden="true"></canvas></span>
+        </a>
+        <em class="unit-tag">Подробнее</em>
+      </div>
+
+      <div class="unit is-ready" data-model="7pro" style="--glow:234 217 192">
+        <a class="unit-hit" href="7pro.html">
+          <span class="unit-title"><small>2019</small>OnePlus 7 Pro</span>
+          <span class="unit-stage"><img class="poster" src="assets/home/poster-7pro.webp" alt="OnePlus 7 Pro, вид сзади" width="440" height="940" decoding="async"><canvas aria-hidden="true"></canvas></span>
+        </a>
+        <em class="unit-tag">Подробнее</em>
+      </div>
+
+      <div class="unit is-ready" data-model="12" style="--glow:220 228 240">
+        <a class="unit-hit" href="12.html">
+          <span class="unit-title"><small>2023</small>OnePlus 12</span>
+          <span class="unit-stage"><img class="poster" src="assets/home/poster-12.webp" alt="OnePlus 12, вид сзади" width="440" height="940" decoding="async"><canvas aria-hidden="true"></canvas></span>
+        </a>
+        <em class="unit-tag">Подробнее</em>
+      </div>
+
+      <div class="unit is-ready" data-model="open" style="--glow:111 180 150">
+        <a class="unit-hit" href="open.html">
+          <span class="unit-title"><small>2023</small>OnePlus Open</span>
+          <span class="unit-stage"><img class="poster" src="assets/home/poster-open.webp" alt="OnePlus Open, вид сзади" width="440" height="940" decoding="async"><canvas aria-hidden="true"></canvas></span>
+        </a>
+        <em class="unit-tag">Подробнее</em>
+      </div>
+
+      <div class="unit is-ready" data-model="13" style="--glow:200 215 245">
+        <a class="unit-hit" href="13.html">
+          <span class="unit-title"><small>2024</small>OnePlus 13</span>
+          <span class="unit-stage"><img class="poster" src="assets/home/poster-13.webp" alt="OnePlus 13, вид сзади" width="440" height="940" decoding="async"><canvas aria-hidden="true"></canvas></span>
+        </a>
+        <em class="unit-tag">Подробнее</em>
+      </div>
+
+      <div class="unit is-ready" data-model="15" style="--glow:240 196 104">
+        <a class="unit-hit" href="phone.html?m=15">
+          <span class="unit-title"><small>2025</small>OnePlus 15</span>
+          <span class="unit-stage"><img class="poster" src="assets/home/poster-15.webp" alt="OnePlus 15, вид сзади" width="440" height="940" decoding="async"><canvas aria-hidden="true"></canvas></span>
+        </a>
+        <em class="unit-tag">Подробнее</em>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <span class="footer-brand">OnePlus</span>
+      <div class="footer-text">
+        <p>Неофициальный фан-сайт, не связан с компанией OnePlus. Снимки телефонов принадлежат OnePlus.</p>
+        <p>Объёмные телефоны на сайте собраны из официальных фотографий OnePlus: готовых 3D-моделей этих устройств в открытом доступе нет (исключение — OnePlus 13 на его странице). Поэтому форма корпуса и мелкие детали могут отличаться от настоящих телефонов.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="home.js?v=29"></script>
+  <script type="module" src="phones3d.js?v=43"></script>
+</body>
+</html>

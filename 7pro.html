@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Правила безопасности: странице разрешено брать скрипты, стили, шрифты и картинки только из папки самого сайта.
+       Чужой скрипт, даже если его как-то подсунут в страницу, браузер не выполнит -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>OnePlus 7 Pro — обзор модели</title>
+  <meta name="description" content="OnePlus 7 Pro: экран без выреза, выдвижная фронтальная камера и её механизм, три камеры, батарея и сравнение с iPhone XS Max и Galaxy S10+.">
+  <meta name="theme-color" content="#04060c">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- шрифты лежат в папке сайта (fonts/); два главных начинают грузиться сразу, чтобы заголовки не «прыгали» -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=1">
+  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="stylesheet" href="seven.css?v=4">
+</head>
+<!-- data-phone — ключ модели в data.js; класс is-7pro включает оформление этой страницы из seven.css -->
+<body class="is-7pro" data-phone="7pro">
+
+  <a class="skip-link" href="#specs">Перейти к характеристикам</a>
+
+  <header class="bar" id="bar">
+    <a class="brand" href="index.html" aria-label="Ко всем моделям OnePlus">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4H4v24h24V11" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M14.5 21.5v-10l-3 1.6M11 21.5h7M26 2v7M22.5 5.5h7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span id="brandName">OnePlus 7 Pro</span>
+    </a>
+    <nav class="bar-nav">
+      <a href="index.html">Все модели</a>
+      <a href="#popup">Механизм</a>
+      <a href="#display">Экран</a>
+      <a href="#camera">Камеры</a>
+      <a href="#battery">Батарея</a>
+      <a href="#versus">Сравнение</a>
+    </nav>
+  </header>
+
+  <!-- Боковая навигация: точка текущего раздела вытягивается и показывает название -->
+  <nav class="rail" id="rail" aria-label="Разделы страницы">
+    <a href="#popup"><span>Механизм</span></a>
+    <a href="#display"><span>Экран</span></a>
+    <a href="#camera"><span>Камеры</span></a>
+    <a href="#power"><span>Мощность</span></a>
+    <a href="#battery"><span>Батарея</span></a>
+    <a href="#specs"><span>Цифры</span></a>
+    <a href="#versus"><span>Сравнение</span></a>
+  </nav>
+
+  <main id="top">
+
+    <!-- ===== Первый экран: живой объёмный телефон. Пока его листают, он разворачивается экраном и выпускает камеру ===== -->
+    <!-- Каждая .scene задаёт длину прокрутки, а .pin внутри «прилипает» к экрану на это время -->
+    <!-- Телефон рисует seven-hero.js в холсте; пока он грузится, на его месте официальный снимок -->
+    <section class="scene scene-hero" data-scene="hero">
+      <div class="pin">
+        <div class="glow glow-hero" aria-hidden="true"></div>
+        <div class="bigword" id="heroWord" aria-hidden="true"></div>
+        <div class="hero-phone" id="heroPhone"><img decoding="async" id="heroImage" src="assets/home/7pro-almond-back.webp" alt="OnePlus 7 Pro в цвете Almond, вид сзади" width="1200" height="1404"><canvas id="heroCanvas" aria-hidden="true"></canvas></div>
+        <div class="hero-copy" id="heroCopy">
+          <p class="kicker" id="heroKicker"></p>
+          <h1 id="heroName"></h1>
+          <p class="lead" id="heroLead"></p>
+          <ul class="facts" id="heroFacts"></ul>
+        </div>
+        <!-- второй текст первого экрана: появляется, когда телефон развернулся экраном и поднял камеру -->
+        <div class="hero-after" id="heroAfter">
+          <p class="kicker">Фронтальная камера</p>
+          <h2>Вот она</h2>
+          <p class="shot-text">Камера поднимается из корпуса за полсекунды и прячется обратно. Поэтому в экране нет ни чёлки, ни отверстия.</p>
+          <ul class="stats">
+            <li><b>16</b><span>Мп</span></li>
+            <li><b>0,53</b><span>секунды</span></li>
+            <li><b>0</b><span>вырезов</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Механизм: выдвижная камера крупным планом, потом корпус становится прозрачным ===== -->
+    <!-- Сцена нарисована в своих координатах 1920 × 1000 (как у официального снимка угла телефона) и целиком
+         масштабируется под окно. Двигает её seven.js. Угол телефона и блок камеры — официальные снимки,
+         линии механизма под ними — схема -->
+    <section class="scene scene-xray" id="popup" data-scene="xray">
+      <div class="pin">
+        <div class="glow glow-xray" aria-hidden="true"></div>
+        <div class="xray-stage" id="xrayStage" aria-hidden="true">
+          <img decoding="async" class="xray-inside" src="assets/7pro/inside-top.jpg" alt="" loading="lazy">
+
+          <svg class="xray-lines" viewBox="0 0 1920 1000" fill="none">
+            <!-- силуэт телефона: левый край, скруглённый угол, верхняя грань с местом под камеру -->
+            <!-- точки сняты с официального снимка, поэтому линия ложится точно по его краю -->
+            <path class="xray-outline" d="M189 1000V600L190 566 193 538 197 510 203 482 212 454 225 426 243 398 269 370 300 347 336 330 384 315 450 305 510 301H772L790 310H1152L1170 301H1920"/>
+            <path class="xray-outline is-thin" d="M236 1000V612Q238 470 330 402 410 348 560 348H1920"/>
+            <!-- направляющие, по которым ходит каретка -->
+            <path d="M748 330V880M1202 330V880" class="is-dim"/>
+            <!-- винт: штрихи на нём — витки резьбы, при работе они бегут (seven.js сдвигает штриховку) -->
+            <path d="M1291 334V842M1309 334V842" class="is-dim"/>
+            <path id="xrayThread" d="M1300 338V838" stroke-width="18" stroke-dasharray="4 10"/>
+            <!-- мотор под винтом -->
+            <rect x="1272" y="842" width="56" height="22" rx="4"/>
+            <rect x="1258" y="864" width="84" height="104" rx="12"/>
+            <path d="M1274 890h52M1274 908h52M1274 926h52M1274 944h52" class="is-dim"/>
+            <!-- датчик падения на плате и дорожка от него к мотору -->
+            <rect x="436" y="724" width="88" height="88" rx="10"/>
+            <path d="M456 744h48v48h-48z" class="is-dim"/>
+            <path d="M524 768H820L960 912H1258" class="is-dim" stroke-dasharray="3 9"/>
+            <!-- выноски: тонкие линии от деталей к подписям (мотор, винт, датчик). data-tag — номер подписи по порядку, -->
+            <!-- выноска появляется вместе с ней -->
+            <path d="M1346 902H1368" class="is-thin xray-leader" data-tag="1"/>
+            <path d="M1312 804H1352" class="is-thin xray-leader" data-tag="2"/>
+            <path d="M440 815L374 849" class="is-thin xray-leader is-extra" data-tag="4"/>
+            <!-- каретка с камерой: вся группа едет вверх и вниз -->
+            <g id="xrayCarriage">
+              <rect x="770" y="556" width="410" height="250" rx="16"/>
+              <rect x="900" y="596" width="150" height="112" rx="10" class="is-dim"/>
+              <circle cx="975" cy="652" r="34" class="is-dim"/>
+              <!-- гайка на винте, плечо к каретке и пружина между ними -->
+              <rect x="1268" y="640" width="64" height="48" rx="8"/>
+              <path d="M1180 664h88"/>
+              <path d="M1222 664v18l-12 8 24 12-24 12 24 12-24 12 24 12-12 8v14" />
+              <!-- выноска от пружины к её подписи: едет вместе с кареткой -->
+              <path d="M1238 726H1352" class="is-thin xray-leader" data-tag="3"/>
+            </g>
+            <!-- шлейф от камеры к плате: его форму при движении пересчитывает seven.js -->
+            <path id="xrayCable" d="M975 806C975 880 860 880 860 948" class="is-dim"/>
+          </svg>
+
+          <!-- блок камеры: официальный снимок, он выезжает из-за верхней грани -->
+          <img decoding="async" class="xray-module" id="xrayModule" src="assets/7pro/popup.webp" alt="" width="450" height="279">
+          <!-- угол телефона: официальный снимок, в рентгене он становится почти прозрачным -->
+          <img decoding="async" class="xray-body" id="xrayBody" src="assets/7pro/top-edge.webp" alt="" width="1920" height="343">
+          <i class="xray-scan" id="xrayScan"></i>
+
+          <!-- подписи к деталям: появляются по очереди, когда корпус прозрачный -->
+          <!-- is-ride — подпись едет вместе с камерой; is-top — стоит над деталью, а не сбоку; -->
+          <!-- is-extra — прячется, когда сцена мелкая и подписи остаются без второй строки -->
+          <p class="xray-tag is-top is-ride" style="left: 975px; bottom: 724px"><b>Камера 16 Мп</b><span>сенсор Sony, диафрагма f/2.0</span></p>
+          <p class="xray-tag" style="left: 1372px; top: 884px"><b>Мотор</b><span>шаговый, крутит винт</span></p>
+          <p class="xray-tag" style="left: 1356px; top: 786px"><b>Винт</b><span>поднимает каретку</span></p>
+          <p class="xray-tag is-ride" style="left: 1356px; top: 708px"><b>Пружина</b><span>гасит нажатие на камеру</span></p>
+          <p class="xray-tag is-extra" style="left: 360px; top: 836px"><b>Датчик падения</b><span>прячет камеру при падении</span></p>
+        </div>
+        <div class="spin-copy">
+          <p class="kicker">Выдвижная камера</p>
+          <h2>Камера, которой не видно</h2>
+          <ul class="steps">
+            <li><b>0,53 с</b><span>За столько камера поднимается из корпуса, когда включаешь съёмку на себя.</span></li>
+            <li><b>Рентген</b><span>Внутри маленький мотор. Он крутит винт, а винт поднимает каретку с камерой.</span></li>
+            <li><b>300 000 раз</b><span>На столько подъёмов рассчитан механизм: это 150 раз в день больше пяти лет.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- тёмный кадр «Экран»: его собирает page.js из data.js -->
+    <div id="shots"></div>
+
+    <!-- ===== Сканер: полоса света проходит сверху вниз и проявляет снимок. Двигает seven.js ===== -->
+    <!-- --ratio — пропорции снимка (ширина к высоте) -->
+    <section class="scene scene-hud" id="camera" data-scene="hud">
+      <div class="pin">
+        <div class="glow glow-hud" aria-hidden="true"></div>
+        <figure class="hud" style="--ratio: 0.664">
+          <!-- снимок обрезан снизу, поэтому книзу он плавно гаснет -->
+          <div class="hud-clip is-fade">
+            <img decoding="async" class="hud-top" src="assets/7pro/camera-gold.webp" alt="Задняя крышка OnePlus 7 Pro в цвете Almond: три камеры в вертикальном блоке" loading="lazy">
+          </div>
+          <i class="hud-line" aria-hidden="true"></i>
+        </figure>
+        <div class="shot-copy">
+          <p class="kicker">Основные камеры</p>
+          <h2>Три камеры в один ряд</h2>
+          <p class="shot-text">Главная на 48 Мп с оптической стабилизацией, телеобъектив с приближением 3× и сверхширокая с углом 117°.</p>
+          <ul class="stats">
+            <li><b>48</b><span>Мп</span></li>
+            <li><b>3×</b><span>приближение</span></li>
+            <li><b>117°</b><span>широкий угол</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- тёмный кадр «Мощность»: его собирает page.js из data.js -->
+    <div id="shotsPower"></div>
+
+    <!-- здесь сканер делает крышку прозрачной: под снимком закрытого телефона лежит официальный снимок с батареей -->
+    <section class="scene scene-hud" id="battery" data-scene="hud">
+      <div class="pin">
+        <div class="glow glow-hud" aria-hidden="true"></div>
+        <figure class="hud" style="--ratio: 0.472">
+          <!-- у этих снимков белый фон: рамка обрезает их точно по контуру телефона -->
+          <div class="hud-clip is-photo">
+            <img decoding="async" class="hud-base" src="assets/7pro/back-closed.jpg" alt="" loading="lazy">
+            <img decoding="async" class="hud-top" src="assets/7pro/back-open.jpg" alt="OnePlus 7 Pro с прозрачной крышкой: видна батарея на 4000 мА·ч" loading="lazy">
+          </div>
+          <i class="hud-line" aria-hidden="true"></i>
+        </figure>
+        <div class="shot-copy">
+          <p class="kicker">Батарея</p>
+          <h2>4000 мА·ч под крышкой</h2>
+          <p class="shot-text">Сканер проходит по корпусу и показывает батарею: она занимает больше половины телефона. Зарядка Warp Charge 30 даёт половину заряда за 20 минут.</p>
+          <ul class="stats">
+            <li><b>4000</b><span>мА·ч</span></li>
+            <li><b>30</b><span>Вт</span></li>
+            <li><b>20</b><span>минут до 50%</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Цифры ===== -->
+    <section class="section" id="specs">
+      <div class="wrap">
+        <p class="kicker reveal">В цифрах</p>
+        <h2 class="section-title reveal" id="specsTitle"></h2>
+        <div class="spec-grid" id="specGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== Сравнение с теми, кто уже продавался в мае 2019 года ===== -->
+    <section class="section section-line" id="versus">
+      <div class="wrap">
+        <h2 class="section-title versus-title reveal">Против iPhone XS Max<br>и Galaxy S10+</h2>
+        <!-- счёт побед и сама таблица: их собирает page.js из data.js -->
+        <div class="score" id="score"></div>
+        <div class="versus" id="versusTable"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <span class="footer-brand">OnePlus 7 Pro</span>
+      <p>Неофициальный фан-сайт, не связан с компанией OnePlus. Изображения телефона — с официального сайта oneplus.com и из пресс-материалов OnePlus; линии механизма камеры — схема. Характеристики и цены — на момент выхода, май 2019 года; цены стартовые для США.</p>
+    </div>
+  </footer>
+
+  <script src="data.js?v=33"></script>
+  <!-- seven.js добавляет сцены этой страницы, поэтому стоит перед общим page.js -->
+  <script src="seven.js?v=4"></script>
+  <script src="page.js?v=29"></script>
+  <script type="module" src="seven-hero.js?v=13"></script>
+</body>
+</html>

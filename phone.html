@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Правила безопасности: странице разрешено брать скрипты, стили, шрифты и картинки только из папки самого сайта.
+       Чужой скрипт, даже если его как-то подсунут в страницу, браузер не выполнит -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>OnePlus 15 — обзор модели</title>
+  <meta name="description" content="OnePlus 15 со всех сторон: дизайн в трёх цветах, камера и снимки с неё, три чипа, батарея 7300 мА·ч, экран 165 Гц и сравнение с iPhone и Galaxy.">
+  <meta name="theme-color" content="#04060c">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- шрифты лежат в папке сайта (fonts/); два главных начинают грузиться сразу, чтобы заголовки не «прыгали» -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=1">
+  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="stylesheet" href="fifteen.css?v=11">
+  <link rel="preload" as="image" href="assets/15/kv-sand.webp">
+</head>
+<!-- класс is-15 включает оформление этой страницы из fifteen.css -->
+<body class="is-15">
+
+  <a class="skip-link" href="#specs">Перейти к характеристикам</a>
+
+  <header class="bar" id="bar">
+    <a class="brand" href="index.html" aria-label="Ко всем моделям OnePlus">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4H4v24h24V11" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M14.5 21.5v-10l-3 1.6M11 21.5h7M26 2v7M22.5 5.5h7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span id="brandName">OnePlus 15</span>
+    </a>
+    <nav class="bar-nav">
+      <a href="index.html">Все модели</a>
+      <a href="#design">Дизайн</a>
+      <a href="#camera">Камера</a>
+      <a href="#power">Мощность</a>
+      <a href="#battery">Батарея</a>
+      <a href="#versus">Сравнение</a>
+    </nav>
+  </header>
+
+  <!-- Боковая навигация: точка текущего раздела вытягивается и показывает название. Из неё же собирается меню на телефоне -->
+  <nav class="rail" id="rail" aria-label="Разделы страницы">
+    <a href="#design"><span>Дизайн</span></a>
+    <a href="#camera"><span>Камера</span></a>
+    <a href="#teardown"><span>Разбор</span></a>
+    <a href="#burst"><span>Серия</span></a>
+    <a href="#photos"><span>Снимки</span></a>
+    <a href="#power"><span>Мощность</span></a>
+    <a href="#battery"><span>Батарея</span></a>
+    <a href="#display"><span>Экран</span></a>
+    <a href="#specs"><span>Цифры</span></a>
+    <a href="#versus"><span>Сравнение</span></a>
+  </nav>
+
+  <main id="top">
+
+    <!-- ===== Первый экран: живой объёмный телефон и крупная цифра за ним ===== -->
+    <!-- Телефон рисует hero-live.js в холсте; пока он грузится, на его месте официальный снимок -->
+    <!-- Каждая .scene задаёт длину прокрутки, а .pin внутри «прилипает» к экрану на это время -->
+    <section class="scene scene-hero" data-scene="hero">
+      <div class="pin">
+        <div class="glow glow-hero" aria-hidden="true"></div>
+        <div class="bigword" id="heroWord" aria-hidden="true"></div>
+        <div class="hero-phone" id="heroPhone"><img decoding="async" id="heroImage" src="assets/15/kv-sand.webp" alt="OnePlus 15 в цвете Sand Storm, вид сзади" width="954" height="2230"><canvas id="heroCanvas" aria-hidden="true"></canvas></div>
+        <div class="hero-copy" id="heroCopy">
+          <p class="kicker" id="heroKicker"></p>
+          <h1 id="heroName"></h1>
+          <p class="lead" id="heroLead"></p>
+          <ul class="facts" id="heroFacts"></ul>
+          <!-- кнопки цвета корпуса: их собирает page.js -->
+          <div class="hero-colors" role="radiogroup" aria-label="Цвет корпуса"></div>
+        </div>
+        <!-- второй текст первого экрана: появляется, когда телефон развернулся экраном -->
+        <div class="hero-after" id="heroAfter">
+          <p class="kicker">Экран</p>
+          <h2>А вот и лицо</h2>
+          <p class="shot-text">Экран LTPO AMOLED почти без рамок. Часы на нём настоящие — идут по московскому времени.</p>
+          <ul class="stats">
+            <li><b>6,78</b><span>дюйма</span></li>
+            <li><b>165</b><span>Гц</span></li>
+            <li><b>1,15</b><span>мм рамки</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Крупный текст: слова загораются по мере прокрутки (fifteen.js). В <b> — главные цифры ===== -->
+    <section class="scene scene-lit" data-scene="lit">
+      <div class="pin">
+        <div class="glow glow-lit" aria-hidden="true"></div>
+        <p class="lit" id="lit"><b>7300 мА·ч</b> — самая большая батарея среди флагманов. Экран на <b>165 кадров</b> в секунду. Зарядка на <b>120 ватт</b>. И всё это в корпусе толщиной <b>8,1 мм</b>.</p>
+      </div>
+    </section>
+
+    <!-- ===== Дизайн: тот же живой телефон, что на первом экране. Прокрутка поворачивает его, рука — крутит как угодно ===== -->
+    <section class="scene scene-spin" id="design" data-scene="spin">
+      <div class="pin">
+        <div class="glow glow-spin" id="spinGlow" aria-hidden="true"></div>
+        <div class="spin-word" id="spinWord" aria-hidden="true"></div>
+        <!-- сюда hero-live.js переносит холст с телефоном; до этого (и если видеокарта его не тянет) стоит снимок -->
+        <div class="turn-phone" id="turnPhone"><img decoding="async" class="poster" src="assets/15/poster-turn.webp" alt="OnePlus 15 в цвете Sand Storm" width="660" height="1410" loading="lazy"></div>
+        <p class="spin-hint" aria-hidden="true">Покрути телефон</p>
+        <div class="spin-copy">
+          <p class="kicker">Дизайн</p>
+          <h2 id="spinTitle"></h2>
+          <ul class="steps" id="spinSteps"></ul>
+          <div class="hero-colors" role="radiogroup" aria-label="Цвет корпуса"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Камера: официальный кадр (его собирает page.js из data.js) и сразу за ним объёмный разбор ===== -->
+    <div id="shots"></div>
+
+    <!-- ===== Объёмный разбор камеры по слоям. page.js ставит этот экран сразу после кадра «Камера» ===== -->
+    <section class="scene scene-teardown" id="teardown" data-scene="teardown">
+      <div class="pin">
+        <div class="glow glow-teardown" aria-hidden="true"></div>
+        <canvas class="teardown-canvas" id="teardownCanvas" aria-hidden="true"></canvas>
+        <!-- подписи к слоям расставляет teardown3d.js -->
+        <div class="part-labels" id="partLabels" aria-hidden="true"></div>
+        <div class="teardown-copy">
+          <p class="kicker">Разбор</p>
+          <h2 id="teardownTitle"></h2>
+          <p class="shot-text" id="teardownText"></p>
+          <ol class="legend" id="legend"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Серия: десять официальных кадров одной очереди. Прокрутка листает их по порядку (fifteen.js) ===== -->
+    <section class="scene scene-burst" id="burst" data-scene="burst">
+      <div class="pin">
+        <div class="glow glow-burst" aria-hidden="true"></div>
+        <div class="burst-view">
+          <!-- кадры лежат стопкой, виден один; остальные девять и ленту под ними добавляет fifteen.js -->
+          <figure class="burst-frame" id="burstFrame">
+            <img decoding="async" class="is-on" src="assets/15/burst-0.webp" alt="Серия снимков на OnePlus 15: трое друзей брызгаются водой в бассейне на крыше" width="1270" height="872" loading="lazy">
+          </figure>
+          <ol class="burst-strip" id="burstStrip" aria-hidden="true"></ol>
+        </div>
+        <div class="side-copy">
+          <p class="kicker">Серия Clear Burst</p>
+          <h2>Десять кадров — и все резкие</h2>
+          <p class="shot-text">Официальная серия OnePlus: брызги сняты одной очередью, и ни один кадр не смазан. Листай — кадры пойдут по порядку.</p>
+          <p class="burst-count" aria-hidden="true"><b id="burstNow">01</b><span>из 10</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Снимки: шесть официальных фотографий плиткой ===== -->
+    <section class="section section-line" id="photos">
+      <div class="wrap">
+        <p class="kicker reveal">Снято на OnePlus 15</p>
+        <h2 class="section-title reveal">День, ночь и движение</h2>
+        <div class="mosaic">
+          <figure class="tile is-night reveal"><img decoding="async" src="assets/15/photo-night.webp" alt="Ночной город у реки, снятый на OnePlus 15" width="1342" height="830" loading="lazy"><figcaption>Ночной город</figcaption></figure>
+          <figure class="tile is-neon reveal"><img decoding="async" src="assets/15/photo-neon.webp" alt="Красная неоновая вывеска ночью, снятая на OnePlus 15" width="814" height="1010" loading="lazy"><figcaption>Неон</figcaption></figure>
+          <figure class="tile is-macro reveal"><img decoding="async" src="assets/15/photo-macro.webp" alt="Ствол дерева и листья крупным планом, снятые на OnePlus 15" width="1192" height="642" loading="lazy"><figcaption>Вблизи</figcaption></figure>
+          <figure class="tile is-portrait reveal"><img decoding="async" src="assets/15/photo-portrait.webp" alt="Портрет в воде, снятый на OnePlus 15" width="1062" height="636" loading="lazy"><figcaption>Портрет</figcaption></figure>
+          <figure class="tile is-selfie reveal"><img decoding="async" src="assets/15/photo-selfie.webp" alt="Селфи троих друзей на фоне неба, снятое на фронтальную камеру OnePlus 15" width="816" height="1084" loading="lazy"><figcaption>Селфи</figcaption></figure>
+          <figure class="tile is-group reveal"><img decoding="async" src="assets/15/photo-group.webp" alt="Селфи троих друзей в помещении, снятое на фронтальную камеру OnePlus 15" width="1006" height="602" loading="lazy"><figcaption>Селфи при слабом свете</figcaption></figure>
+          <div class="tile is-note reveal">
+            <b>32 Мп</b>
+            <p>Фронтальная камера с автофокусом. Её сенсор пропускает на 60% больше света, чем обычный, поэтому лица в кадре светлые и после заката.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Мощность: три официальных чипа над светящимся подиумом. Прокрутка выводит вперёд каждый по очереди ===== -->
+    <section class="scene scene-chips" id="power" data-scene="chips">
+      <div class="pin">
+        <div class="chips-stage" aria-hidden="true">
+          <img decoding="async" class="chips-floor" src="assets/15/chip-bg.webp" alt="" width="2880" height="1520" loading="lazy">
+          <img decoding="async" class="chip is-wifi" src="assets/15/chip-wifi.webp" alt="" width="467" height="489" loading="lazy">
+          <img decoding="async" class="chip is-touch" src="assets/15/chip-touch.webp" alt="" width="472" height="486" loading="lazy">
+          <img decoding="async" class="chip is-main" src="assets/15/chip-main.webp" alt="" width="534" height="474" loading="lazy">
+        </div>
+        <div class="spin-copy">
+          <p class="kicker">Мощность</p>
+          <h2>Три чипа вместо одного</h2>
+          <ul class="steps">
+            <li><b>Snapdragon 8 Elite Gen 5</b><span>Главный чип. По данным OnePlus, процессор быстрее на 20%, графика — на 23%.</span></li>
+            <li><b>Чип касаний</b><span>Опрашивает экран 3200 раз в секунду: нажатие срабатывает сразу.</span></li>
+            <li><b>Чип Wi-Fi G2</b><span>Отдельный чип связи, как в роутере: сеть держится и за стеной.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Батарея: официальный кадр телефона без крышки и полоски ёмкости — растут, пока экран листают ===== -->
+    <section class="scene scene-cell" id="battery" data-scene="cell">
+      <div class="pin">
+        <div class="glow glow-cell" aria-hidden="true"></div>
+        <div class="cell-word" aria-hidden="true">7300</div>
+        <img decoding="async" class="cell-phone" src="assets/15/battery-phone.webp" alt="OnePlus 15 без задней крышки: почти весь корпус занимает батарея на 7300 мА·ч" width="2370" height="1334" loading="lazy">
+        <div class="side-copy">
+          <p class="kicker">Батарея</p>
+          <h2>7300 мА·ч внутри</h2>
+          <p class="shot-text">Первый флагман с батареей больше 7000 мА·ч. До 31 часа видео без розетки.</p>
+          <!-- полоски: длину и числа выставляет fifteen.js из таблицы сравнения в data.js -->
+          <ul class="bars" id="cellBars"></ul>
+          <ul class="stats">
+            <li><b>120</b><span>Вт: 100% за 39 минут</span></li>
+            <li><b>50</b><span>Вт без провода</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Экран: официальные надпись «165Hz» и телефон. Стрелка шкалы идёт от 60 до 165 вместе с прокруткой ===== -->
+    <section class="scene scene-hz" id="display" data-scene="hz">
+      <div class="pin">
+        <img decoding="async" class="hz-bg" src="assets/15/screen-bg.webp" alt="" width="2880" height="1736" loading="lazy">
+        <img decoding="async" class="hz-word" src="assets/15/screen-165hz.webp" alt="" width="2986" height="760" loading="lazy">
+        <div class="hz-phone">
+          <img decoding="async" src="assets/15/screen-home.webp" alt="OnePlus 15 лежит экраном вверх" width="1786" height="546" loading="lazy">
+          <img decoding="async" class="is-game" src="assets/15/screen-game.webp" alt="" width="1786" height="546" loading="lazy">
+        </div>
+        <div class="side-shade" aria-hidden="true"></div>
+        <div class="side-copy">
+          <p class="kicker">Экран</p>
+          <h2>До 165 кадров в секунду</h2>
+          <p class="shot-text">Экран 6,78″ сам меняет частоту от 1 до 120 Гц, а в играх разгоняется до 165. Рамки — 1,15 мм с каждой стороны.</p>
+          <div class="dial" aria-hidden="true">
+            <p class="dial-now"><b id="dialNow">60</b><span>Гц</span><em id="dialNote">обычный экран</em></p>
+            <div class="dial-scale" id="dialScale"><i></i><span class="is-60">60</span><span class="is-120">120</span><span class="is-165">165</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Цифры: плитки разного размера, свет следует за курсором ===== -->
+    <section class="section" id="specs">
+      <div class="wrap">
+        <p class="kicker reveal">В цифрах</p>
+        <h2 class="section-title reveal" id="specsTitle"></h2>
+        <div class="spec-grid" id="specGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== Сравнение ===== -->
+    <section class="section section-line" id="versus">
+      <div class="wrap">
+        <h2 class="section-title versus-title reveal">Против iPhone<br>17 Pro Max<br>и Galaxy S25 Ultra</h2>
+        <!-- счёт побед и сама таблица: их собирает page.js из data.js -->
+        <div class="score" id="score"></div>
+        <div class="versus" id="versusTable"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <span class="footer-brand">OnePlus 15</span>
+      <p>Неофициальный фан-сайт, не связан с компанией OnePlus. Изображения телефона и снимки с его камеры — с официального сайта oneplus.com. Характеристики — с официальной страницы модели и из открытых источников на октябрь 2026 года, цены стартовые для США.</p>
+    </div>
+  </footer>
+
+  <script src="data.js?v=33"></script>
+  <!-- fifteen.js добавляет сцены этой страницы, поэтому стоит перед общим page.js. Он же подгружает объёмный разбор камеры, когда до него долистали -->
+  <script src="fifteen.js?v=8"></script>
+  <script src="page.js?v=29"></script>
+  <script type="module" src="hero-live.js?v=13"></script>
+</body>
+</html>

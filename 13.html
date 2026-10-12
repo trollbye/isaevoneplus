@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Правила безопасности: странице разрешено брать скрипты, стили, шрифты и картинки только из папки самого сайта.
+       Чужой скрипт, даже если его как-то подсунут в страницу, браузер не выполнит -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-kjmc6gSqmHKVRrkVj9nGN+Iw9sO8PhWdPS/j5aCY2Uk=' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>OnePlus 13 — обзор модели</title>
+  <meta name="description" content="OnePlus 13 в белом цвете: объёмная модель, которую можно крутить, зум до 30×, Snapdragon 8 Elite, защита IP69, батарея на 6000 мА·ч и сравнение с iPhone 16 Pro Max и Galaxy S24 Ultra.">
+  <meta name="theme-color" content="#04060c">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- шрифты лежат в папке сайта (fonts/); два главных начинают грузиться сразу, чтобы заголовки не «прыгали» -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=1">
+  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="stylesheet" href="thirteen.css?v=7">
+  <!-- Настоящую модель телефона рисует библиотека three.js из папки vendor. Строка ниже говорит браузеру, где она лежит;
+       менять её нельзя: её отпечаток записан в правилах безопасности выше, и изменённую строку браузер не выполнит -->
+  <script type="importmap">{"imports":{"three":"./vendor/three-0.162.0/three.module.min.js","three/addons/":"./vendor/three-0.162.0/addons/"}}</script>
+</head>
+<!-- data-phone — ключ модели в data.js; класс is-13 включает оформление этой страницы из thirteen.css -->
+<body class="is-13" data-phone="13">
+
+  <a class="skip-link" href="#specs">Перейти к характеристикам</a>
+
+  <header class="bar" id="bar">
+    <a class="brand" href="index.html" aria-label="Ко всем моделям OnePlus">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4H4v24h24V11" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M14.5 21.5v-10l-3 1.6M11 21.5h7M26 2v7M22.5 5.5h7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span id="brandName">OnePlus 13</span>
+    </a>
+    <nav class="bar-nav">
+      <a href="index.html">Все модели</a>
+      <a href="#zoom">Камера</a>
+      <a href="#power">Мощность</a>
+      <a href="#shield">Защита</a>
+      <a href="#battery">Батарея</a>
+      <a href="#versus">Сравнение</a>
+    </nav>
+  </header>
+
+  <!-- Боковая навигация: точка текущего раздела вытягивается и показывает название -->
+  <nav class="rail" id="rail" aria-label="Разделы страницы">
+    <a href="#zoom"><span>Зум</span></a>
+    <a href="#power"><span>Мощность</span></a>
+    <a href="#shield"><span>Защита</span></a>
+    <a href="#battery"><span>Батарея</span></a>
+    <a href="#photos"><span>Снимки</span></a>
+    <a href="#specs"><span>Цифры</span></a>
+    <a href="#versus"><span>Сравнение</span></a>
+  </nav>
+
+  <main id="top">
+
+    <!-- ===== Первый экран и осмотр: настоящая объёмная модель телефона с официального сайта OnePlus ===== -->
+    <!-- Её можно крутить мышкой или пальцем. Пока экран листают, модель сама подлетает камерой, встаёт ребром и поворачивается экраном -->
+    <!-- Каждая .scene задаёт длину прокрутки, а .pin внутри «прилипает» к экрану на это время -->
+    <!-- Модель рисует thirteen-3d.js в холсте; пока она грузится (или если не может быть нарисована), на её месте официальный снимок -->
+    <section class="scene scene-hero scene-model" id="model" data-scene="model">
+      <div class="pin">
+        <div class="glow glow-hero" aria-hidden="true"></div>
+        <div class="bigword" id="heroWord" aria-hidden="true"></div>
+        <div class="model-stage" id="modelStage">
+          <img decoding="async" class="model-poster" src="assets/13/poster.webp" alt="OnePlus 13 в белом цвете Arctic Dawn, вид сзади" width="451" height="1100">
+          <canvas id="modelCanvas" aria-hidden="true"></canvas>
+        </div>
+        <p class="model-hint" id="modelHint" aria-hidden="true"><i></i>Зажми и крути</p>
+        <div class="hero-copy" id="heroCopy">
+          <p class="kicker" id="heroKicker"></p>
+          <h1 id="heroName"></h1>
+          <p class="lead" id="heroLead"></p>
+          <ul class="facts" id="heroFacts"></ul>
+        </div>
+        <!-- подписи осмотра: появляются по одной, когда модель показывает нужную сторону -->
+        <ol class="model-notes" id="modelNotes">
+          <li>
+            <p class="kicker">Камера</p>
+            <h2>Три глаза Hasselblad</h2>
+            <p class="shot-text">Три камеры по 50 Мп под одним кольцом: главная, сверхширокая и телеобъектив с приближением 3×.</p>
+          </li>
+          <li>
+            <p class="kicker">Корпус</p>
+            <h2>8,5 мм металла и стекла</h2>
+            <p class="shot-text">Плоская алюминиевая рамка, на боку — фирменный слайдер: одним движением переключает звук, вибрацию и тишину.</p>
+          </li>
+          <li>
+            <p class="kicker">Экран</p>
+            <h2>4500 нит</h2>
+            <p class="shot-text">6,82 дюйма, разрешение 2K, 120 Гц. Первый экран, получивший высшую оценку A++ от лаборатории DisplayMate.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== Зум: семь официальных снимков одного места, от 0,6× до 30×. Пока экран листают, кадр приближается. Двигает thirteen.js ===== -->
+    <!-- data-x — кратность снимка; подписи шкалы под кадром собирает thirteen.js по этим же числам -->
+    <section class="scene scene-zoom" id="zoom" data-scene="zoom">
+      <div class="pin">
+        <div class="zoom-head">
+          <div>
+            <p class="kicker">Зум</p>
+            <h2>От 0,6× до 30×</h2>
+          </div>
+          <p class="shot-text">Один и тот же берег, снятый с одного места на OnePlus 13. До 3× приближает оптика, дальше помогает сенсор на 50 Мп. Листай — кадр приблизится.</p>
+          <b class="zoom-value" id="zoomValue" aria-hidden="true">0,6×</b>
+        </div>
+        <figure class="zoom-view" id="zoomView">
+          <img decoding="async" data-x="0.6" src="assets/13/zoom-06.jpg" alt="Берег с фермой вдалеке, снято на OnePlus 13 с разным приближением" width="1600" height="886" loading="lazy">
+          <img decoding="async" data-x="1" src="assets/13/zoom-1.jpg" alt="" width="1600" height="886" loading="lazy">
+          <img decoding="async" data-x="2" src="assets/13/zoom-2.jpg" alt="" width="1600" height="886" loading="lazy">
+          <img decoding="async" data-x="3" src="assets/13/zoom-3.jpg" alt="" width="1600" height="886" loading="lazy">
+          <img decoding="async" data-x="6" src="assets/13/zoom-6.jpg" alt="" width="1600" height="886" loading="lazy">
+          <img decoding="async" data-x="10" src="assets/13/zoom-10.jpg" alt="" width="1600" height="886" loading="lazy">
+          <img decoding="async" data-x="30" src="assets/13/zoom-30.jpg" alt="" width="1600" height="886" loading="lazy">
+        </figure>
+        <ul class="zoom-ticks" id="zoomTicks" aria-hidden="true"></ul>
+      </div>
+    </section>
+
+    <!-- тёмный кадр «Мощность»: его собирает page.js из data.js -->
+    <div id="shotsPower"></div>
+
+    <!-- ===== Защита: три официальных кадра лежат стопкой. Верхний улетает, под ним открывается следующий. Двигает thirteen.js ===== -->
+    <section class="scene scene-deck" id="shield" data-scene="deck">
+      <div class="pin">
+        <div class="glow glow-deck" aria-hidden="true"></div>
+        <div class="deck" id="deck">
+          <figure><img decoding="async" src="assets/13/shield-rain.jpg" alt="Человек под дождём набирает сообщение на мокром экране OnePlus 13" width="1300" height="791" loading="lazy"></figure>
+          <figure><img decoding="async" src="assets/13/shield-snow.jpg" alt="Руки в вязаных перчатках листают экран OnePlus 13 на морозе" width="900" height="1240" loading="lazy"></figure>
+          <figure><img decoding="async" src="assets/13/shield-pool.jpg" alt="Человек стоит в бассейне и держит OnePlus 13 над водой" width="1100" height="1046" loading="lazy"></figure>
+        </div>
+        <div class="spin-copy">
+          <p class="kicker">Защита</p>
+          <h2>Ему всё равно</h2>
+          <ul class="steps">
+            <li><b>Ливень</b><span>Экран слушается мокрых пальцев: технология Aqua Touch 2.0 отличает касание от капель.</span></li>
+            <li><b>Мороз</b><span>Режим перчаток: экран работает через шерсть и кожу, руки можно не морозить.</span></li>
+            <li><b>IP68 и IP69</b><span>Выдерживает погружение на полтора метра и струи воды температурой 80 °C под давлением.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Батарея: пока экран листают, телефон «заряжается» — растут проценты, минуты и полоска. Двигает thirteen.js ===== -->
+    <section class="scene scene-charge" id="battery" data-scene="charge">
+      <div class="pin">
+        <div class="glow glow-charge" aria-hidden="true"></div>
+        <div class="charge" id="charge">
+          <img decoding="async" src="assets/13/battery.webp" alt="OnePlus 13 лежит экраном вверх, к нему подключён красный кабель зарядки" width="1800" height="743" loading="lazy">
+          <div class="charge-meter" aria-hidden="true">
+            <b class="charge-value"><span id="chargeValue">1</span>%</b>
+            <span class="charge-time"><span id="chargeTime">0</span> мин</span>
+          </div>
+          <div class="charge-bar" aria-hidden="true"><i id="chargeFill"></i></div>
+        </div>
+        <div class="shot-copy">
+          <p class="kicker">Батарея</p>
+          <h2>6000 мА·ч</h2>
+          <p class="shot-text">Кремний-углеродная батарея: больше заряда в том же объёме. От 1 до 100% по проводу — за 36 минут. Листай и смотри, как он заряжается.</p>
+          <ul class="stats">
+            <li><b>100</b><span>Вт по проводу</span></li>
+            <li><b>50</b><span>Вт без провода</span></li>
+            <li><b>36</b><span>минут до 100%</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Снимки: официальные фотографии, снятые на этот телефон. Подписи стоят под кадрами ===== -->
+    <section class="section section-line" id="photos">
+      <div class="wrap">
+        <p class="kicker reveal">Снято на OnePlus 13</p>
+        <h2 class="section-title reveal">Портреты и движение</h2>
+        <div class="shots13">
+          <figure class="reveal"><div class="shots13-photo"><img decoding="async" src="assets/13/photo-1.jpg" alt="Девушка в вязаном топе улыбается на солнце" width="1100" height="948" loading="lazy"></div><figcaption><b>23 мм</b><span>Главная камера</span></figcaption></figure>
+          <figure class="reveal"><div class="shots13-photo"><img decoding="async" src="assets/13/photo-2.jpg" alt="Лицо девушки в тени от кружевной шляпы" width="760" height="1103" loading="lazy"></div><figcaption><b>48 мм</b><span>Портрет 2×</span></figcaption></figure>
+          <figure class="reveal"><div class="shots13-photo"><img decoding="async" src="assets/13/photo-3.jpg" alt="Рыжая девочка с мыльной пеной на голове смеётся" width="760" height="1095" loading="lazy"></div><figcaption><b>73 мм</b><span>Телеобъектив 3×</span></figcaption></figure>
+          <figure class="reveal is-wide"><div class="shots13-photo"><img decoding="async" src="assets/13/photo-4.jpg" alt="Дротик пробивает шар с водой: брызги застыли в воздухе" width="1300" height="854" loading="lazy"></div><figcaption><b>Clear Burst</b><span>Серия без смаза: брызги застыли в воздухе</span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Цифры ===== -->
+    <section class="section" id="specs">
+      <div class="wrap">
+        <p class="kicker reveal">В цифрах</p>
+        <h2 class="section-title reveal" id="specsTitle"></h2>
+        <div class="spec-grid" id="specGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== Сравнение с теми, кто уже продавался, когда OnePlus 13 вышел ===== -->
+    <section class="section section-line" id="versus">
+      <div class="wrap">
+        <h2 class="section-title versus-title reveal">Против iPhone 16 Pro Max<br>и Galaxy S24 Ultra</h2>
+        <!-- счёт побед и сама таблица: их собирает page.js из data.js -->
+        <div class="score" id="score"></div>
+        <div class="versus" id="versusTable"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <span class="footer-brand">OnePlus 13</span>
+      <p>Неофициальный фан-сайт, не связан с компанией OnePlus. Объёмная модель телефона, изображения и снимки с его камеры — с официального сайта oneplus.com. Характеристики из открытых источников, цены стартовые для США. Соперники — модели, которые уже продавались, когда OnePlus 13 вышел.</p>
+    </div>
+  </footer>
+
+  <script src="data.js?v=33"></script>
+  <!-- thirteen.js добавляет сцены этой страницы, поэтому стоит перед общим page.js -->
+  <script src="thirteen.js?v=1"></script>
+  <script src="page.js?v=29"></script>
+  <script type="module" src="thirteen-3d.js?v=7"></script>
+</body>
+</html>

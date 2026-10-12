@@ -1,0 +1,193 @@
+/* ==========================================================================
+   Страница OnePlus 13. Тема та же, что у всего сайта. Её отличие — «сила»:
+   крупные цифры, жаркий оранжевый свет и всё, что можно потрогать самому.
+   Телефон на всей странице белый (Arctic Dawn). Изюминка — настоящая объёмная модель
+   с официального сайта: её можно крутить мышкой, а при прокрутке она сама показывает себя со всех сторон.
+   ========================================================================== */
+
+.is-13 {
+  --fire: #ff9a3d; /* раскалённый оранжевый: цвет света и акцентов этой страницы */
+  --fire-rgb: 255 154 61;
+  --col: calc(100vw - 2 * var(--side)); /* ширина колонки, в которой стоит всё содержимое */
+  --clear: max(var(--side), 190px); /* отступ справа: там стоит боковая навигация, под её подписью картинок быть не должно */
+}
+
+.is-13 .kicker::before { background: var(--fire); }
+.is-13 ::selection { background: #b4571a; }
+.is-13 .steps li.is-on { border-color: var(--fire); }
+
+/* ---------- Первый экран и осмотр: объёмная модель (её рисует thirteen-3d.js, подписи двигает thirteen.js) ---------- */
+
+.scene-model { height: 620vh; }
+.is-13 .glow-hero {
+  background:
+    radial-gradient(36% 54% at 70% 50%, rgb(var(--fire-rgb) / 0.13), transparent 70%),
+    radial-gradient(24% 40% at 72% 58%, rgb(214 224 238 / 0.2), transparent 72%);
+}
+/* сцена модели занимает правую часть экрана; левый край плавно гаснет, чтобы крупный план не обрывался по линии */
+.model-stage {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 40vw;
+  cursor: grab;
+  touch-action: pan-y; /* на телефоне вертикальный жест листает страницу, горизонтальный крутит модель */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%);
+  mask-image: linear-gradient(90deg, transparent, #000 9%);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.model-stage.is-grabbed { cursor: grabbing; }
+/* пока модель не готова (или если она не может быть нарисована), виден официальный снимок */
+.model-stage canvas { display: none; width: 100%; height: 100%; }
+.model-stage.is-live canvas { display: block; }
+.model-poster { position: absolute; top: 50%; left: 50%; width: auto; height: 80vh; translate: -50% -50%; pointer-events: none; }
+.model-stage.is-live .model-poster { display: none; }
+/* подсказка под моделью: гаснет, как только её начали листать или покрутили */
+.model-hint { position: absolute; bottom: 3.4vh; left: 70vw; display: flex; align-items: center; gap: 12px; translate: -50% 0; font-size: 11px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; white-space: nowrap; color: var(--muted); pointer-events: none; transition: opacity 0.4s; }
+.model-hint i { width: 22px; height: 22px; border: 1px solid var(--fire); border-right-color: transparent; border-radius: 50%; rotate: 20deg; }
+.model-stage.is-touched ~ .model-hint, .model-stage:not(.is-live) ~ .model-hint { visibility: hidden; }
+/* подписи осмотра стоят на месте первого текста и проявляются по одной */
+.model-notes { list-style: none; }
+.model-notes li { position: absolute; top: 50%; left: var(--side); max-width: 400px; translate: 0 -50%; opacity: 0; pointer-events: none; will-change: transform, opacity; }
+
+/* ---------- Зум: кадр в рамке видоискателя приближается (двигает thirteen.js) ---------- */
+
+.scene-zoom { height: 460vh; }
+/* всё стоит столбиком: заголовок, кадр на всю оставшуюся высоту, шкала */
+.scene-zoom .pin { display: flex; flex-direction: column; gap: 3.4vh; padding: 12vh var(--clear) 5vh var(--side); }
+.zoom-head { display: grid; grid-template-columns: auto minmax(0, 430px) 1fr; align-items: end; gap: 52px; }
+.zoom-head h2 { white-space: nowrap; }
+.zoom-head .shot-text { margin: 0 0 6px; }
+/* кратность: цифры одной ширины, чтобы число не прыгало */
+.zoom-value { justify-self: end; font-family: var(--display); font-size: clamp(56px, 8.4vw, 150px); font-weight: 300; line-height: 0.86; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; color: var(--fire); }
+.zoom-view { position: relative; flex: 1; min-height: 0; align-self: center; max-width: 100%; aspect-ratio: 1600 / 886; border-radius: 16px; overflow: hidden; outline: 1px solid rgb(255 255 255 / 0.24); outline-offset: 7px; }
+/* снимки лежат стопкой: прозрачность и увеличение каждого выставляет thirteen.js */
+.zoom-view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; will-change: transform, opacity; }
+.zoom-view img:first-child { opacity: 1; }
+.zoom-ticks { display: flex; justify-content: center; gap: clamp(14px, 3.2vw, 52px); font-family: var(--display); font-size: 13px; font-weight: 400; color: var(--muted); }
+.zoom-ticks li { padding-top: 12px; border-top: 2px solid transparent; transition: color 0.3s, border-color 0.3s; }
+.zoom-ticks li.is-on { color: var(--fire); border-color: var(--fire); }
+
+/* ---------- Мощность: тёмный кадр (общая сцена из style.css) ---------- */
+
+/* на кадре плата занимает всю ширину, поэтому под текстом кадр закрыт плотной тенью: буквы стоят на тёмном, а не на плате */
+.is-13 #power .shot-image { object-position: 30% 50%; transform-origin: 70% 50%; }
+.is-13 #power .shot-shade {
+  background:
+    linear-gradient(90deg, var(--bg) calc(var(--side) + 400px), rgb(4 6 12 / 0.9) calc(var(--side) + 470px), transparent calc(var(--side) + 760px)),
+    linear-gradient(0deg, var(--bg), transparent 20%, transparent 78%, var(--bg));
+}
+
+/* ---------- Защита: стопка из трёх кадров (двигает thirteen.js) ---------- */
+
+.scene-deck { height: 400vh; }
+.scene-deck .spin-copy { max-width: 400px; }
+.glow-deck { background: radial-gradient(38% 50% at 66% 50%, rgb(var(--fire-rgb) / 0.1), transparent 72%); }
+.deck { position: absolute; top: 52%; right: var(--clear); width: min(calc(100vw - var(--side) - 470px - var(--clear)), 84vh); aspect-ratio: 1.22; translate: 0 -50%; will-change: transform, opacity; }
+/* кадры лежат друг на друге: сдвиг, наклон и прозрачность каждого выставляет thirteen.js */
+.deck figure { position: absolute; inset: 0; border-radius: 22px; overflow: hidden; background: var(--bg-2); box-shadow: 0 40px 80px -34px #000, 0 0 0 1px rgb(255 255 255 / 0.12); will-change: transform, opacity; }
+.deck figure:nth-child(1) { z-index: 3; }
+.deck figure:nth-child(2) { z-index: 2; }
+.deck img { width: 100%; height: 100%; object-fit: cover; }
+.deck figure:nth-child(2) img { object-position: 50% 62%; }
+
+/* ---------- Батарея: зарядка идёт вместе с прокруткой (двигает thirteen.js) ---------- */
+
+.scene-charge { height: 300vh; }
+.glow-charge { background: radial-gradient(40% 44% at 64% 46%, rgb(var(--fire-rgb) / 0.16), transparent 72%); }
+.charge { position: absolute; top: 50%; right: var(--clear); width: min(calc(100vw - var(--side) - 470px - var(--clear)), 118vh); translate: 0 -50%; will-change: transform, opacity; }
+.charge img { width: 100%; height: auto; }
+.charge-meter { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-top: 3vh; }
+.charge-value { font-family: var(--display); font-size: clamp(58px, 8.6vw, 150px); font-weight: 300; line-height: 0.86; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+.charge-time { font-family: var(--display); font-size: clamp(18px, 2.2vw, 36px); font-weight: 300; font-variant-numeric: tabular-nums; color: var(--sand); }
+.charge-bar { height: 6px; margin-top: 22px; border-radius: 6px; background: rgb(255 255 255 / 0.1); overflow: hidden; }
+.charge-bar i { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, #e2472a, var(--fire) 55%, #ffe1a0); transform: scaleX(0); transform-origin: left; will-change: transform; }
+
+/* ---------- Снимки: три портрета в ряд одной высоты и широкий кадр под ними ---------- */
+
+/* ширина столбцов повторяет пропорции снимков, поэтому высота у них выходит одинаковой */
+.shots13 { display: grid; grid-template-columns: 1.16fr 0.689fr 0.694fr; gap: 54px 28px; margin: 72px calc(var(--clear) - var(--side)) 0 0; }
+.shots13-photo { border-radius: 16px; overflow: hidden; }
+.shots13 img { width: 100%; height: auto; transition: scale 1.2s var(--ease); }
+.shots13 figure:hover img { scale: 1.03; }
+.shots13 figcaption { display: flex; align-items: baseline; gap: 14px; margin-top: 18px; font-size: 13px; color: var(--muted); }
+.shots13 figcaption b { font-family: var(--display); font-size: 17px; font-weight: 400; white-space: nowrap; color: var(--sand); }
+/* широкий кадр: снимок слева, крупная подпись справа от него */
+.shots13 .is-wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1.5fr 1fr; align-items: center; gap: 48px; }
+.shots13 .is-wide figcaption { display: grid; gap: 12px; margin: 0; padding-left: 22px; border-left: 1px solid var(--fire); font-size: 17px; }
+.shots13 .is-wide figcaption b { font-size: clamp(24px, 3vw, 46px); color: var(--text); }
+
+/* ---------- Цифры и сравнение ---------- */
+
+.is-13 .spec::before { background: var(--fire); }
+.is-13 .spec i { color: var(--fire); }
+.is-13 .spec:hover { border-color: rgb(var(--fire-rgb) / 0.65); }
+.is-13 .vgroup h3 i { color: var(--fire); }
+
+/* ---------- Окно уже 1180: в сценах «Защита» и «Батарея» текст встаёт сверху, картинка под ним ---------- */
+
+@media (max-width: 1180px) {
+  .zoom-head { grid-template-columns: 1fr auto; gap: 14px 30px; }
+  .zoom-head .shot-text { grid-column: 1 / -1; grid-row: 2; max-width: 560px; margin: 0; font-size: 15px; }
+
+  .scene-deck .spin-copy, .scene-charge .shot-copy { top: 13vh; right: var(--side); bottom: auto; left: var(--side); max-width: none; translate: none; }
+  .scene-deck h2, .scene-charge h2 { margin-top: 14px; }
+  /* видна только та подпись, которая сейчас активна */
+  .scene-deck .steps { position: absolute; top: 100%; right: 0; left: 0; margin-top: 12px; }
+  .scene-deck .steps li { position: absolute; top: 0; right: 0; left: 0; margin: 0; opacity: 0; }
+  .scene-deck .steps li.is-on { opacity: 1; }
+  .deck { top: auto; right: auto; bottom: 7vh; left: 50%; width: min(calc(var(--col) - 260px), 54vh); translate: -50% 0; }
+
+  .scene-charge .stats { display: none; }
+  .scene-charge .shot-text { max-width: 620px; }
+  .charge { top: auto; right: auto; bottom: 7vh; left: 50%; width: min(calc(var(--col) - 260px), 62vh); translate: -50% 0; }
+}
+
+/* ---------- Узкие экраны: модель сверху, тексты внизу ---------- */
+
+@media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
+  .scene-model { height: 540vh; }
+  .model-stage { top: 6vh; bottom: auto; left: 0; height: 50vh; -webkit-mask-image: linear-gradient(#000 84%, transparent); mask-image: linear-gradient(#000 84%, transparent); }
+  .model-poster { height: 42vh; }
+  .model-hint { top: 57vh; bottom: auto; left: 50%; }
+  .model-notes li { top: auto; right: 22px; bottom: 8vh; left: 22px; max-width: none; translate: none; }
+
+  .scene-zoom { height: 400vh; }
+  .scene-zoom .pin { justify-content: center; gap: 2.6vh; padding: 11vh 22px 6vh; }
+  .zoom-head { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  .zoom-head h2 { white-space: normal; }
+  .zoom-head .shot-text { font-size: 14px; }
+  .zoom-value { font-size: 46px; }
+  /* кадр во всю ширину экрана: высота берётся из его пропорций, а не из оставшегося места */
+  .zoom-view { flex: none; width: 100%; outline-offset: 5px; }
+  .zoom-ticks { gap: 12px; font-size: 11px; }
+
+  .scene-deck { height: 340vh; }
+  .scene-deck .spin-copy, .scene-charge .shot-copy { top: 11vh; right: 22px; left: 22px; }
+  .deck { bottom: 6vh; width: min(100vw - 56px, 46vh); }
+  .deck figure { border-radius: 16px; }
+
+  .scene-charge { height: 270vh; }
+  .charge { width: min(100vw - 44px, 56vh); }
+
+  .shots13 { grid-template-columns: 1fr; gap: 36px; margin: 40px 0 0; }
+  .shots13 .is-wide { grid-template-columns: 1fr; gap: 18px; }
+  .shots13 .is-wide figcaption { padding-left: 14px; font-size: 14px; }
+}
+
+/* ---------- Телефон боком: в сцене с зумом заголовок и число не уходят под шапку ---------- */
+
+@media (orientation: landscape) and (max-height: 480px) {
+  .scene-zoom .pin { justify-content: flex-start; gap: 2vh; padding: 19vh var(--side) 3vh; }
+  .zoom-head { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px 24px; }
+  .zoom-head .shot-text { grid-column: auto; grid-row: auto; max-width: none; font-size: 12px; line-height: 1.4; }
+  .zoom-value { font-size: 40px; line-height: 1; }
+  .zoom-ticks { font-size: 11px; }
+  .zoom-ticks li { padding-top: 6px; }
+}
+
+/* ---------- Без анимаций: всё видно сразу ---------- */
+
+.no-motion .model-notes li { position: static; margin-top: 40px; translate: none; opacity: 1; }
+.no-motion .model-notes { position: relative; z-index: 1; padding: 0 var(--side) 60px; }
+.no-motion .deck figure { position: relative; margin-bottom: 16px; }
+.no-motion .deck { position: static; margin: 40px auto; translate: none; aspect-ratio: auto; }

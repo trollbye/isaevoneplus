@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Правила безопасности: странице разрешено брать скрипты, стили, шрифты и картинки только из папки самого сайта.
+       Чужой скрипт, даже если его как-то подсунут в страницу, браузер не выполнит -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>OnePlus 12 — обзор модели</title>
+  <meta name="description" content="OnePlus 12 в белом цвете: дизайн, камера Hasselblad, снимки, разбор по слоям, экран на 4500 нит и сравнение с iPhone 15 Pro Max и Galaxy S23 Ultra.">
+  <meta name="theme-color" content="#04060c">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- шрифты лежат в папке сайта (fonts/); два главных начинают грузиться сразу, чтобы заголовки не «прыгали» -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Unbounded-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-cyrillic.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/Onest-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=1">
+  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="stylesheet" href="twelve.css?v=10">
+</head>
+<!-- data-phone — ключ модели в data.js; класс is-12 включает оформление этой страницы из twelve.css -->
+<body class="is-12" data-phone="12">
+
+  <a class="skip-link" href="#specs">Перейти к характеристикам</a>
+
+  <header class="bar" id="bar">
+    <a class="brand" href="index.html" aria-label="Ко всем моделям OnePlus">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4H4v24h24V11" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M14.5 21.5v-10l-3 1.6M11 21.5h7M26 2v7M22.5 5.5h7" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+      <span id="brandName">OnePlus 12</span>
+    </a>
+    <nav class="bar-nav">
+      <a href="index.html">Все модели</a>
+      <a href="#design">Дизайн</a>
+      <a href="#camera">Камера</a>
+      <a href="#photos">Снимки</a>
+      <a href="#inside">Внутри</a>
+      <a href="#versus">Сравнение</a>
+    </nav>
+  </header>
+
+  <!-- Боковая навигация: точка текущего раздела вытягивается и показывает название -->
+  <nav class="rail" id="rail" aria-label="Разделы страницы">
+    <a href="#design"><span>Дизайн</span></a>
+    <a href="#camera"><span>Камера</span></a>
+    <a href="#photos"><span>Снимки</span></a>
+    <a href="#layers"><span>Слои</span></a>
+    <a href="#inside"><span>Внутри</span></a>
+    <a href="#specs"><span>Цифры</span></a>
+    <a href="#versus"><span>Сравнение</span></a>
+  </nav>
+
+  <main id="top">
+
+    <!-- ===== Первый экран: живой объёмный телефон в белом цвете. Пока экран листают, он разворачивается лицом ===== -->
+    <!-- Каждая .scene задаёт длину прокрутки, а .pin внутри «прилипает» к экрану на это время -->
+    <!-- Телефон рисует hero-live.js в холсте; пока он грузится, на его месте официальный снимок -->
+    <section class="scene scene-hero" data-scene="hero">
+      <div class="pin">
+        <div class="glow glow-hero" aria-hidden="true"></div>
+        <div class="bigword" id="heroWord" aria-hidden="true"></div>
+        <div class="hero-phone" id="heroPhone"><img decoding="async" id="heroImage" src="assets/home/12-white.webp" alt="OnePlus 12 в белом цвете, вид сзади" width="1080" height="1080"><canvas id="heroCanvas" aria-hidden="true"></canvas></div>
+        <div class="hero-copy" id="heroCopy">
+          <p class="kicker" id="heroKicker"></p>
+          <h1 id="heroName"></h1>
+          <p class="lead" id="heroLead"></p>
+          <ul class="facts" id="heroFacts"></ul>
+        </div>
+        <!-- второй текст первого экрана: появляется, когда телефон развернулся экраном -->
+        <div class="hero-after" id="heroAfter">
+          <p class="kicker">Экран</p>
+          <h2>4500 нит</h2>
+          <p class="shot-text">Экран 6,82 дюйма с разрешением 2K. В пике он светит на 4500 нит: когда OnePlus 12 вышел, ярче не было ни у одного телефона.</p>
+          <ul class="stats">
+            <li><b>6,82</b><span>дюйма</span></li>
+            <li><b>120</b><span>Гц</span></li>
+            <li><b>510</b><span>точек на дюйм</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Дизайн: официальный снимок белого телефона проявляется кругом света, как от включённой лампы. Двигает twelve.js ===== -->
+    <section class="scene scene-light" id="design" data-scene="light">
+      <div class="pin">
+        <div class="light-frame">
+          <img decoding="async" class="light-image" src="assets/12/white.jpg" alt="Белый OnePlus 12 лежит на зеркальной поверхности, камерой к зрителю" width="1700" height="1747" loading="lazy">
+        </div>
+        <div class="light-rings" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="shot-copy">
+          <p class="kicker">Цвет Glacial White</p>
+          <h2>Белый, как ледник</h2>
+          <p class="shot-text">Стекло изогнуто с обеих сторон, а рамка и кольцо вокруг камер отполированы до зеркала. Ни одной лишней линии.</p>
+          <ul class="stats">
+            <li><b>9,15</b><span>мм толщина</span></li>
+            <li><b>220</b><span>граммов</span></li>
+            <li><b>IP65</b><span>защита от воды</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Камера: крупный официальный снимок белого телефона. Свет по очереди выделяет объективы, вокруг активного рисуется кольцо ===== -->
+    <!-- data-on на снимке — номер выделенного объектива, его выставляет twelve.js; места объективов заданы в twelve.css -->
+    <section class="scene scene-lens" id="camera" data-scene="lens">
+      <div class="pin">
+        <div class="glow glow-lens" aria-hidden="true"></div>
+        <figure class="lens" id="lens">
+          <img decoding="async" src="assets/12/camera-white.webp" alt="Блок камер белого OnePlus 12 крупным планом: три объектива и вспышка в круглом окне" width="1434" height="1700" loading="lazy">
+          <i class="lens-spot" aria-hidden="true"></i>
+          <!-- кольца стоят по центрам объективов на снимке (его размер 1434 × 1700); объективы сняты под углом, поэтому это овалы -->
+          <svg class="lens-marks" viewBox="0 0 1434 1700" fill="none" aria-hidden="true">
+            <ellipse data-lens="0" cx="532" cy="743" rx="146" ry="209" pathLength="100"/>
+            <ellipse data-lens="1" cx="532" cy="1245" rx="146" ry="212" pathLength="100"/>
+            <ellipse data-lens="2" cx="882" cy="786" rx="138" ry="204" pathLength="100"/>
+          </svg>
+        </figure>
+        <div class="spin-copy">
+          <p class="kicker">Камера Hasselblad</p>
+          <h2>Камера в круге</h2>
+          <ul class="steps">
+            <li><b>50 Мп</b><span>Главная камера: сенсор Sony LYT-808 и оптическая стабилизация.</span></li>
+            <li><b>64 Мп</b><span>Перископ: приближает в 3 раза без потери качества.</span></li>
+            <li><b>48 Мп</b><span>Сверхширокая камера с углом 114°: в кадр входит вся комната.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Снимки: лента официальных фотографий едет в сторону, пока экран листают. Двигает twelve.js ===== -->
+    <!-- --ratio — пропорции снимка (ширина к высоте): по ним лента знает свою длину ещё до загрузки картинок -->
+    <section class="scene scene-strip" id="photos" data-scene="strip">
+      <div class="pin">
+        <div class="strip-head">
+          <div>
+            <p class="kicker">Снято на OnePlus 12</p>
+            <h2>Цвета Hasselblad</h2>
+          </div>
+          <p class="shot-text">Официальные снимки OnePlus, сделанные на этот телефон. Листай дальше — лента поедет в сторону.</p>
+        </div>
+        <div class="strip" id="strip">
+          <figure style="--ratio: 1.333"><img decoding="async" src="assets/12/photo-1.jpg" alt="Одинокое дерево в озере на фоне гор" loading="lazy"><figcaption><b>01</b><span>Озеро</span></figcaption></figure>
+          <figure style="--ratio: 0.75"><img decoding="async" src="assets/12/photo-2.jpg" alt="Дорога среди красных скал" loading="lazy"><figcaption><b>02</b><span>Дорога</span></figcaption></figure>
+          <figure style="--ratio: 1.334"><img decoding="async" src="assets/12/photo-3.jpg" alt="Артист в маске выдувает огонь" loading="lazy"><figcaption><b>03</b><span>Огонь</span></figcaption></figure>
+          <figure style="--ratio: 1.769"><img decoding="async" src="assets/12/photo-4.jpg" alt="Луна над острой скалой" loading="lazy"><figcaption><b>04</b><span>Луна</span></figcaption></figure>
+          <figure style="--ratio: 1.333"><img decoding="async" src="assets/12/photo-5.jpg" alt="Человек в прыжке и его тень на стене" loading="lazy"><figcaption><b>05</b><span>Прыжок</span></figcaption></figure>
+          <figure style="--ratio: 0.5625"><img decoding="async" src="assets/12/photo-6.jpg" alt="Человек на вершине жёлтых скал на фоне луны" loading="lazy"><figcaption><b>06</b><span>Вершина</span></figcaption></figure>
+        </div>
+        <div class="strip-bar" aria-hidden="true"><i></i></div>
+      </div>
+    </section>
+
+    <!-- ===== Слои: то, что под задней крышкой, раскладывается на десять официальных слоёв. Двигает twelve.js ===== -->
+    <!-- Каждый слой — вырезка из общего кадра 2464 × 1388: --x, --y — её место в кадре, --w, --h — размер -->
+    <!-- Самой крышки здесь нет: на официальном кадре она чёрная, а страница про белый телефон -->
+    <section class="scene scene-layers" id="layers" data-scene="layers">
+      <div class="pin">
+        <div class="vitrine" id="layersBox" aria-hidden="true">
+          <div class="layers">
+            <img decoding="async" class="layers-smoke" src="assets/12/layer-smoke.webp" alt="" loading="lazy">
+            <img decoding="async" class="layer" src="assets/12/layer-9.webp" alt="" style="--x: 2004; --y: 349; --w: 138; --h: 824">
+            <img decoding="async" class="layer" src="assets/12/layer-8.webp" alt="" style="--x: 1749; --y: 176; --w: 170; --h: 887">
+            <img decoding="async" class="layer" src="assets/12/layer-7.webp" alt="" style="--x: 1606; --y: 201; --w: 100; --h: 95">
+            <img decoding="async" class="layer" src="assets/12/layer-6.webp" alt="" style="--x: 1415; --y: 168; --w: 184; --h: 1041">
+            <img decoding="async" class="layer" src="assets/12/layer-5.webp" alt="" style="--x: 1135; --y: 146; --w: 201; --h: 1099">
+            <img decoding="async" class="layer" src="assets/12/layer-4.webp" alt="" style="--x: 914; --y: 288; --w: 135; --h: 709">
+            <img decoding="async" class="layer" src="assets/12/layer-3.webp" alt="" style="--x: 719; --y: 656; --w: 136; --h: 418">
+            <img decoding="async" class="layer" src="assets/12/layer-2.webp" alt="" style="--x: 503; --y: 164; --w: 162; --h: 1062">
+            <img decoding="async" class="layer" src="assets/12/layer-1.webp" alt="" style="--x: 299; --y: 226; --w: 124; --h: 940">
+            <img decoding="async" class="layer" src="assets/12/layer-0.webp" alt="" style="--x: 44; --y: 152; --w: 174; --h: 1085">
+          </div>
+        </div>
+        <div class="spin-copy">
+          <p class="kicker">Разбор</p>
+          <h2>Разобран по слоям</h2>
+          <ul class="steps">
+            <li><b>В сборе</b><span>Все слои сложены в корпус толщиной 9,15 мм.</span></li>
+            <li><b>10 слоёв</b><span>Экран, рамка, плата и батарея. Между ними — две медные пластины.</span></li>
+            <li><b>9140 мм²</b><span>Площадь двух испарительных камер. Они забирают тепло у процессора и разводят его по корпусу.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Внутри: четыре официальных кадра в рамках, подписи стоят под ними ===== -->
+    <section class="section section-line" id="inside">
+      <div class="wrap">
+        <p class="kicker reveal">Внутри</p>
+        <h2 class="section-title reveal">Мощность, которой не видно</h2>
+        <div class="tiles">
+          <figure class="tile reveal">
+            <div class="tile-photo"><img decoding="async" src="assets/12/tile-chip.jpg" alt="Процессор Snapdragon 8 Gen 3 на плате OnePlus 12" width="1200" height="949" loading="lazy"></div>
+            <figcaption><b>Snapdragon 8 Gen 3</b><span>Самый мощный процессор для Android на момент выхода.</span></figcaption>
+          </figure>
+          <figure class="tile reveal">
+            <div class="tile-photo"><img decoding="async" src="assets/12/tile-memory.jpg" alt="Микросхемы памяти на плате OnePlus 12" width="1200" height="949" loading="lazy"></div>
+            <figcaption><b>До 16 и 512 ГБ</b><span>Оперативная память LPDDR5X и быстрый накопитель UFS 4.0.</span></figcaption>
+          </figure>
+          <figure class="tile reveal">
+            <div class="tile-photo"><img decoding="async" src="assets/12/tile-power.jpg" alt="OnePlus 12 в разрезе: батарея и кабель зарядки" width="720" height="480" loading="lazy"></div>
+            <figcaption><b>5400 мА·ч и 100 Вт</b><span>От 1 до 100% за 26 минут по проводу. Без провода — 50 Вт: быстрее, чем проводная зарядка у iPhone и Galaxy того года.</span></figcaption>
+          </figure>
+          <figure class="tile reveal">
+            <div class="tile-photo"><img decoding="async" src="assets/12/tile-motor.jpg" alt="Вибромотор OnePlus 12 на плате" width="720" height="480" loading="lazy"></div>
+            <figcaption><b>Вибромотор 602 мм³</b><span>Крупный линейный мотор: отклик короткий и плотный, как у настоящей кнопки.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Цифры ===== -->
+    <section class="section" id="specs">
+      <div class="wrap">
+        <p class="kicker reveal">В цифрах</p>
+        <h2 class="section-title reveal" id="specsTitle"></h2>
+        <div class="spec-grid" id="specGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== Сравнение с теми, кто уже продавался, когда OnePlus 12 вышел ===== -->
+    <section class="section section-line" id="versus">
+      <div class="wrap">
+        <h2 class="section-title versus-title reveal">Против iPhone 15 Pro Max<br>и Galaxy S23 Ultra</h2>
+        <!-- счёт побед и сама таблица: их собирает page.js из data.js -->
+        <div class="score" id="score"></div>
+        <div class="versus" id="versusTable"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <span class="footer-brand">OnePlus 12</span>
+      <p>Неофициальный фан-сайт, не связан с компанией OnePlus. Изображения телефона и снимки с его камеры — с официального сайта oneplus.com. Характеристики из открытых источников, цены стартовые для США. Соперники — модели, которые уже продавались, когда OnePlus 12 вышел.</p>
+    </div>
+  </footer>
+
+  <script src="data.js?v=33"></script>
+  <!-- twelve.js добавляет сцены этой страницы, поэтому стоит перед общим page.js -->
+  <script src="twelve.js?v=3"></script>
+  <script src="page.js?v=29"></script>
+  <script type="module" src="hero-live.js?v=13"></script>
+</body>
+</html>
