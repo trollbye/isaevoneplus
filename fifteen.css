@@ -235,7 +235,8 @@
   /* Батарея: телефон сверху, текст и полоски снизу */
   .scene-cell { height: calc(var(--vh) * 280); }
   .glow-cell { background: radial-gradient(70% 26% at 50% 30%, rgb(60 140 255 / 0.5), transparent 72%); }
-  .cell-word { top: calc(var(--vh) * 3); bottom: auto; font-size: calc(var(--vh) * 13); }
+  /* число за батареей: под шапкой, по центру, на месте (см. про крупные надписи в style.css) */
+  .cell-word { top: calc(var(--bar) + 4px); bottom: auto; left: 50%; max-width: calc(100vw - 2 * var(--side)); translate: -50% 0; font-size: calc(var(--vh) * 13); transform: none !important; }
   /* телефон крупно, по центру места над текстом; его края уходят за экран и под затемнение */
   .cell-phone { top: calc(var(--top) + var(--room) / 2); left: 50%; width: min(190vw, calc(var(--room) * 3.3)); margin: 0; }
   .bars { gap: 8px; margin-top: 12px; }
@@ -247,9 +248,10 @@
   /* Экран: надпись и телефон сверху, текст и шкала снизу. Надпись и телефон делят место над текстом:
      --ww и --pw — их ширина, она же задаёт высоту (обе картинки широкие) */
   .scene-hz { height: calc(var(--vh) * 280); }
-  .scene-hz .pin { --ww: min(106vw, calc(var(--room) * 1.9)); --pw: min(96vw, calc(var(--room) * 1.72)); }
+  .scene-hz .pin { --ww: min(100vw, calc(var(--room) * 1.9)); --pw: min(96vw, calc(var(--room) * 1.72)); }
   .hz-bg { height: calc(var(--top) + var(--room) + var(--vh) * 10); }
-  .hz-word { top: calc(var(--top) + var(--room) * 0.03); left: calc(50% - var(--ww) / 2); width: var(--ww); }
+  /* надпись не шире экрана и не ездит вбок: иначе её края уходили за край */
+  .hz-word { top: calc(var(--top) + var(--room) * 0.03); left: calc(50% - var(--ww) / 2); width: var(--ww); transform: none !important; }
   /* телефон виден целиком, от края до края */
   .hz-phone { top: calc(var(--top) + var(--room) * 0.71); left: calc(50% - var(--pw) / 2); width: var(--pw); }
   .dial { margin-top: 12px; padding-top: 10px; }
@@ -315,3 +317,8 @@
 
 .no-motion .lit span { opacity: 1; }
 .no-motion .burst-view, .no-motion .side-copy, .no-motion .turn-phone, .no-motion .chip, .no-motion .cell-phone, .no-motion .hz-phone, .no-motion .hz-word { opacity: 1; }
+
+/* подсказка «покрути телефон» написана для мыши: на сенсорном экране вместо неё кнопка «Покрутить в 3D» */
+@media (pointer: coarse) {
+  .spin-hint { display: none; }
+}

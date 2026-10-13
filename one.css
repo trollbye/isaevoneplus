@@ -208,9 +208,13 @@
   .dim span { font-size: 11px; }
 
   .scene-plate { height: calc(var(--vh) * 210); }
-  .plate-word { top: calc(var(--vh) * 3); font-size: calc(var(--vh) * 12); }
-  /* лист стоит над текстом по центру своей зоны, какой бы формы он ни был, и по высоте в неё помещается */
-  .sheet, .scene-plate.is-wide .sheet { top: calc(var(--top) + var(--room) / 2); bottom: auto; left: 50%; width: min(90vw, calc(var(--room) * 0.94 * var(--ratio, 1.33))); translate: -50% -50%; }
+  /* Контурная надпись стоит над листом, по центру, и видна целиком (на компьютере она проезжает за листом; здесь
+     её срезал бы край экрана, а за листом закрывал бы сам лист). Под неё отведена полоса --label вверху зоны листа;
+     размер букв под ширину экрана подгоняет page.js */
+  .scene-plate .pin { --label: clamp(22px, calc(var(--room) * 0.18), 64px); }
+  .plate-word { top: var(--top); left: 50%; max-width: calc(100vw - 2 * var(--side)); translate: -50% 0; font-size: var(--label); transform: none !important; }
+  /* лист стоит под надписью по центру оставшейся зоны, какой бы формы он ни был, и по высоте в неё помещается */
+  .sheet, .scene-plate.is-wide .sheet { top: calc(var(--top) + var(--label) + (var(--room) - var(--label)) / 2); bottom: auto; left: 50%; width: min(90vw, calc((var(--room) - var(--label)) * 0.94 * var(--ratio, 1.33))); translate: -50% -50%; }
   .sheet::before { inset: 8px; }
   .sheet img, .scene-plate.is-wide .sheet img { top: 9%; left: 6%; width: 88%; height: 72%; }
   .sheet figcaption { right: 14px; bottom: 10px; left: 14px; padding-top: 5px; font-size: 10px; letter-spacing: 0.04em; }
