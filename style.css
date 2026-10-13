@@ -733,6 +733,85 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
   .teardown-copy .shot-text { display: none; }
 }
 
+/* ---------- Телефон в 3D на сенсорном экране: кнопка у модели и режим просмотра на весь экран (spin.js, viewer.js) ---------- */
+
+/* кнопка есть только там, где вертикальный жест листает страницу (телефоны, планшеты); с мышью модель крутится и так */
+.view3d-open { display: none; }
+@media (pointer: coarse) {
+  .view3d-open {
+    position: absolute;
+    bottom: -8px; left: 50%;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 0 16px 0 12px;
+    translate: -50% 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--text);
+    border: 1px solid rgb(255 255 255 / 0.24);
+    border-radius: 999px;
+    background: rgb(6 9 18 / 0.78);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .view3d-open::before { content: ""; flex: none; width: 18px; height: 18px; border: 1px solid var(--gold); border-radius: 50%; background: radial-gradient(circle, var(--gold) 2px, transparent 3px); }
+  .view3d-open:active { background: rgb(255 255 255 / 0.16); }
+  /* подсказка при первом показе: вокруг кнопки дважды расходится кольцо */
+  .view3d-open.is-new { animation: view3d-ping 1.3s ease-out 0.9s 2; }
+  /* подсказки «зажми и крути» написаны для мыши: на сенсорном экране вместо них кнопка */
+  .spin-hint, .model-hint { display: none; }
+}
+@keyframes view3d-ping {
+  from { box-shadow: 0 0 0 0 rgb(240 196 104 / 0.55); }
+  to { box-shadow: 0 0 0 16px rgb(240 196 104 / 0); }
+}
+
+/* режим просмотра: сверху название и «Готово», посередине модель, внизу ракурсы */
+.view3d {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: radial-gradient(90% 56% at 50% 44%, #121a2e, var(--bg) 74%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, visibility 0.25s;
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.view3d.is-open { opacity: 1; visibility: visible; }
+.view3d:focus { outline: none; }
+.view3d-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 6px max(18px, env(safe-area-inset-left)); }
+.view3d-name { font-family: var(--display); font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.view3d-close { flex: none; min-width: 96px; min-height: 44px; padding: 0 22px; font-size: 14px; font-weight: 700; color: var(--bg); border-radius: 999px; background: var(--gold); -webkit-tap-highlight-color: transparent; }
+.view3d-close:active { background: var(--sand); }
+.view3d-stage { position: relative; min-height: 0; touch-action: none; cursor: grab; }
+.view3d-stage.is-grabbed { cursor: grabbing; }
+/* холст (или рамка с ним), переехавший со страницы: занимает всё место между шапкой и ракурсами */
+.in-view3d { position: absolute !important; inset: 0 !important; display: block !important; width: 100% !important; height: 100% !important; max-width: none !important; margin: 0 !important; aspect-ratio: auto !important; translate: none !important; transform: none !important; opacity: 1 !important; -webkit-mask-image: none !important; mask-image: none !important; touch-action: none !important; pointer-events: none; }
+.in-view3d::before, .in-view3d::after, .in-view3d .view3d-open { display: none !important; }
+.view3d-bottom { display: grid; gap: 10px; padding: 6px max(12px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+.view3d-hint { justify-self: center; max-width: 320px; font-size: 13px; line-height: 1.4; text-align: center; color: #aab1c4; transition: opacity 0.4s; }
+.view3d-hint.is-gone { opacity: 0; }
+.view3d-views { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.view3d-views button { min-height: 44px; padding: 0 6px; font-size: 13px; font-weight: 600; color: var(--text); border: 1px solid var(--line); border-radius: 12px; background: rgb(255 255 255 / 0.05); transition: background 0.2s, color 0.2s, border-color 0.2s; -webkit-tap-highlight-color: transparent; }
+.view3d-views button.is-on { color: var(--bg); border-color: var(--sand); background: var(--sand); }
+/* телефон боком: ракурсы в один ряд, подсказка не занимает высоту */
+@media (orientation: landscape) and (max-height: 480px) {
+  .view3d-top { padding-top: max(6px, env(safe-area-inset-top)); padding-bottom: 2px; }
+  .view3d-bottom { gap: 0; padding-top: 2px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+  /* подсказка встаёт в шапку, между названием и «Готово»: под моделью для неё нет места */
+  .view3d-hint { position: absolute; top: max(8px, env(safe-area-inset-top)); left: 50%; display: grid; align-content: center; min-height: 44px; max-width: calc(100vw - 330px); translate: -50% 0; font-size: 12px; pointer-events: none; }
+  .view3d-views { grid-template-columns: repeat(6, 1fr); }
+}
 /* ---------- Без анимаций: сцены не прилипают, всё показано сразу ---------- */
 
 .no-motion .scene { height: auto; }
