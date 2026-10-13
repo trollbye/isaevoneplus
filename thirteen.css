@@ -249,3 +249,15 @@
   .no-motion .deck { width: calc(100vw - 2 * var(--side)); margin: 26px auto 0; }
   .no-motion .deck figure:last-child { margin-bottom: 0; }
 }
+
+/* ---------- Кнопка «Покрутить в 3D» (сенсорные экраны): стоит там же, где подсказка «зажми и крути» ---------- */
+
+.scene-model .pin > .view3d-open { bottom: calc(var(--vh) * 3.4 - 12px); left: 70vw; }
+@media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
+  .scene-model .pin > .view3d-open { top: calc(var(--top) + var(--room) - 34px); bottom: auto; left: 50%; }
+  /* без анимаций первый экран идёт колонкой: кнопка у нижнего края модели */
+  .no-motion .scene-model .pin > .view3d-open { top: calc(var(--top) + var(--vh) * 54 - 50px); }
+}
+@media (orientation: landscape) and (max-height: 480px) {
+  .scene-model .pin > .view3d-open { bottom: 0; }
+}

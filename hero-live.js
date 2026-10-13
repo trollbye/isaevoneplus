@@ -10,7 +10,7 @@
 // для раздела «Дизайн» — из fifteen.js через window.TURN15.
 // Кадр рисуется, только когда что-то изменилось: в покое картинка неподвижна.
 import { createStage, createPhone, everyMinute } from "./phonekit.js?v=15";
-import { attachSpin } from "./spin.js?v=1";
+import { attachSpin } from "./spin.js?v=2";
 
 const holder = document.getElementById("heroPhone");
 const canvas = document.getElementById("heroCanvas");
@@ -98,9 +98,12 @@ function draw(now) {
     }
     if (t >= 1) swap = null;
   }
-  current.model.rotation.set(pitch + spin.pitch, yaw + turnover + spin.yaw, 0);
-  current.model.scale.setScalar(spin.zoom);
-  current.model.position.y = lift;
+  // в режиме просмотра (spin.js) позу задаёт он сам, прокрутка в это время ничего не решает
+  if (!spin.pose(current.model, camera)) {
+    current.model.rotation.set(pitch + spin.pitch, yaw + turnover + spin.yaw, 0);
+    current.model.scale.setScalar(spin.zoom);
+    current.model.position.y = lift;
+  }
   renderer.render(scene, camera);
 }
 
@@ -139,6 +142,7 @@ function settle() {
     if (place === "turn") turnHolder.classList.add("is-live");
     spunAt = progress();
     resize();
+    spin.place(); // кнопка «Покрутить в 3D» переезжает вслед за холстом
   }
   wake();
 }

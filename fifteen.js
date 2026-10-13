@@ -235,7 +235,7 @@
   const loadTeardown = () => {
     if (teardownAsked) return;
     teardownAsked = true;
-    import("./teardown3d.js?v=24").catch((error) => {
+    import("./teardown3d.js?v=25").catch((error) => {
       document.documentElement.classList.add("no-3d"); // видеокарта не справилась: раздел с разбором прячется
       console.error(error);
     });

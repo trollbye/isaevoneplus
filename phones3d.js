@@ -4,7 +4,7 @@
 // Все шесть рисует один общий «холст» по очереди, а картинка копируется в рамку своего телефона.
 // Кадр перерисовывается, только пока телефон двигается: в покое картинка неподвижна.
 import { createStage, createPhone, everyMinute } from "./phonekit.js?v=15";
-import { attachSpin } from "./spin.js?v=1";
+import { attachSpin } from "./spin.js?v=2";
 
 const units = [...document.querySelectorAll(".unit")];
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -82,7 +82,7 @@ phones.forEach((phone) => {
   const hit = unit.querySelector(".unit-hit"); // нажимается и реагирует на курсор только сам телефон с названием
   const soon = Boolean(unit.dataset.soon); // у модели ещё нет своей страницы
   // телефон можно покрутить мышью или пальцем (spin.js); если его крутили, ссылка не срабатывает
-  phone.spin = attachSpin(unit.querySelector(".unit-stage"), { closest: 1.25 });
+  phone.spin = attachSpin(unit.querySelector(".unit-stage"), { closest: 1.25, viewer: false }) /* плитка — ссылка на страницу модели: режим просмотра открывается уже там */;
   hit.addEventListener("dragstart", (event) => event.preventDefault()); // иначе браузер начнёт «перетаскивать ссылку»
   if (canHover) {
     hit.addEventListener("pointerenter", () => (phone.target = 1));
