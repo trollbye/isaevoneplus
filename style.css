@@ -404,7 +404,11 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
   }
 
   .scene-hero { height: calc(var(--vh) * 170); }
-  .bigword { top: calc(var(--top) + var(--room) / 2); right: 50%; translate: 50% -50%; font-size: calc(var(--room) * 0.9); }
+  /* Крупные надписи за картинками (.bigword, .shot-word, .spin-word и их родня на страницах моделей). На компьютере
+     они проезжают через экран вместе с прокруткой. Экран телефона для этого слишком узкий: проезжающее слово почти
+     всё время срезано его краем. Поэтому здесь надпись стоит на месте (сдвиг от прокрутки отключён) и целиком
+     помещается в отведённую ей ширину — max-width; размер букв под неё подгоняет page.js (fitWords) */
+  .bigword { top: calc(var(--top) + var(--room) / 2); right: 50%; max-width: calc(100vw - 2 * var(--side)); translate: 50% -50%; font-size: calc(var(--room) * 0.9); transform: none !important; }
   .hero-phone { top: var(--top); right: 50%; height: var(--room); translate: 50% 0; }
   .hero-copy { top: auto; right: var(--side); bottom: var(--foot); left: var(--side); max-width: none; translate: none; }
   .hero-copy h1 { width: auto; max-width: none; }
@@ -417,7 +421,9 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
   .hint { display: none; }
 
   .scene-spin { height: calc(var(--vh) * 300); }
-  .spin-word { font-size: calc(var(--vh) * 17); }
+  /* название цвета стоит вертикально в полосе слева от телефона, снизу вверх. Горизонтально рядом с телефоном
+     оно не помещается, а за телефоном его середину закрывал бы сам телефон */
+  .spin-word { top: calc(var(--top) + var(--copy) + var(--gap) + var(--room) / 2); bottom: auto; left: calc((50vw - var(--room) * 0.234) / 2 + 1vw); max-height: calc(var(--room) * 0.9); translate: -50% -50%; rotate: 180deg; font-size: min(calc(var(--vh) * 10), calc((50vw - var(--room) * 0.234) * 0.62)); writing-mode: vertical-rl; transform: none !important; }
   .spin-phone { top: calc(var(--top) + var(--copy) + var(--gap)); height: var(--room); margin: 0 0 0 calc(var(--room) * -0.225); }
   .spin-copy { top: var(--top); right: var(--side); left: var(--side); max-width: none; translate: none; }
   h2 { margin-top: 10px; font-size: clamp(22px, min(7.6vw, calc(var(--vh) * 5.2)), 40px); }
@@ -457,7 +463,8 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
   .legend b { font-weight: 500; }
 
   .rail { display: none; }
-  .shot-word { top: calc(var(--vh) * 2); font-size: calc(var(--vh) * 13); }
+  /* слово над кадром: под шапкой, по центру */
+  .shot-word { top: calc(var(--bar) + 6px); left: 50%; max-width: calc(100vw - 2 * var(--side)); translate: -50% 0; font-size: calc(var(--vh) * 13); transform: none !important; }
 
   /* разделы под сценами: на телефоне поля сверху и снизу меньше, чем на широком окне */
   .section { padding: 68px 0; }
@@ -540,9 +547,10 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 .unit-hit:hover .unit-stage::before, .unit-hit:focus-visible .unit-stage::before { opacity: 1; }
 .unit-hit:focus-visible .unit-stage { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 24px; }
 
-.unit-tag { padding: 7px 16px; font-size: 11px; font-style: normal; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; cursor: default; -webkit-user-select: none; user-select: none; transition: color 0.3s, border-color 0.3s; }
-.unit-hit:hover + .unit-tag { color: var(--text); border-color: rgb(255 255 255 / 0.3); }
-.unit.is-ready .unit-tag { color: #1c1304; border-color: transparent; background: linear-gradient(135deg, #f7d58c, var(--gold)); }
+/* Подпись под телефоном. Это не кнопка и не ссылка — нажимается сам телефон с названием над ней. Поэтому она и не
+   похожа на кнопку: без заливки, рамки и скругления, без отклика на наведение и нажатие, приглушённым цветом,
+   тем же мелким набором, что и остальные подписи сайта (под цифрами, в таблицах). Касания проходят сквозь неё */
+.unit-tag { font-size: 11px; font-style: normal; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); cursor: default; pointer-events: none; -webkit-user-select: none; user-select: none; }
 
 /* модель без страницы при нажатии качает «нет» */
 .unit.is-shaking .unit-stage { animation: shake 0.45s var(--ease); }
@@ -561,6 +569,8 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
   .home-top { padding: 110px 0 36px; }
   .home-head { padding-inline: 4px; }
   .home h1 { margin-top: 16px; font-size: clamp(20px, 6.5vw, 44px); }
+  /* слово за заголовком целиком помещается в экран: при 21vw его семь букв были шире телефона (на странице 404 цифры короче) */
+  body.home:not(.lost) .home-word { font-size: 15vw; }
 }
 
 /* на телефоне — по два в ряд: так телефоны крупнее и надписи на них читаются */
@@ -569,7 +579,7 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
   .unit, .unit-hit { gap: 16px; }
   .unit-title { font-size: clamp(15px, 4.6vw, 20px); }
   .unit-title small { font-size: 11px; letter-spacing: 0.24em; }
-  .unit-tag { padding: 6px 12px; font-size: 11px; letter-spacing: 0.12em; }
+  .unit-tag { letter-spacing: 0.18em; }
 }
 
 /* ---------- Живой объёмный телефон на первом экране ---------- */
