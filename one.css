@@ -42,7 +42,7 @@
 /* год контуром, как оттиск: заливки нет, только тонкая песочная линия */
 .is-one .bigword {
   right: -3vw;
-  font-size: 42vh;
+  font-size: calc(var(--vh) * 42);
   -webkit-text-stroke-color: rgb(217 205 187 / 0.3);
 }
 /* Контурные надписи. У шрифта Unbounded буквы собраны из перекрывающихся частей, и если просто обвести текст,
@@ -59,21 +59,21 @@
 }
 /* снимок лежащего телефона широкий, поэтому размер задан шириной. Снимок и текст делят колонку:
    тексту достаётся левая часть, снимку правая, поэтому при любой ширине окна они не заходят друг на друга */
-.is-one .hero-phone { right: calc(var(--side) - 6vw); width: min(112vh, calc(var(--col) * 0.62)); height: auto; aspect-ratio: 1483 / 1165; translate: 0 -48%; }
+.is-one .hero-phone { right: calc(var(--side) - 6vw); width: min(calc(var(--vh) * 112), calc(var(--col) * 0.62)); height: auto; aspect-ratio: 1483 / 1165; translate: 0 -48%; }
 .is-one .hero-phone img { filter: drop-shadow(0 46px 60px rgb(0 0 0 / 0.6)); }
 .is-one .hero-copy { max-width: min(500px, calc(var(--col) * 0.42)); }
 .is-one .facts li:first-child b { color: var(--gold); }
 
 /* ---------- Дизайн: объёмный телефон (его рисует one-turn.js) ---------- */
 
-.scene-turn { height: 380vh; }
+.scene-turn { height: calc(var(--vh) * 380); }
 .glow-turn { background: radial-gradient(34% 46% at 60% 52%, rgb(217 205 187 / 0.2), transparent 72%); }
 .is-one .spin-word { -webkit-text-stroke-color: rgb(217 205 187 / 0.22); }
-.turn-canvas { position: absolute; top: 50%; left: 60%; height: 94vh; aspect-ratio: 440 / 940; translate: -50% -50%; }
+.turn-canvas { position: absolute; top: 50%; left: 60%; height: calc(var(--vh) * 94); aspect-ratio: 440 / 940; translate: -50% -50%; }
 /* в рамке лежит снимок-заглушка, поверх него холст с живым телефоном */
 .turn-canvas canvas { position: relative; display: block; width: 100%; height: 100%; }
 /* размерная линия справа от телефона, как на чертеже: высота корпуса */
-.dim { position: absolute; top: calc(50% + 1.3vh); left: calc(60% + 23vh); width: 1px; height: 77.6vh; translate: 0 -50%; background: rgb(217 205 187 / 0.45); }
+.dim { position: absolute; top: calc(50% + calc(var(--vh) * 1.3)); left: calc(60% + calc(var(--vh) * 23)); width: 1px; height: calc(var(--vh) * 77.6); translate: 0 -50%; background: rgb(217 205 187 / 0.45); }
 .dim::before, .dim::after { content: ""; position: absolute; left: -6px; width: 13px; height: 1px; background: var(--sand); }
 .dim::before { top: 0; }
 .dim::after { bottom: 0; }
@@ -81,13 +81,13 @@
 
 /* ---------- Листы каталога ---------- */
 
-.scene-plate { height: 230vh; }
+.scene-plate { height: calc(var(--vh) * 230); }
 /* крупная контурная надпись проезжает за листом: сдвиг выставляет one.js */
 .plate-word {
   position: absolute;
-  top: 5vh; left: 0;
+  top: calc(var(--vh) * 5); left: 0;
   font-family: var(--display);
-  font-size: 24vh;
+  font-size: calc(var(--vh) * 24);
   font-weight: 800;
   line-height: 1;
   white-space: nowrap;
@@ -101,7 +101,7 @@
   position: absolute;
   top: 50%; left: calc(var(--side) + var(--edge));
   z-index: 2;
-  width: min(calc(var(--col) - var(--edge) - 3.5vw), calc(74vh * var(--ratio, 1.33)));
+  width: min(calc(var(--col) - var(--edge) - 3.5vw), calc(calc(var(--vh) * 74) * var(--ratio, 1.33)));
   aspect-ratio: var(--ratio, 1.33);
   translate: 0 -50%;
   overflow: hidden;
@@ -150,7 +150,7 @@
 .sheet figcaption b { font-weight: 500; color: var(--red); }
 
 /* паспорт телефона: строки с отточиями */
-.sheet-table { position: absolute; top: 13%; right: 8%; bottom: 20%; left: 20%; display: grid; align-content: center; gap: clamp(8px, 1.7vh, 18px); font-family: var(--mono); font-size: clamp(12px, 1.15vw, 19px); }
+.sheet-table { position: absolute; top: 13%; right: 8%; bottom: 20%; left: 20%; display: grid; align-content: center; gap: clamp(8px, calc(var(--vh) * 1.7), 18px); font-family: var(--mono); font-size: clamp(12px, 1.15vw, 19px); }
 .sheet-table div { display: flex; align-items: baseline; gap: 10px; }
 .sheet-table i { flex: 1; min-width: 20px; border-bottom: 1px dotted currentColor; opacity: 0.45; translate: 0 -4px; }
 .sheet-table dd { font-weight: 500; white-space: nowrap; }
@@ -169,10 +169,10 @@
 
 /* Широкие снимки (экран, профиль): текст стоит сверху в две колонки, лист — под ним во всю ширину колонки.
    Так текст и снимок не пересекаются */
-.scene-plate.is-wide .sheet { top: auto; bottom: 6vh; left: 50%; width: min(var(--col), calc(50vh * var(--ratio, 2))); translate: -50% 0; }
+.scene-plate.is-wide .sheet { top: auto; bottom: calc(var(--vh) * 6); left: 50%; width: min(var(--col), calc(calc(var(--vh) * 50) * var(--ratio, 2))); translate: -50% 0; }
 .scene-plate.is-wide .sheet img { top: 8%; left: 5%; width: 90%; height: 73%; }
 .is-one .scene-plate.is-wide .shot-copy {
-  top: 13vh; right: var(--side);
+  top: calc(var(--vh) * 13); right: var(--side);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-areas: "kicker text" "title text" "title stats";
@@ -195,27 +195,31 @@
 /* ---------- Узкие экраны: лист сверху, текст под ним, они не пересекаются ---------- */
 
 @media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
-  .is-one .bigword { right: 50%; translate: 50% -78%; font-size: 26vh; }
-  .is-one .hero-phone { top: 12vh; right: 50%; width: 104vw; translate: 50% 0; }
+  /* --room — место, которое остаётся картинке над текстом или под ним (см. style.css) */
+  .is-one .bigword { right: 50%; font-size: min(calc(var(--room) * 0.62), 31vw); }
+  /* снимок лежащего телефона занимает всё место над текстом, но не шире экрана; в своей зоне он стоит по центру */
+  .is-one .hero-phone { --tall: min(var(--room), calc(104vw / 1.273)); top: calc(var(--top) + (var(--room) - var(--tall)) / 2); right: 50%; width: auto; height: var(--tall); translate: 50% 0; }
+  /* текст во всю ширину экрана: колонка в 42% ширины нужна только на широком окне, где рядом стоит снимок */
+  .is-one .hero-copy { max-width: none; }
 
-  .scene-turn { height: 320vh; }
-  .turn-canvas { top: 60%; left: 50%; height: 58vh; }
-  .dim { top: calc(60% + 0.8vh); left: calc(50% + 14.6vh); height: 47.9vh; }
-  .dim span { font-size: 10px; }
+  .scene-turn { height: calc(var(--vh) * 320); }
+  .turn-canvas { top: calc(var(--top) + var(--copy) + var(--gap) + var(--room) / 2); left: 50%; height: var(--room); }
+  .dim { top: calc(var(--top) + var(--copy) + var(--gap) + var(--room) * 0.514); left: calc(50% + var(--room) * 0.25); height: calc(var(--room) * 0.826); }
+  .dim span { font-size: 11px; }
 
-  .scene-plate { height: 210vh; }
-  .plate-word { top: 3vh; font-size: 12vh; }
-  /* лист стоит в верхней половине экрана по центру своей зоны, какой бы формы он ни был */
-  .sheet, .scene-plate.is-wide .sheet { top: 30vh; bottom: auto; left: 50%; width: min(90vw, calc(34vh * var(--ratio, 1.33))); translate: -50% -50%; }
+  .scene-plate { height: calc(var(--vh) * 210); }
+  .plate-word { top: calc(var(--vh) * 3); font-size: calc(var(--vh) * 12); }
+  /* лист стоит над текстом по центру своей зоны, какой бы формы он ни был, и по высоте в неё помещается */
+  .sheet, .scene-plate.is-wide .sheet { top: calc(var(--top) + var(--room) / 2); bottom: auto; left: 50%; width: min(90vw, calc(var(--room) * 0.94 * var(--ratio, 1.33))); translate: -50% -50%; }
   .sheet::before { inset: 8px; }
   .sheet img, .scene-plate.is-wide .sheet img { top: 9%; left: 6%; width: 88%; height: 72%; }
-  .sheet figcaption { right: 16px; bottom: 12px; left: 16px; padding-top: 6px; font-size: 8px; letter-spacing: 0.06em; }
+  .sheet figcaption { right: 14px; bottom: 10px; left: 14px; padding-top: 5px; font-size: 10px; letter-spacing: 0.04em; }
   .sheet figcaption span:nth-child(2) { display: none; }
-  .sheet-table { right: 9%; left: 9%; font-size: clamp(10px, 3vw, 14px); gap: 6px; }
+  .sheet-table { right: 9%; left: 9%; font-size: clamp(11px, 3vw, 14px); gap: 6px; }
   .sheet-ink { display: none; }
-  .is-one .scene-plate .shot-copy, .is-one .scene-plate.is-wide .shot-copy { top: auto; right: 22px; display: block; width: auto; }
-  .is-one .scene-plate .shot-text, .is-one .scene-plate.is-wide .shot-text { max-width: none; margin-top: 14px; }
-  .is-wide .shot-copy .stats { margin-top: 20px; padding-top: 16px; }
+  .is-one .scene-plate .shot-copy, .is-one .scene-plate.is-wide .shot-copy { top: auto; right: var(--side); display: block; width: auto; }
+  .is-one .scene-plate .shot-text, .is-one .scene-plate.is-wide .shot-text { max-width: none; margin-top: 12px; }
+  .is-wide .shot-copy .stats { margin-top: 16px; padding-top: 14px; }
 }
 
 /* окно поуже: лист ниже ростом, и цифры под текстом не заходят на лист — иначе они ложились на его подпись */
@@ -229,13 +233,18 @@
   .is-one { --edge: 42vw; }
   .is-one .scene-plate .shot-copy, .ink-copy { width: 38vw; }
   .is-one .scene-plate .shot-text { max-width: 36vw; }
-  .sheet { width: min(calc(var(--col) - var(--edge)), calc(72vh * var(--ratio, 1.33))); }
+  /* Всё стоит по середине места под шапкой (--mid) и не выше его (--tall), см. style.css. Тёмная копия текста
+     на листе повторяет место и уменьшение (--fit) белого текста, иначе буквы разошлись бы */
+  .turn-canvas { top: var(--mid); height: var(--tall); }
+  .dim { top: calc(var(--mid) + var(--tall) * 0.014); left: calc(60% + var(--tall) * 0.245); height: calc(var(--tall) * 0.826); }
+  .sheet { top: var(--mid); width: min(calc(var(--col) - var(--edge)), calc(var(--tall) * 0.94 * var(--ratio, 1.33))); }
+  .ink-copy { scale: var(--fit, 1); transform-origin: 0 50%; }
   .sheet::before { inset: 8px; }
-  .sheet figcaption { right: 16px; bottom: 10px; left: 16px; padding-top: 5px; font-size: 9px; letter-spacing: 0.06em; }
+  .sheet figcaption { right: 16px; bottom: 10px; left: 16px; padding-top: 5px; font-size: 10px; letter-spacing: 0.04em; }
   .sheet-table { font-size: 11px; gap: 5px; }
   /* широкие листы (экран, профиль): текст сверху в две колонки, лист ниже и пониже ростом */
-  .scene-plate.is-wide .sheet { bottom: 4vh; width: min(var(--col), calc(42vh * var(--ratio, 2))); }
-  .is-one .scene-plate.is-wide .shot-copy { top: 15vh; column-gap: 4vw; width: auto; }
+  .scene-plate.is-wide .sheet { top: auto; bottom: 8px; width: min(var(--col), calc((var(--tall) - var(--copy, 120px) - 12px) * var(--ratio, 2))); }
+  .is-one .scene-plate.is-wide .shot-copy { top: calc(var(--bar) + 2px); column-gap: 4vw; width: auto; scale: 1; }
   .is-one .scene-plate.is-wide .shot-text { max-width: none; font-size: 12px; }
   .is-wide .shot-copy .stats { margin-top: 6px; padding-top: 6px; }
 }

@@ -60,10 +60,10 @@
       const x = ((1 - lay) * 26).toFixed(2);
       const y = ((1 - lay) * 9 - leave * 10).toFixed(2);
       const tilt = ((1 - lay) * 9 - 1.4).toFixed(2);
-      sheet.style.transform = `translate3d(${x}vw, ${y}vh, 0) rotate(${tilt}deg)`;
+      sheet.style.transform = `translate3d(${x}vw, calc(var(--vh) * ${y}), 0) rotate(${tilt}deg)`;
       sheet.style.opacity = (ease(enter / 0.55) * (1 - leave)).toFixed(3);
       // тёмная копия текста получает обратное движение: лист едет и наклоняется, а она остаётся на месте
-      if (holder) holder.style.transform = `rotate(${-tilt}deg) translate3d(${-x}vw, ${-y}vh, 0)`;
+      if (holder) holder.style.transform = `rotate(${-tilt}deg) translate3d(${-x}vw, calc(var(--vh) * ${-y}), 0)`;
       word.style.transform = `translate3d(${(52 - (enter * 0.4 + p * 0.6) * 84).toFixed(2)}vw, 0, 0)`;
 
       const show = (ease((p - 0.08) / 0.2) * (1 - ease((p - 0.88) / 0.12))).toFixed(3);
