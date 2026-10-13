@@ -18,7 +18,7 @@
 /* ---------- Первый экран: живой телефон (его рисует hero-live.js; общие правила лежат в style.css) ---------- */
 
 /* сцена длиннее обычной: пока её листают, телефон успевает развернуться экраном */
-.is-12 .scene-hero { height: 290vh; }
+.is-12 .scene-hero { height: calc(var(--vh) * 290); }
 .is-12 .glow-hero {
   background:
     radial-gradient(40% 56% at 72% 50%, rgb(76 125 255 / 0.14), transparent 70%),
@@ -31,7 +31,7 @@
 
 /* --w — ширина кадра: он стоит справа от текста и почти во всю высоту окна.
    Видимый овал начинается на 4% правее края кадра; между ним и текстом (400 точек) остаётся 40 точек */
-.scene-light { --w: min(109vh, calc((95vw - var(--side) - 440px) / 0.96)); height: 340vh; }
+.scene-light { --w: min(calc(var(--vh) * 109), calc((95vw - var(--side) - 440px) / 0.96)); height: calc(var(--vh) * 340); }
 /* круг выставляет twelve.js; пока сцена не началась, от кадра виден только маленький глазок.
    У кадра нет прямых краёв: он остаётся овалом света, который по краю плавно уходит в темноту */
 .light-frame {
@@ -57,13 +57,13 @@
 @property --sx { syntax: "<percentage>"; inherits: false; initial-value: 46%; }
 @property --sy { syntax: "<percentage>"; inherits: false; initial-value: 58%; }
 
-.scene-lens { height: 380vh; }
+.scene-lens { height: calc(var(--vh) * 380); }
 .scene-lens .spin-copy, .scene-layers .spin-copy { max-width: 400px; }
 .glow-lens { background: radial-gradient(36% 52% at 66% 50%, rgb(var(--ice-rgb) / 0.12), transparent 72%); }
 /* Снимок с прозрачным фоном стоит по середине места справа от текста. --lw — его ширина.
    Он обрезан снизу, поэтому книзу плавно гаснет; cqw ниже — проценты от его ширины */
 .lens {
-  --lw: min(70vh, calc(var(--col) - 560px));
+  --lw: min(calc(var(--vh) * 70), calc(var(--col) - 560px));
   position: absolute;
   top: 52%; right: calc(var(--side) + (var(--col) - 470px - var(--lw)) / 2);
   width: var(--lw);
@@ -96,32 +96,32 @@
 
 /* ---------- Снимки: лента фотографий в рамках едет в сторону (двигает twelve.js) ---------- */
 
-.scene-strip { height: 340vh; }
-.strip-head { position: absolute; top: 13vh; right: var(--side); left: var(--side); display: grid; grid-template-columns: 1fr minmax(0, 400px); align-items: end; gap: 40px; }
+.scene-strip { height: calc(var(--vh) * 340); }
+.strip-head { position: absolute; top: calc(var(--vh) * 13); right: var(--side); left: var(--side); display: grid; grid-template-columns: 1fr minmax(0, 400px); align-items: end; gap: 40px; }
 .strip-head .shot-text { margin: 0 0 8px; }
 /* справа у ленты запас: последний снимок останавливается, не доезжая до боковой навигации */
-.strip { position: absolute; top: 38vh; left: 0; display: flex; gap: 5vh; width: max-content; padding: 0 max(var(--side), 250px) 0 var(--side); will-change: transform; }
+.strip { position: absolute; top: calc(var(--vh) * 38); left: 0; display: flex; gap: calc(var(--vh) * 5); width: max-content; padding: 0 max(var(--side), 250px) 0 var(--side); will-change: transform; }
 /* у краёв окна лента уходит в темноту: справа поверх неё стоит боковая навигация, под её подписью снимков быть не должно */
-.scene-strip .pin::before, .scene-strip .pin::after { content: ""; position: absolute; top: 34vh; bottom: 8vh; z-index: 2; pointer-events: none; }
+.scene-strip .pin::before, .scene-strip .pin::after { content: ""; position: absolute; top: calc(var(--vh) * 34); bottom: calc(var(--vh) * 8); z-index: 2; pointer-events: none; }
 .scene-strip .pin::before { left: 0; width: min(var(--side) * 0.9, 110px); background: linear-gradient(90deg, var(--bg), transparent); }
 .scene-strip .pin::after { right: 0; width: 230px; background: linear-gradient(270deg, var(--bg) 55%, transparent); }
 .strip figure { flex: none; }
-.strip img { width: auto; height: 44vh; aspect-ratio: var(--ratio); border-radius: 12px; outline: 1px solid var(--frame); outline-offset: 7px; }
+.strip img { width: auto; height: calc(var(--vh) * 44); aspect-ratio: var(--ratio); border-radius: 12px; outline: 1px solid var(--frame); outline-offset: 7px; }
 /* подпись стоит под снимком: номер и одно слово */
 .strip figcaption { display: flex; align-items: baseline; gap: 14px; margin-top: 24px; font-size: 12px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
 .strip figcaption b { font-family: var(--display); font-size: 20px; font-weight: 300; letter-spacing: 0; color: var(--sand); }
 /* тонкая линия внизу показывает, сколько ленты пройдено */
-.strip-bar { position: absolute; right: var(--side); bottom: 5vh; left: var(--side); height: 1px; background: var(--line); }
+.strip-bar { position: absolute; right: var(--side); bottom: calc(var(--vh) * 5); left: var(--side); height: 1px; background: var(--line); }
 .strip-bar i { display: block; height: 100%; background: var(--ice); transform: scaleX(0); transform-origin: left; will-change: transform; }
 
 /* ---------- Слои: светлая витрина, в которой начинка телефона раскладывается на части (двигает twelve.js) ---------- */
 
-.scene-layers { height: 380vh; }
+.scene-layers { height: calc(var(--vh) * 380); }
 /* справа от витрины остаётся место под боковую навигацию и её подпись */
 .vitrine {
   position: absolute;
   top: 52%; left: calc(var(--side) + 460px);
-  width: min(100vw - var(--side) - 650px, 118vh);
+  width: min(100vw - var(--side) - 650px, calc(var(--vh) * 118));
   aspect-ratio: 1.55;
   translate: 0 -50%;
   border-radius: 20px;
@@ -161,52 +161,94 @@
 
 @media (max-width: 1180px) {
   /* кадр сверху, текст под ним: кадру достаётся высота окна за вычетом текста (около 330 точек) и отступов */
-  .scene-light { --w: min(92vw, max(160px, calc((86vh - 330px) * 1.08))); }
-  .light-frame { top: 8vh; right: auto; left: 50%; aspect-ratio: 1.08; translate: -50% 0; }
+  .scene-light { --w: min(92vw, max(160px, calc((calc(var(--vh) * 86) - 330px) * 1.08))); }
+  .light-frame { top: calc(var(--vh) * 8); right: auto; left: 50%; aspect-ratio: 1.08; translate: -50% 0; }
   .light-image { object-position: 50% 64%; }
-  .light-rings i { top: calc(8vh + var(--w) / 1.08 * 0.53); left: calc(50% + var(--w) * 0.02); }
-  .scene-light .shot-copy { top: auto; right: var(--side); bottom: 6vh; left: var(--side); max-width: none; translate: none; }
+  .light-rings i { top: calc(calc(var(--vh) * 8) + var(--w) / 1.08 * 0.53); left: calc(50% + var(--w) * 0.02); }
+  .scene-light .shot-copy { top: auto; right: var(--side); bottom: calc(var(--vh) * 6); left: var(--side); max-width: none; translate: none; }
 
   /* текст сверху, витрина под ним */
-  .scene-layers .spin-copy { top: 13vh; right: var(--side); left: var(--side); max-width: none; translate: none; }
+  .scene-layers .spin-copy { top: calc(var(--vh) * 13); right: var(--side); left: var(--side); max-width: none; translate: none; }
   .scene-layers h2 { margin-top: 14px; }
   /* видна только та подпись, которая сейчас активна */
   .scene-layers .steps { position: absolute; top: 100%; right: 0; left: 0; margin-top: 12px; }
   .scene-layers .steps li { position: absolute; top: 0; right: 0; left: 0; margin: 0; opacity: 0; }
   .scene-layers .steps li.is-on { opacity: 1; }
-  .vitrine { top: 46vh; left: 50%; width: min(var(--col), 74vh); translate: -50% 0; }
+  .vitrine { top: calc(var(--vh) * 46); left: 50%; width: min(var(--col), calc(var(--vh) * 74)); translate: -50% 0; }
 }
 
 /* ---------- Узкие экраны: текст и кадр стоят друг под другом ---------- */
 
 @media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
-  .is-12 .scene-hero { height: 250vh; }
+  .is-12 .scene-hero { height: calc(var(--vh) * 250); }
 
-  .scene-light { height: 300vh; }
-  .scene-light .shot-copy { right: 22px; bottom: 7vh; left: 22px; }
+  /* --room — место, которое остаётся картинке над текстом или под ним (см. style.css) */
+  .scene-light { height: calc(var(--vh) * 300); }
+  /* ширина кадра: по ширине экрана, но не выше места над текстом (--room известно только внутри экрана сцены) */
+  .scene-light .pin { --w: min(92vw, calc(var(--room) * 1.08)); }
+  .light-frame { top: var(--top); }
+  .light-rings i { top: calc(var(--top) + var(--w) / 1.08 * 0.53); }
+  .scene-light .shot-copy { right: var(--side); bottom: var(--foot); left: var(--side); }
 
-  /* снимок почти во всю ширину экрана, под текстом */
-  .scene-lens { height: 330vh; }
-  .lens { --lw: min(86vw, 50vh); top: 33vh; right: 50%; translate: 50% 0; }
+  /* снимок под текстом: во всю ширину экрана, но не выше оставшегося места */
+  .scene-lens { height: calc(var(--vh) * 330); }
+  .lens { --lw: min(86vw, calc(var(--room) * 0.84)); top: calc(var(--top) + var(--copy) + var(--gap)); right: 50%; translate: 50% 0; }
 
-  .scene-strip { height: 300vh; }
-  .strip-head { top: 11vh; right: 22px; left: 22px; display: block; }
-  .strip-head .shot-text { margin-top: 12px; font-size: 14px; }
-  .strip { top: 36vh; gap: 3vh; padding: 0 22px; }
-  .strip img { height: 42vh; outline-offset: 5px; }
-  .strip figcaption { margin-top: 16px; }
-  .strip-bar { right: 22px; left: 22px; }
+  .scene-strip { height: calc(var(--vh) * 300); }
+  .strip-head { top: var(--top); right: var(--side); left: var(--side); display: block; }
+  .strip-head .shot-text { margin-top: 10px; font-size: 14px; }
+  /* лента под заголовком: снимок с подписью занимают ровно то, что осталось до линии внизу */
+  .strip { top: calc(var(--top) + var(--copy) + var(--gap)); gap: calc(var(--vh) * 3); padding: 0 var(--side); }
+  .strip img { height: calc(var(--room) - 58px); outline-offset: 5px; }
+  .strip figcaption { margin-top: 14px; }
+  .strip-bar { right: var(--side); bottom: calc(var(--foot) * 0.6); left: var(--side); }
   .scene-strip .pin::before, .scene-strip .pin::after { display: none; }
 
-  .scene-layers { height: 330vh; }
-  .scene-layers .spin-copy { top: 11vh; right: 22px; left: 22px; }
-  .vitrine { top: 40vh; width: min(100vw - 44px, 60vh); aspect-ratio: 1.12; border-radius: 16px; outline-offset: 5px; }
+  .scene-layers { height: calc(var(--vh) * 330); }
+  .scene-layers .spin-copy { top: var(--top); right: var(--side); left: var(--side); }
+  .scene-layers h2 { margin-top: 10px; }
+  .vitrine { top: calc(var(--top) + var(--copy) + var(--gap)); width: min(100vw - 2 * var(--side), calc(var(--room) * 1.12)); aspect-ratio: 1.12; border-radius: 16px; outline-offset: 5px; }
 
   .tiles { grid-template-columns: 1fr; gap: 44px; margin: 40px 0 0; }
   .tile:nth-child(even) { margin-top: 0; }
   .tile-photo { border-radius: 16px; outline-offset: 5px; }
   .tile figcaption { margin-top: 22px; padding-left: 14px; }
   .tile span { font-size: 14px; }
+}
+
+/* ---------- Телефон боком: текст слева, картинка справа; обе стоят по середине места под шапкой ---------- */
+/* --mid — эта середина, --tall — высота места под шапкой (см. style.css) */
+
+@media (orientation: landscape) and (max-height: 480px) {
+  /* Дизайн: овал света справа, во всю высоту */
+  .scene-light .pin { --w: min(calc(var(--tall) * 1.02), 46vw); }
+  .light-frame { top: var(--mid); right: var(--side); left: auto; aspect-ratio: 1700 / 1747; translate: 0 -50%; }
+  .light-image { object-position: 50% 50%; }
+  .light-rings i { top: calc(var(--mid) + var(--w) * 0.031); left: calc(100vw - var(--side) - var(--w) * 0.48); }
+  .scene-light .shot-copy { top: var(--mid); right: auto; bottom: auto; left: var(--side); max-width: 40vw; translate: 0 -50%; }
+
+  /* Камера: снимок справа, по высоте места */
+  .lens { --lw: min(calc(var(--tall) * 0.82), 38vw); top: var(--mid); right: calc(var(--side) + 3vw); }
+
+  /* Снимки: заголовок в одну строку под шапкой, лента занимает остальное */
+  .strip-head { top: calc(var(--bar) + 2px); gap: 24px; align-items: center; }
+  .strip-head .shot-text { margin: 0; font-size: 12px; line-height: 1.4; }
+  .strip { top: calc(var(--bar) + var(--copy, 70px) + 12px); gap: calc(var(--vh) * 4); }
+  .strip img { height: calc(var(--vh) * 100 - var(--bar) - var(--copy, 70px) - 64px); outline-offset: 4px; }
+  .strip figcaption { margin-top: 10px; font-size: 11px; }
+  .strip figcaption b { font-size: 16px; }
+  .strip-bar { bottom: 8px; }
+  .scene-strip .pin::before, .scene-strip .pin::after { top: calc(var(--bar) + var(--copy, 70px)); bottom: 20px; }
+
+  /* Разбор: текст слева (видна одна подпись — та, что активна), витрина справа */
+  .scene-layers .spin-copy { top: calc(var(--mid) - var(--hang, 0px) / 2); right: auto; left: var(--side); max-width: 38vw; translate: 0 -50%; }
+  .scene-layers h2 { margin-top: 10px; }
+  .vitrine { top: var(--mid); right: var(--side); left: auto; width: min(48vw, calc(var(--tall) * 1.5)); aspect-ratio: 1.55; translate: 0 -50%; border-radius: 14px; outline-offset: 4px; }
+
+  .tiles { gap: 34px 28px; margin-top: 30px; }
+  .tile:nth-child(even) { margin-top: 40px; }
+  .tile figcaption { margin-top: 16px; }
+  .tile span { font-size: 13px; }
 }
 
 /* ---------- Без анимаций: всё видно сразу ---------- */

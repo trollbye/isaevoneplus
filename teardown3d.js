@@ -516,7 +516,7 @@ const LABELS = [
   badge.textContent = index + 1;
   element.append(text, line, badge);
   labelsBox.appendChild(element);
-  return { part: parts[name], x, y, up: row === "up", element, line };
+  return { part: parts[name], x, y, up: row === "up", element, line, text, wide: 0, tall: 0 };
 });
 
 // ----- Ключевые положения: [доля прокрутки, поворот, наклон, размер, разбор] -----
@@ -544,6 +544,9 @@ function samplePose(p) {
 let width = 0;
 let height = 0;
 let dense = false; // узкий экран: разбор идёт сверху вниз, вместо выносок — номера
+// телефон боком: разбор мелкий и подписи одного ряда стоят тесно — соседняя уходит на строку дальше от разбора
+const lying = window.matchMedia("(orientation: landscape) and (max-height: 480px)");
+let tight = false;
 let sideShift = 0;
 let pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
 let dirty = true; // пора перерисовать кадр
@@ -581,6 +584,13 @@ function resize() {
     light.position.set(tilt.position.x + x, tilt.position.y + y, z);
   });
   labelsBox.classList.toggle("is-dense", dense);
+  tight = lying.matches && !dense;
+  if (tight) {
+    for (const label of LABELS) {
+      label.wide = label.text.offsetWidth;
+      label.tall = label.text.offsetHeight;
+    }
+  }
   dirty = true;
 }
 new ResizeObserver(resize).observe(stage);
@@ -625,6 +635,12 @@ function placeLabels(amount) {
   labelsBox.dataset.on = "1";
   const top = toScreen(parts.drive.localToWorld(edge.set(0, 6.5, 0))).y;
   const bottom = toScreen(parts.drive.localToWorld(edge.set(0, -6.5, 0))).y;
+  let aboveX = 0; // предыдущая подпись верхнего и нижнего ряда: где стоит, какой ширины и сдвинута ли сама
+  let aboveWide = 0;
+  let aboveStep = true;
+  let belowX = 0;
+  let belowWide = 0;
+  let belowStep = true;
   for (const label of LABELS) {
     label.element.style.opacity = amount.toFixed(3);
     if (dense) {
@@ -635,7 +651,16 @@ function placeLabels(amount) {
     }
     toScreen(label.part.localToWorld(anchor.set(label.x, label.y, 0)));
     const rowY = label.up ? Math.min(top, anchor.y) - 30 : Math.max(bottom, anchor.y) + 30;
-    label.line.style.height = `${Math.max(Math.abs(anchor.y - rowY), 12).toFixed(0)}px`;
+    let step = 0;
+    if (tight) {
+      const nearX = label.up ? aboveX : belowX;
+      const nearWide = label.up ? aboveWide : belowWide;
+      const nearStep = label.up ? aboveStep : belowStep;
+      if (!nearStep && Math.abs(anchor.x - nearX) < (label.wide + nearWide) / 2 + 8) step = label.tall + 3;
+      if (label.up) [aboveX, aboveWide, aboveStep] = [anchor.x, label.wide, step > 0];
+      else [belowX, belowWide, belowStep] = [anchor.x, label.wide, step > 0];
+    }
+    label.line.style.height = `${(Math.max(Math.abs(anchor.y - rowY), 12) + step).toFixed(0)}px`;
     // блок подписи начинается в точке на детали: выноска идёт от неё до своего ряда, дальше текст
     label.element.style.transform = `translate(${anchor.x.toFixed(1)}px, ${anchor.y.toFixed(1)}px) translate(-50%, ${label.up ? "-100%" : "0"})`;
   }
@@ -708,5 +733,5 @@ function frame(now) {
 }
 
 // надписи рисуются шрифтом, который может догрузиться позже: тогда перерисовываем кадр
-if (document.fonts) document.fonts.ready.then(() => (dirty = true));
+if (document.fonts) document.fonts.ready.then(resize); // с настоящим шрифтом подписи другой ширины
 requestAnimationFrame(frame);

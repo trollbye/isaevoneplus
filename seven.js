@@ -10,25 +10,32 @@
 
   // ----- Сцена с камерой нарисована в координатах 1920 × 1000 и целиком масштабируется под окно -----
   const stage = document.getElementById("xrayStage");
+  // мерка: невидимая палочка высотой с место, которое на телефоне остаётся схеме под текстом (--room из style.css)
+  const probe = document.createElement("i");
+  probe.style.cssText = "position:absolute;top:0;left:0;width:0;height:var(--room, 60%);visibility:hidden;pointer-events:none";
+  stage.parentElement.appendChild(probe);
   function fitStage() {
     const wide = !window.STACKED.matches;
     let scale;
     let x;
     let compact = true; // мелкая сцена: у подписей остаются только названия
+    // высота экрана сцены, а не окна: на телефоне она не меняется, когда браузер прячет свои панели
+    const tall = stage.closest(".pin").offsetHeight || window.innerHeight;
     if (wide) {
       // слева стоит текст, сцена начинается за ним: в окно должен поместиться кусок от отметки 150 до 1690
       // (там кончаются подписи), а справа ещё остаётся место под точки-навигацию
       const side = Math.max(window.innerWidth * 0.06, (window.innerWidth - 1320) / 2);
       const left = side + 400;
       const room = window.innerWidth - left - 60;
-      scale = Math.min(room / 1540, window.innerHeight / 1240);
+      scale = Math.min(room / 1540, tall / 1240);
       compact = scale < 0.46;
       // без вторых строк подписи короче, поэтому сцену можно показать крупнее
-      if (compact) scale = Math.min(room / 1400, window.innerHeight / 1240);
+      if (compact) scale = Math.min(room / 1400, tall / 1240);
       x = left - 150 * scale;
     } else {
       // на узком окне текст стоит сверху, а в ширину помещается кусок от 635 до 1595: камера, винт, мотор и их подписи
-      scale = Math.min(window.innerWidth / 960, (window.innerHeight * 0.62) / 1000);
+      // а по высоте схема занимает место под текстом: его высоту показывает мерка
+      scale = Math.min(window.innerWidth / 960, ((probe.offsetHeight || tall * 0.58) * 1.06) / 1000);
       x = window.innerWidth / 2 - 1115 * scale;
     }
     stage.classList.toggle("is-compact", compact);
@@ -39,6 +46,8 @@
   }
   fitStage();
   window.addEventListener("resize", fitStage);
+  // page.js измерил тексты сцен (от их высоты зависит место под схему) — подгоняем заново
+  window.addEventListener("scenes:fit", fitStage);
 
   // части сцены ищутся один раз и запоминаются на самой сцене
   const parts = (scene) => {

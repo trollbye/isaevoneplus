@@ -76,7 +76,7 @@
     lens(p, enter, scene) {
       const { ease } = window.SCENE_TOOLS;
       const { lens, steps } = parts(scene);
-      lens.style.transform = `translate3d(0, ${((1 - enter) * 10).toFixed(2)}vh, 0) scale(${(0.94 + ease(p) * 0.06).toFixed(3)})`;
+      lens.style.transform = `translate3d(0, calc(var(--vh) * ${((1 - enter) * 10).toFixed(2)}), 0) scale(${(0.94 + ease(p) * 0.06).toFixed(3)})`;
       lens.style.opacity = ease(enter / 0.7).toFixed(3);
 
       // сначала снимок виден целиком, потом свет обходит три объектива и в конце снова открывает всё
@@ -102,7 +102,7 @@
     layers(p, enter, scene) {
       const { ease, clamp } = window.SCENE_TOOLS;
       const { box, layers, smoke, steps } = parts(scene);
-      box.style.transform = `translate3d(0, ${((1 - enter) * 8).toFixed(2)}vh, 0)`;
+      box.style.transform = `translate3d(0, calc(var(--vh) * ${((1 - enter) * 8).toFixed(2)}), 0)`;
       box.style.opacity = ease(enter / 0.7).toFixed(3);
 
       // слои стоят стопкой, потом разъезжаются на свои места: крайние трогаются первыми, средние чуть позже

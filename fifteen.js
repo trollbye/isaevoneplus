@@ -63,6 +63,9 @@
   let burstAt = -1;
 
   // ----- Батарея: полоски ёмкости. Числа берутся из той же строки, что и в таблице сравнения -----
+  // «без анимаций» (так настроен телефон или компьютер) сцены стоят на месте: числа сразу показаны итоговые, а не нули
+  const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const spaced = (value) => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   const capacity = phone.versus.rows.find((row) => row.label === "Ёмкость");
   const bars = capacity.values.map((value, index) => {
     const item = document.createElement("li");
@@ -70,12 +73,12 @@
     const name = document.createElement("span");
     name.textContent = phone.versus.rivals[index];
     const number = document.createElement("b");
-    number.textContent = "0";
+    number.textContent = calm ? spaced(value) : "0";
+    if (calm) item.style.setProperty("--fill", (value / capacity.values[0]).toFixed(4));
     item.append(name, number, document.createElement("i"));
     byId("cellBars").appendChild(item);
     return { item, number, value, shown: -1 };
   });
-  const spaced = (value) => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
   // ----- Экран: шкала частоты -----
   const HZ_FROM = 60;
@@ -84,6 +87,12 @@
   const dialNote = byId("dialNote");
   const dialScale = byId("dialScale");
   let hzShown = -1;
+  if (calm) {
+    dialNow.textContent = HZ_TO;
+    dialNote.textContent = "OnePlus 15 в играх";
+    dialScale.style.setProperty("--at", "1");
+    dialScale.classList.add("is-top");
+  }
 
   // части сцены ищутся один раз и запоминаются на самой сцене
   const parts = (scene, find) => (scene.parts ||= find(scene.element));
@@ -116,7 +125,7 @@
       const { view, copy } = parts(scene, (element) => ({ view: element.querySelector(".burst-view"), copy: element.querySelector(".side-copy") }));
       const show = ease(enter / 0.8);
       view.style.opacity = show.toFixed(3);
-      view.style.transform = `translate3d(0, ${((1 - show) * 8).toFixed(2)}vh, 0)`;
+      view.style.transform = `translate3d(0, calc(var(--vh) * ${((1 - show) * 8).toFixed(2)}), 0)`;
       copy.style.opacity = ease((enter - 0.4) / 0.6).toFixed(3);
       // кадры идут по порядку между 12% и 86% сцены: по одному на равный отрезок прокрутки
       const at = Math.floor(clamp((p - 0.12) / 0.74, 0, 0.9999) * BURST);
@@ -149,7 +158,7 @@
         const front = turns[index];
         // пока сцена въезжает, чипы съезжаются с разных сторон
         const drift = (index - 1) * (1 - rise) * 6 + side[index] * pull;
-        chip.style.transform = `translate3d(${drift.toFixed(2)}vw, ${((1 - rise) * 14 - front * 2.4 + (0.5 - p) * (index + 1) * 1.2).toFixed(2)}vh, 0) scale(${(0.84 + front * 0.22).toFixed(4)})`;
+        chip.style.transform = `translate3d(${drift.toFixed(2)}vw, calc(var(--vh) * ${((1 - rise) * 14 - front * 2.4 + (0.5 - p) * (index + 1) * 1.2).toFixed(2)}), 0) scale(${(0.84 + front * 0.22).toFixed(4)})`;
         chip.style.opacity = (rise * (dim + front * (1 - dim))).toFixed(3);
       });
       light(steps, p < 0.38 ? 0 : p < 0.65 ? 1 : 2);
@@ -226,7 +235,7 @@
   const loadTeardown = () => {
     if (teardownAsked) return;
     teardownAsked = true;
-    import("./teardown3d.js?v=23").catch((error) => {
+    import("./teardown3d.js?v=24").catch((error) => {
       document.documentElement.classList.add("no-3d"); // видеокарта не справилась: раздел с разбором прячется
       console.error(error);
     });
