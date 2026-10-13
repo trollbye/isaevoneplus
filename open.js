@@ -28,38 +28,78 @@
   let started = false;
   let wide = !window.STACKED.matches; // на широком окне текст стоит сбоку от ролика, на узком — под ним
 
-  // Раскрытый телефон без ролика: при режиме «без анимаций», если браузер не дал запустить видео или не смог его
-  // прочитать. Тогда на месте ролика сразу стоит его последний кадр
+  // Раскрытый телефон без ролика: при режиме «без анимаций» или если браузер не смог прочитать видео.
+  // Тогда на месте ролика сразу стоит его последний кадр
   function still() {
     if (state.done) return;
     state.playing = false;
     state.done = true;
     started = true;
+    blocked = false;
     sceneBox.classList.remove("is-playing");
     sceneBox.classList.add("is-done");
     film.poster = film.dataset.last;
     film.removeAttribute("src");
     film.load();
   }
-  // Ролик стартует, когда страница загрузилась, сам он загружен настолько, что доиграет без остановок,
-  // вкладка открыта и первый экран виден. Если страницу открыли ниже первого экрана, он начнётся, когда до него долистают.
+  // Ролик стартует, когда страница загрузилась, вкладка открыта и первый экран виден. Если страницу открыли ниже
+  // первого экрана, он начнётся, когда до него долистают.
   // После загрузки страница ещё полсекунды дорисовывает первый экран (картинки, шрифты): если запустить ролик
-  // в это время, он спотыкается на первых кадрах (проверено замером), поэтому старт — через полсекунды и в свободную минуту
+  // в это время, он спотыкается на первых кадрах (проверено замером), поэтому старт — через полсекунды и в свободную минуту.
+  //
+  // Загружен ли сам ролик. Компьютер загружает его заранее целиком (preload="auto"), и старт этого ждёт: тогда ролик
+  // идёт без остановок. Но Safari на iPhone (и Chrome на Android при мобильном интернете) видео заранее не загружает
+  // вообще: пока ролик не запустили, readyState там не поднимается выше 1, а событие «canplaythrough» не приходит.
+  // Раньше старт ждал полной загрузки без срока — и на телефоне не наступал никогда: на первом экране так и стоял
+  // первый кадр. Теперь загрузку ждём, только пока браузер её на самом деле ведёт (у ролика прибавляются данные).
+  // Не ведёт — ролик запускается как есть: браузер начнёт грузить его по запросу и покажет, как только сможет
   let loadedAt = 0; // когда страница загрузилась
+  let fetched = 0; // сколько секунд ролика браузер уже загрузил
+  let fetchedAt = 0; // когда это число последний раз выросло
+  const PATIENCE = 600; // столько миллисекунд без новых данных значит: сам браузер ролик не загружает
+  const LIMIT = 8000; // дольше этого после загрузки страницы старт не ждёт ни при каких условиях
+  const loading = (now) => {
+    const ranges = film.buffered;
+    const end = ranges.length ? ranges.end(ranges.length - 1) : 0;
+    if (end > fetched + 0.01) {
+      fetched = end;
+      fetchedAt = now;
+    }
+    // networkState 2 — «идёт загрузка»; любое другое значение значит, что браузер её остановил или не начинал
+    return film.networkState === 2 && now - fetchedAt < PATIENCE;
+  };
+  // Запуск. Браузер может его запретить: iPhone в режиме энергосбережения начинает видео только после касания.
+  // Тогда ролик ждёт первого касания или нажатия клавиши (blocked), а если первый экран пролистали, не дождавшись, —
+  // сцена unfold ниже ставит последний кадр: под текстом «стал планшет» должен быть раскрытый телефон
+  let blocked = false;
+  const play = () => {
+    const played = film.play();
+    if (!played) return;
+    played.catch((error) => {
+      if (state.done || state.playing) return;
+      if (error && error.name === "NotAllowedError") blocked = true;
+      else still();
+    });
+  };
+  const retry = () => {
+    if (!blocked || state.done || state.playing) return;
+    blocked = false; // одно касание — одна попытка; запретят снова — флаг вернётся
+    play();
+  };
+  ["pointerup", "touchend", "click", "keydown"].forEach((type) => window.addEventListener(type, retry, { capture: true, passive: true }));
   function start() {
-    if (started || !near || document.hidden || !loadedAt || film.readyState < 4) return;
-    const wait = loadedAt + 500 - performance.now();
+    if (started || !near || document.hidden || !loadedAt) return;
+    const now = performance.now();
+    const wait = loadedAt + 500 - now;
     if (wait > 0) return void setTimeout(start, wait);
+    if (film.readyState < 4 && loading(now) && now - loadedAt < LIMIT) return void setTimeout(start, 150);
     started = true;
-    const go = () => {
-      const played = film.play();
-      if (played) played.catch(still);
-    };
-    if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 300 });
-    else go();
+    if (window.requestIdleCallback) requestIdleCallback(play, { timeout: 300 });
+    else play();
   }
   film.addEventListener("playing", () => {
     if (state.done) return;
+    blocked = false;
     state.playing = true;
     state.until = performance.now() + 7000; // ролик идёт 4 секунды, и ещё 3 секунды после него страницу не занимаем
     sceneBox.classList.add("is-playing");
@@ -72,7 +112,7 @@
   film.addEventListener("canplaythrough", start);
   document.addEventListener("visibilitychange", start);
   const loaded = () => {
-    loadedAt = performance.now();
+    loadedAt = fetchedAt = performance.now();
     start();
   };
   if (document.readyState === "complete") loaded();
@@ -133,6 +173,8 @@
       // шторка под текстом: уходит вместе с первым текстом и возвращается со вторым
       curtain.style.opacity = Math.max(1 - gone, show).toFixed(3);
       second.style.transform = `translate3d(0, ${((1 - show) * 40).toFixed(1)}px, 0)`;
+      // браузер не дал запустить ролик (см. blocked), а первый экран уже листают: под второй текст встаёт последний кадр
+      if (blocked && show > 0.02) still();
       scene.stats.forEach((item, index) => {
         const on = ease((p - from - 0.08 - index * 0.05) / 0.16);
         item.style.opacity = on.toFixed(3);
