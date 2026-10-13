@@ -4,7 +4,7 @@
 // поворачивается боком и разъезжается на слои. Положение прокрутки (0..1) приходит из page.js
 // через window.TEARDOWN. Кадр рисуется только когда что-то изменилось: в покое картинка неподвижна.
 import * as THREE from "./vendor/three-0.160.0/three.module.min.js";
-import { attachSpin } from "./spin.js?v=1";
+import { attachSpin } from "./spin.js?v=2";
 
 const state = window.TEARDOWN;
 const root = document.documentElement;
@@ -597,7 +597,7 @@ new ResizeObserver(resize).observe(stage);
 resize();
 
 // разбор можно крутить мышью и пальцем: это добавка к позе, которую задаёт прокрутка (spin.js)
-const spin = attachSpin(canvas, { wake: () => (dirty = true), tilt: 0.4, closest: 1.4 });
+const spin = attachSpin(canvas, { wake: () => (dirty = true), tilt: 0.4, closest: 1.4, viewer: false });
 let spunAt = 0; // доля прокрутки, на которой разбор крутили рукой
 
 let pointerX = 0;

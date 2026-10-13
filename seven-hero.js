@@ -4,7 +4,7 @@
 // Числа (сколько пролистано, наклон) приходят из page.js через window.HERO.
 // Кадр рисуется, только когда что-то изменилось: в покое картинка неподвижна.
 import { createStage, createPhone, everyMinute } from "./phonekit.js?v=15";
-import { attachSpin } from "./spin.js?v=1";
+import { attachSpin } from "./spin.js?v=2";
 
 const holder = document.getElementById("heroPhone");
 const canvas = document.getElementById("heroCanvas");
@@ -46,9 +46,12 @@ function draw() {
   // сначала телефон разворачивается от спинки к экрану, потом из верхнего торца поднимается камера
   const turn = ease((p - 0.06) / 0.46);
   const lift = ease((p - 0.54) / 0.14);
-  phone.model.rotation.set(0.05 + tiltY * 0.1 + spin.pitch, 0.36 + turn * (Math.PI - 0.72) + tiltX * 0.26 + spin.yaw, 0);
-  phone.model.scale.setScalar(spin.zoom);
-  phone.model.position.y = Math.sin(turn * Math.PI) * 0.2 - 0.45;
+  // в режиме просмотра (spin.js) позу задаёт он сам, прокрутка в это время ничего не решает
+  if (!spin.pose(phone.model, camera)) {
+    phone.model.rotation.set(0.05 + tiltY * 0.1 + spin.pitch, 0.36 + turn * (Math.PI - 0.72) + tiltX * 0.26 + spin.yaw, 0);
+    phone.model.scale.setScalar(spin.zoom);
+    phone.model.position.y = Math.sin(turn * Math.PI) * 0.2 - 0.45;
+  }
   popup.position.y = popup.userData.hidden + (popup.userData.shown - popup.userData.hidden) * lift;
   renderer.render(scene, camera);
 }

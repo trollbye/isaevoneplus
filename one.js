@@ -91,7 +91,7 @@
   const loadPhone = () => {
     if (asked) return;
     asked = true;
-    import("./one-turn.js?v=15").catch((error) => console.error(error));
+    import("./one-turn.js?v=16").catch((error) => console.error(error));
   };
   window.whenCalm(loadPhone);
   new IntersectionObserver((entries) => entries[0].isIntersecting && loadPhone(), { rootMargin: "150% 0px" }).observe(document.getElementById("design"));

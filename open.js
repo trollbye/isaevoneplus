@@ -235,7 +235,7 @@
   const loadPhone = () => {
     if (asked) return;
     asked = true;
-    import("./open-turn.js?v=9").catch((error) => console.error(error));
+    import("./open-turn.js?v=10").catch((error) => console.error(error));
   };
   window.whenCalm(loadPhone, () => window.UNFOLD.playing || performance.now() < window.UNFOLD.until);
   new IntersectionObserver((entries) => entries[0].isIntersecting && loadPhone(), { rootMargin: "150% 0px" }).observe(document.getElementById("outside"));

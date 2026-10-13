@@ -8,7 +8,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
-import { attachSpin } from "./spin.js?v=1";
+import { attachSpin } from "./spin.js?v=2";
 
 const FOLDER = "assets/13/model/";
 const DECODER = "vendor/three-0.162.0/addons/libs/draco/gltf/"; // распаковщик сжатой геометрии
@@ -98,7 +98,9 @@ scene.add(holder);
 
 // ----- Кручение мышкой или пальцем (spin.js) -----
 // Сдвиг добавляется к позе. Когда страницу листают дальше, он плавно сходит на нет и модель возвращается в позу
-const spin = attachSpin(stage, { wake: () => wake(), tilt: 0.7 });
+// кнопка «Покрутить в 3D» стоит не в самой рамке модели (её низ на телефоне плавно гаснет), а рядом, в сцене
+const spin = attachSpin(stage, { wake: () => wake(), tilt: 0.7, viewer: { host: stage.parentElement } });
+spin.span = 16.29 / 0.8; // в кадр по высоте помещается телефон (16,29 см) и ещё четверть его высоты
 let spunAt = 0; // доля прокрутки, на которой модель крутили рукой
 stage.addEventListener("pointerdown", () => stage.classList.add("is-touched"), { once: true }); // подсказка «зажми и крути» больше не нужна
 // холст подгоняется под свой размер на странице; на плотных экранах рисуем не больше чем в полтора раза крупнее,
@@ -147,7 +149,7 @@ function pace(now) {
   if (average > 28 && quality > 0.5) {
     quality = Math.max(quality * 0.8, 0.5);
     resize();
-  } else if (average > 60) {
+  } else if (average > 60 && !spin.view) {
     near = false;
     stage.classList.remove("is-live"); // снова виден снимок
     stage.classList.add("is-still");
@@ -157,14 +159,22 @@ function pace(now) {
 const turn = new THREE.Euler(0, 0, 0, "XYZ");
 const look = new THREE.Quaternion();
 function draw() {
-  const pose = state.pose || poseAt(state.p);
+  // в режиме просмотра (spin.js) позу задаёт он сам; приближает там угол обзора камеры, а не её расстояние —
+  // иначе грань, повёрнутая к зрителю, оказалась бы у самого объектива
+  const view = spin.view;
+  const pose = view ? { yaw: view.yaw, pitch: view.pitch, size: 1, x: view.x, y: view.y } : state.pose || poseAt(state.p);
+  const zoom = view ? view.zoom : 1;
+  if (camera.zoom !== zoom) {
+    camera.zoom = zoom;
+    camera.updateProjectionMatrix();
+  }
   // Поза описана так, будто крутят сам телефон (в файле он стоит экраном к зрителю, отсюда добавка в пол-оборота).
   // Камера делает обратное: облетает неподвижную модель, подходит ближе вместо увеличения и смещается вместо сдвига
-  turn.set(pose.pitch + spin.pitch, pose.yaw + spin.yaw + Math.PI, 0);
+  turn.set(pose.pitch + (view ? 0 : spin.pitch), pose.yaw + (view ? 0 : spin.yaw) + Math.PI, 0);
   look.setFromEuler(turn).invert();
   camera.position
     .set(-pose.x * VIEW, -pose.y * VIEW, DISTANCE)
-    .divideScalar(pose.size * spin.zoom * 0.8 * VIEW)
+    .divideScalar(pose.size * (view ? 1 : spin.zoom) * 0.8 * VIEW)
     .applyQuaternion(look);
   camera.quaternion.copy(look);
   renderer.render(scene, camera);

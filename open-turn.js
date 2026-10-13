@@ -3,7 +3,7 @@
 // прокрутка: спинка → ребро → экран на крышке. Сколько сцены пролистано, сообщает open.js через window.OPENTURN.
 // Кадр рисуется, только когда что-то изменилось и сцена рядом с окном: в покое картинка неподвижна.
 import { createStage, createPhone, everyMinute, breathe } from "./phonekit.js?v=15";
-import { attachSpin } from "./spin.js?v=1";
+import { attachSpin } from "./spin.js?v=2";
 
 const canvas = document.getElementById("outsideCanvas");
 const state = window.OPENTURN;
@@ -45,12 +45,15 @@ function draw() {
   const { p, enter } = state;
   // первая половина пути — от спинки до ребра, потом пауза на ребре, потом разворот экраном
   const turn = 0.45 * ease((p - 0.05) / 0.3) + 0.55 * ease((p - 0.55) / 0.33);
-  phone.model.rotation.set(0.05, 0.42 + turn * (Math.PI - 0.84), 0);
-  // телефон поднимается снизу, пока сцена въезжает на экран
-  phone.model.position.y = (1 - ease(enter)) * -2.4;
-  phone.model.rotation.x += spin.pitch;
-  phone.model.rotation.y += spin.yaw;
-  phone.model.scale.setScalar(spin.zoom);
+  // в режиме просмотра (spin.js) позу задаёт он сам, прокрутка в это время ничего не решает
+  if (!spin.pose(phone.model, camera)) {
+    phone.model.rotation.set(0.05, 0.42 + turn * (Math.PI - 0.84), 0);
+    // телефон поднимается снизу, пока сцена въезжает на экран
+    phone.model.position.y = (1 - ease(enter)) * -2.4;
+    phone.model.rotation.x += spin.pitch;
+    phone.model.rotation.y += spin.yaw;
+    phone.model.scale.setScalar(spin.zoom);
+  }
   renderer.render(scene, camera);
 }
 
