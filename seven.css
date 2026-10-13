@@ -19,7 +19,7 @@
 /* ---------- Первый экран: живой телефон (его рисует seven-hero.js; общие правила лежат в style.css) ---------- */
 
 /* сцена длинная: пока её листают, телефон разворачивается экраном и выпускает камеру */
-.is-7pro .scene-hero { height: 320vh; }
+.is-7pro .scene-hero { height: calc(var(--vh) * 320); }
 .is-7pro .glow-hero {
   background:
     radial-gradient(40% 56% at 72% 50%, rgb(var(--neb-rgb) / 0.24), transparent 70%),
@@ -45,7 +45,7 @@
 
 /* ---------- Механизм: выдвижная камера и рентген корпуса (двигает seven.js) ---------- */
 
-.scene-xray { height: 520vh; }
+.scene-xray { height: calc(var(--vh) * 520); }
 .glow-xray { background: radial-gradient(44% 56% at 62% 46%, rgb(var(--neb-rgb) / 0.2), transparent 72%); }
 /* Сцена нарисована в координатах 1920 × 1000 и масштабируется целиком:
    --s (масштаб) и --x (место по горизонтали) считает seven.js под размер окна */
@@ -86,10 +86,10 @@
 
 /* ---------- Сканер: полоса света проявляет снимок сверху вниз (двигает seven.js) ---------- */
 
-.scene-hud { height: 240vh; }
+.scene-hud { height: calc(var(--vh) * 240); }
 .glow-hud { background: radial-gradient(34% 48% at 64% 50%, rgb(var(--neb-rgb) / 0.2), transparent 72%); }
 /* снимок стоит чуть ниже середины: сверху место занимает шапка */
-.hud { position: absolute; top: 52%; left: 64%; height: 80vh; aspect-ratio: var(--ratio, 0.6); translate: -50% -50%; }
+.hud { position: absolute; top: 52%; left: 64%; height: calc(var(--vh) * 80); aspect-ratio: var(--ratio, 0.6); translate: -50% -50%; }
 /* уголки-прицелы вокруг снимка */
 .hud::before {
   content: "";
@@ -134,18 +134,31 @@
 /* ---------- Узкие экраны: сцена сверху, текст под ней ---------- */
 
 @media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
-  .is-7pro .scene-hero { height: 280vh; }
+  .is-7pro .scene-hero { height: calc(var(--vh) * 280); }
   .is-7pro .hero-phone.is-live::before { inset: 4% -8%; }
 
-  .scene-xray { height: 460vh; }
-  .xray-stage { top: 66%; }
+  /* --room — место, которое остаётся картинке под текстом или над ним (см. style.css) */
+  .scene-xray { height: calc(var(--vh) * 460); }
+  /* схема стоит по центру места под текстом; её масштаб под это место считает seven.js */
+  .xray-stage { top: calc(var(--top) + var(--copy) + var(--gap) + var(--room) / 2); }
 
-  .scene-hud { height: 210vh; }
-  .hud { top: 31vh; left: 50%; height: 44vh; }
+  .scene-hud { height: calc(var(--vh) * 210); }
+  /* снимок занимает место над текстом; уголки-прицелы чуть выходят за него, поэтому он немного меньше */
+  .hud { top: calc(var(--top) + var(--room) / 2); left: 50%; height: calc(var(--room) * 0.93); }
   .is-7pro .scene-hud .shot-copy { max-width: none; }
 
   /* на узком экране от широкого кадра остаётся середина, а телефоны стоят справа: сдвигаем кадр к ним */
-  .is-7pro #display .shot-image { top: 5vh; object-position: 92% 50%; transform-origin: 50% 30%; }
+  .is-7pro #display .shot-image { top: calc(var(--vh) * 5); object-position: 92% 50%; transform-origin: 50% 30%; }
+}
+
+/* ---------- Телефон боком: схема и снимки стоят по середине места под шапкой (--mid и --tall из style.css) ---------- */
+
+@media (orientation: landscape) and (max-height: 480px) {
+  .xray-stage { top: var(--mid); }
+  .hud { top: var(--mid); left: 68%; height: calc(var(--tall) * 0.9); }
+  .is-7pro .scene-hud .shot-copy { max-width: 40vw; }
+  /* чип на кадре начинается почти с середины: колонка текста уже, чтобы строки не упирались в него */
+  .is-7pro #power .shot-copy { max-width: 37vw; }
 }
 
 /* ---------- Без анимаций: всё видно сразу ---------- */
