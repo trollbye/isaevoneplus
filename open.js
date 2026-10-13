@@ -151,7 +151,7 @@
       halves[0].style.transform = `rotateY(${angle.toFixed(2)}deg)`;
       halves[1].style.transform = `rotateY(${(-angle).toFixed(2)}deg)`;
       book.style.setProperty("--shade", ((angle / 72) * 0.72).toFixed(3)); // пока экран согнут, он в тени
-      book.style.transform = `translate3d(0, ${((1 - enter) * 8).toFixed(2)}vh, 0) scale(${(0.86 + flat * 0.14).toFixed(4)})`;
+      book.style.transform = `translate3d(0, calc(var(--vh) * ${((1 - enter) * 8).toFixed(2)}), 0) scale(${(0.86 + flat * 0.14).toFixed(4)})`;
 
       // на экране по очереди: одно окно, два, три — новый снимок проявляется поверх прежнего
       const second = ease((p - 0.42) / 0.08);
