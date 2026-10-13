@@ -124,6 +124,7 @@ function setColor(color) {
   if (spinWord) {
     spinWord.textContent = color.name;
     spinGlow.style.setProperty("--glow", color.glow);
+    fitWords(); // у названий цветов разная длина
   }
   $$(".hero-color").forEach((button) => button.setAttribute("aria-checked", button.dataset.key === color.key));
   $$(".hero-color-name").forEach((label) => (label.textContent = color.name));
@@ -315,11 +316,28 @@ function measure() {
   // без анимаций сцены не прилипают и могут быть выше экрана — там мерка не годится
   viewport = (!reducedMotion && pinSample && pinSample.offsetHeight) || window.innerHeight;
   shotShift = window.STACKED.matches ? 0 : 12;
+  fitWords();
   fitCopies();
   window.dispatchEvent(new Event("scenes:fit")); // сценам со своим расчётом размеров (схема камеры 7 Pro) пора пересчитаться
   for (const scene of scenes) {
     scene.top = scene.element.offsetTop;
     scene.height = scene.element.offsetHeight;
+  }
+}
+
+// Крупные надписи за картинками (слова и цифры во весь экран). На компьютере они проезжают через экран, на телефоне
+// стоят на месте, и каждая должна целиком помещаться в экран. Надписи разной длины, поэтому размер букв подбирается
+// измерением: стили задают, сколько места надписи отведено (max-width, а у вертикальной — max-height), и если она
+// длиннее, буквы уменьшаются ровно настолько, чтобы она вошла. На компьютере функция ничего не меняет
+function fitWords() {
+  for (const word of $$(".bigword, .shot-word, .spin-word, .plate-word, .cell-word")) {
+    word.style.fontSize = "";
+    if (!window.STACKED.matches) continue;
+    const style = getComputedStyle(word);
+    const upright = style.writingMode.startsWith("vertical");
+    const room = parseFloat(upright ? style.maxHeight : style.maxWidth);
+    const long = upright ? word.scrollHeight : word.scrollWidth;
+    if (room > 0 && long > room) word.style.fontSize = `${((parseFloat(style.fontSize) * room) / long).toFixed(1)}px`;
   }
 }
 

@@ -261,3 +261,8 @@
 @media (orientation: landscape) and (max-height: 480px) {
   .scene-model .pin > .view3d-open { bottom: 0; }
 }
+
+/* подсказка «зажми и крути» написана для мыши: на сенсорном экране вместо неё кнопка «Покрутить в 3D» */
+@media (pointer: coarse) {
+  .model-hint { display: none; }
+}
