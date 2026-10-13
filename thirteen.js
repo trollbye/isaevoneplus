@@ -99,7 +99,7 @@
     deck(p, enter, scene) {
       const { ease } = window.SCENE_TOOLS;
       const { deck, cards, steps } = parts(scene);
-      deck.style.transform = `translate3d(0, ${((1 - enter) * 9).toFixed(2)}vh, 0)`;
+      deck.style.transform = `translate3d(0, calc(var(--vh) * ${((1 - enter) * 9).toFixed(2)}), 0)`;
       deck.style.opacity = ease(enter / 0.7).toFixed(3);
 
       // первый кадр улетает на 30% сцены, второй на 62%; третий остаётся
@@ -122,7 +122,7 @@
     charge(p, enter, scene) {
       const { ease, clamp } = window.SCENE_TOOLS;
       const { box, percent, time, fill } = parts(scene);
-      box.style.transform = `translate3d(0, ${((1 - enter) * 8).toFixed(2)}vh, 0)`;
+      box.style.transform = `translate3d(0, calc(var(--vh) * ${((1 - enter) * 8).toFixed(2)}), 0)`;
       box.style.opacity = ease(enter / 0.7).toFixed(3);
 
       // заряд идёт от 1 до 100% между 12% и 74% сцены
@@ -141,4 +141,12 @@
       });
     },
   };
+
+  // «Без анимаций» (так настроен телефон или компьютер) сцены стоят на месте и прокрутка их не двигает:
+  // зарядка сразу показана в конце — 100% за 36 минут, а не «1% и 0 минут»
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.getElementById("chargeValue").textContent = "100";
+    document.getElementById("chargeTime").textContent = String(FULL);
+    document.getElementById("chargeFill").style.transform = "scaleX(1)";
+  }
 }

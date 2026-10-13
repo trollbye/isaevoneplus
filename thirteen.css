@@ -18,7 +18,7 @@
 
 /* ---------- Первый экран и осмотр: объёмная модель (её рисует thirteen-3d.js, подписи двигает thirteen.js) ---------- */
 
-.scene-model { height: 620vh; }
+.scene-model { height: calc(var(--vh) * 620); }
 .is-13 .glow-hero {
   background:
     radial-gradient(36% 54% at 70% 50%, rgb(var(--fire-rgb) / 0.13), transparent 70%),
@@ -39,10 +39,10 @@
 /* пока модель не готова (или если она не может быть нарисована), виден официальный снимок */
 .model-stage canvas { display: none; width: 100%; height: 100%; }
 .model-stage.is-live canvas { display: block; }
-.model-poster { position: absolute; top: 50%; left: 50%; width: auto; height: 80vh; translate: -50% -50%; pointer-events: none; }
+.model-poster { position: absolute; top: 50%; left: 50%; width: auto; height: calc(var(--vh) * 80); translate: -50% -50%; pointer-events: none; }
 .model-stage.is-live .model-poster { display: none; }
 /* подсказка под моделью: гаснет, как только её начали листать или покрутили */
-.model-hint { position: absolute; bottom: 3.4vh; left: 70vw; display: flex; align-items: center; gap: 12px; translate: -50% 0; font-size: 11px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; white-space: nowrap; color: var(--muted); pointer-events: none; transition: opacity 0.4s; }
+.model-hint { position: absolute; bottom: calc(var(--vh) * 3.4); left: 70vw; display: flex; align-items: center; gap: 12px; translate: -50% 0; font-size: 11px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; white-space: nowrap; color: var(--muted); pointer-events: none; transition: opacity 0.4s; }
 .model-hint i { width: 22px; height: 22px; border: 1px solid var(--fire); border-right-color: transparent; border-radius: 50%; rotate: 20deg; }
 .model-stage.is-touched ~ .model-hint, .model-stage:not(.is-live) ~ .model-hint { visibility: hidden; }
 /* подписи осмотра стоят на месте первого текста и проявляются по одной */
@@ -51,9 +51,9 @@
 
 /* ---------- Зум: кадр в рамке видоискателя приближается (двигает thirteen.js) ---------- */
 
-.scene-zoom { height: 460vh; }
+.scene-zoom { height: calc(var(--vh) * 460); }
 /* всё стоит столбиком: заголовок, кадр на всю оставшуюся высоту, шкала */
-.scene-zoom .pin { display: flex; flex-direction: column; gap: 3.4vh; padding: 12vh var(--clear) 5vh var(--side); }
+.scene-zoom .pin { display: flex; flex-direction: column; gap: calc(var(--vh) * 3.4); padding: calc(var(--vh) * 12) var(--clear) calc(var(--vh) * 5) var(--side); }
 .zoom-head { display: grid; grid-template-columns: auto minmax(0, 430px) 1fr; align-items: end; gap: 52px; }
 .zoom-head h2 { white-space: nowrap; }
 .zoom-head .shot-text { margin: 0 0 6px; }
@@ -71,18 +71,22 @@
 
 /* на кадре плата занимает всю ширину, поэтому под текстом кадр закрыт плотной тенью: буквы стоят на тёмном, а не на плате */
 .is-13 #power .shot-image { object-position: 30% 50%; transform-origin: 70% 50%; }
-.is-13 #power .shot-shade {
-  background:
-    linear-gradient(90deg, var(--bg) calc(var(--side) + 400px), rgb(4 6 12 / 0.9) calc(var(--side) + 470px), transparent calc(var(--side) + 760px)),
-    linear-gradient(0deg, var(--bg), transparent 20%, transparent 78%, var(--bg));
+/* только там, где текст стоит сбоку от кадра (широкое окно и телефон боком). На телефоне стоя текст под кадром,
+   и эта тень закрывала бы кадр целиком */
+@media (min-width: 901px), (orientation: landscape) and (max-height: 480px) {
+  .is-13 #power .shot-shade {
+    background:
+      linear-gradient(90deg, var(--bg) calc(var(--side) + 400px), rgb(4 6 12 / 0.9) calc(var(--side) + 470px), transparent calc(var(--side) + 760px)),
+      linear-gradient(0deg, var(--bg), transparent 20%, transparent 78%, var(--bg));
+  }
 }
 
 /* ---------- Защита: стопка из трёх кадров (двигает thirteen.js) ---------- */
 
-.scene-deck { height: 400vh; }
+.scene-deck { height: calc(var(--vh) * 400); }
 .scene-deck .spin-copy { max-width: 400px; }
 .glow-deck { background: radial-gradient(38% 50% at 66% 50%, rgb(var(--fire-rgb) / 0.1), transparent 72%); }
-.deck { position: absolute; top: 52%; right: var(--clear); width: min(calc(100vw - var(--side) - 470px - var(--clear)), 84vh); aspect-ratio: 1.22; translate: 0 -50%; will-change: transform, opacity; }
+.deck { position: absolute; top: 52%; right: var(--clear); width: min(calc(100vw - var(--side) - 470px - var(--clear)), calc(var(--vh) * 84)); aspect-ratio: 1.22; translate: 0 -50%; will-change: transform, opacity; }
 /* кадры лежат друг на друге: сдвиг, наклон и прозрачность каждого выставляет thirteen.js */
 .deck figure { position: absolute; inset: 0; border-radius: 22px; overflow: hidden; background: var(--bg-2); box-shadow: 0 40px 80px -34px #000, 0 0 0 1px rgb(255 255 255 / 0.12); will-change: transform, opacity; }
 .deck figure:nth-child(1) { z-index: 3; }
@@ -92,11 +96,11 @@
 
 /* ---------- Батарея: зарядка идёт вместе с прокруткой (двигает thirteen.js) ---------- */
 
-.scene-charge { height: 300vh; }
+.scene-charge { height: calc(var(--vh) * 300); }
 .glow-charge { background: radial-gradient(40% 44% at 64% 46%, rgb(var(--fire-rgb) / 0.16), transparent 72%); }
-.charge { position: absolute; top: 50%; right: var(--clear); width: min(calc(100vw - var(--side) - 470px - var(--clear)), 118vh); translate: 0 -50%; will-change: transform, opacity; }
+.charge { position: absolute; top: 50%; right: var(--clear); width: min(calc(100vw - var(--side) - 470px - var(--clear)), calc(var(--vh) * 118)); translate: 0 -50%; will-change: transform, opacity; }
 .charge img { width: 100%; height: auto; }
-.charge-meter { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-top: 3vh; }
+.charge-meter { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-top: calc(var(--vh) * 3); }
 .charge-value { font-family: var(--display); font-size: clamp(58px, 8.6vw, 150px); font-weight: 300; line-height: 0.86; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
 .charge-time { font-family: var(--display); font-size: clamp(18px, 2.2vw, 36px); font-weight: 300; font-variant-numeric: tabular-nums; color: var(--sand); }
 .charge-bar { height: 6px; margin-top: 22px; border-radius: 6px; background: rgb(255 255 255 / 0.1); overflow: hidden; }
@@ -129,45 +133,54 @@
   .zoom-head { grid-template-columns: 1fr auto; gap: 14px 30px; }
   .zoom-head .shot-text { grid-column: 1 / -1; grid-row: 2; max-width: 560px; margin: 0; font-size: 15px; }
 
-  .scene-deck .spin-copy, .scene-charge .shot-copy { top: 13vh; right: var(--side); bottom: auto; left: var(--side); max-width: none; translate: none; }
+  .scene-deck .spin-copy, .scene-charge .shot-copy { top: calc(var(--vh) * 13); right: var(--side); bottom: auto; left: var(--side); max-width: none; translate: none; }
   .scene-deck h2, .scene-charge h2 { margin-top: 14px; }
   /* видна только та подпись, которая сейчас активна */
   .scene-deck .steps { position: absolute; top: 100%; right: 0; left: 0; margin-top: 12px; }
   .scene-deck .steps li { position: absolute; top: 0; right: 0; left: 0; margin: 0; opacity: 0; }
   .scene-deck .steps li.is-on { opacity: 1; }
-  .deck { top: auto; right: auto; bottom: 7vh; left: 50%; width: min(calc(var(--col) - 260px), 54vh); translate: -50% 0; }
+  .deck { top: auto; right: auto; bottom: calc(var(--vh) * 7); left: 50%; width: min(calc(var(--col) - 260px), calc(var(--vh) * 54)); translate: -50% 0; }
 
   .scene-charge .stats { display: none; }
   .scene-charge .shot-text { max-width: 620px; }
-  .charge { top: auto; right: auto; bottom: 7vh; left: 50%; width: min(calc(var(--col) - 260px), 62vh); translate: -50% 0; }
+  .charge { top: auto; right: auto; bottom: calc(var(--vh) * 7); left: 50%; width: min(calc(var(--col) - 260px), calc(var(--vh) * 62)); translate: -50% 0; }
 }
 
 /* ---------- Узкие экраны: модель сверху, тексты внизу ---------- */
 
 @media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
-  .scene-model { height: 540vh; }
-  .model-stage { top: 6vh; bottom: auto; left: 0; height: 50vh; -webkit-mask-image: linear-gradient(#000 84%, transparent); mask-image: linear-gradient(#000 84%, transparent); }
-  .model-poster { height: 42vh; }
-  .model-hint { top: 57vh; bottom: auto; left: 50%; }
-  .model-notes li { top: auto; right: 22px; bottom: 8vh; left: 22px; max-width: none; translate: none; }
+  /* --room — место, которое остаётся картинке над текстом или под ним (см. style.css) */
+  .scene-model { height: calc(var(--vh) * 540); }
+  /* модель занимает всё место над текстом, от самой шапки; книзу плавно гаснет */
+  .model-stage { top: calc(var(--bar) - 6px); bottom: auto; left: 0; height: calc(var(--room) + var(--top) - var(--bar) + 6px + var(--gap) * 0.6); -webkit-mask-image: linear-gradient(#000 84%, transparent); mask-image: linear-gradient(#000 84%, transparent); }
+  .model-poster { height: calc(var(--room) * 0.86); }
+  .model-hint { top: calc(var(--top) + var(--room) - 20px); bottom: auto; left: 50%; }
+  .model-notes li { top: auto; right: var(--side); bottom: var(--foot); left: var(--side); max-width: none; translate: none; }
 
-  .scene-zoom { height: 400vh; }
-  .scene-zoom .pin { justify-content: center; gap: 2.6vh; padding: 11vh 22px 6vh; }
+  .scene-zoom { height: calc(var(--vh) * 400); }
+  .scene-zoom .pin { justify-content: center; gap: clamp(8px, calc(var(--vh) * 2.4), 20px); padding: var(--top) var(--side) var(--foot); }
   .zoom-head { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
   .zoom-head h2 { white-space: normal; }
   .zoom-head .shot-text { font-size: 14px; }
-  .zoom-value { font-size: 46px; }
+  .zoom-value { font-size: clamp(34px, calc(var(--vh) * 7), 46px); }
   /* кадр во всю ширину экрана: высота берётся из его пропорций, а не из оставшегося места */
   .zoom-view { flex: none; width: 100%; outline-offset: 5px; }
   .zoom-ticks { gap: 12px; font-size: 11px; }
 
-  .scene-deck { height: 340vh; }
-  .scene-deck .spin-copy, .scene-charge .shot-copy { top: 11vh; right: 22px; left: 22px; }
-  .deck { bottom: 6vh; width: min(100vw - 56px, 46vh); }
+  .scene-deck { height: calc(var(--vh) * 340); }
+  .scene-deck .spin-copy, .scene-charge .shot-copy { top: var(--top); right: var(--side); left: var(--side); }
+  .scene-deck h2, .scene-charge h2 { margin-top: 10px; }
+  /* стопка кадров под текстом: кадры в ней сдвинуты и наклонены, поэтому она чуть меньше оставшегося места.
+     Стоит по середине этого места: на высоком экране пустота делится поровну сверху и снизу, а не копится под текстом */
+  .deck { top: calc(var(--top) + var(--copy) + var(--gap) + var(--room) / 2); bottom: auto; width: min(100vw - 2 * var(--side) - 14px, calc(var(--room) * 1.1)); translate: -50% -50%; }
   .deck figure { border-radius: 16px; }
 
-  .scene-charge { height: 270vh; }
-  .charge { width: min(100vw - 44px, 56vh); }
+  .scene-charge { height: calc(var(--vh) * 270); }
+  /* под снимком стоят проценты и полоска (около 92 точек): на них место тоже оставлено */
+  .charge { top: calc(var(--top) + var(--copy) + var(--gap) + var(--room) / 2); bottom: auto; width: min(100vw - 2 * var(--side), calc((var(--room) - 92px) * 2.42)); translate: -50% -50%; }
+  .charge-meter { margin-top: 10px; }
+  .charge-value { font-size: clamp(40px, 12vw, 58px); }
+  .charge-bar { margin-top: 12px; }
 
   .shots13 { grid-template-columns: 1fr; gap: 36px; margin: 40px 0 0; }
   .shots13 .is-wide { grid-template-columns: 1fr; gap: 18px; }
@@ -177,7 +190,35 @@
 /* ---------- Телефон боком: в сцене с зумом заголовок и число не уходят под шапку ---------- */
 
 @media (orientation: landscape) and (max-height: 480px) {
-  .scene-zoom .pin { justify-content: flex-start; gap: 2vh; padding: 19vh var(--side) 3vh; }
+  /* --bar, --mid, --tall — высота шапки, середина и высота места под ней (см. style.css) */
+  .model-stage { top: var(--bar); }
+  .model-poster { height: calc(var(--tall) * 0.92); }
+  /* тень под текстом считается от ширины экрана: с размерами для большого окна она закрывала кадр целиком */
+  .is-13 #power .shot-shade {
+    background:
+      linear-gradient(90deg, var(--bg) calc(var(--side) + 36vw), rgb(4 6 12 / 0.9) calc(var(--side) + 43vw), transparent calc(var(--side) + 64vw)),
+      linear-gradient(0deg, var(--bg), transparent 20%, transparent 78%, var(--bg));
+  }
+  .model-notes li { top: var(--mid); max-width: 36vw; scale: var(--fit, 1); transform-origin: 0 50%; }
+  .model-hint { bottom: 6px; }
+
+  .scene-zoom .pin { justify-content: flex-start; gap: 6px; padding: calc(var(--bar) + 2px) var(--side) 8px; }
+  .zoom-view { outline-offset: 4px; }
+
+  /* Защита и Батарея: текст слева, картинка справа — как на широком окне */
+  .scene-deck .spin-copy { top: calc(var(--mid) - var(--hang, 0px) / 2); right: auto; left: var(--side); max-width: 38vw; translate: 0 -50%; }
+  .scene-charge .shot-copy { top: var(--mid); right: auto; left: var(--side); max-width: 38vw; translate: 0 -50%; }
+  .scene-deck h2, .scene-charge h2 { margin-top: 10px; }
+  .deck { top: var(--mid); right: calc(var(--side) + 2vw); bottom: auto; left: auto; width: min(42vw, calc(var(--tall) * 1.08)); translate: 0 -50%; }
+  .deck figure { border-radius: 14px; }
+  .charge { top: var(--mid); right: var(--side); bottom: auto; left: auto; width: min(46vw, calc((var(--tall) - 78px) * 2.42)); translate: 0 -50%; }
+  .charge-meter { margin-top: 8px; }
+  .charge-value { font-size: 40px; }
+  .charge-time { font-size: 16px; }
+  .charge-bar { margin-top: 10px; }
+
+  /* боковой навигации на телефоне нет: место под неё справа не оставляется */
+  .shots13 { gap: 30px 20px; margin: 30px 0 0; }
   .zoom-head { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px 24px; }
   .zoom-head .shot-text { grid-column: auto; grid-row: auto; max-width: none; font-size: 12px; line-height: 1.4; }
   .zoom-value { font-size: 40px; line-height: 1; }
@@ -191,3 +232,20 @@
 .no-motion .model-notes { position: relative; z-index: 1; padding: 0 var(--side) 60px; }
 .no-motion .deck figure { position: relative; margin-bottom: 16px; }
 .no-motion .deck { position: static; margin: 40px auto; translate: none; aspect-ratio: auto; }
+
+/* Без анимаций на телефоне: первый экран с осмотром модели и «Защита» идут обычной колонкой сверху вниз и занимают
+   столько места, сколько нужно. В сцене высотой ровно в экран три подписи и три кадра не помещались и ложились
+   друг на друга и на заголовок */
+@media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
+  .no-motion .scene-model .pin, .no-motion .scene-deck .pin { display: flex; flex-direction: column; height: auto; padding: var(--top) 0 48px; }
+  .no-motion .model-stage { position: relative; top: auto; flex: none; height: calc(var(--vh) * 54); -webkit-mask-image: none; mask-image: none; }
+  .no-motion .model-poster { height: 92%; }
+  .no-motion .model-hint { display: none; }
+  .no-motion .scene-model .hero-copy { position: static; margin-top: 10px; padding: 0 var(--side); }
+  .no-motion .model-notes { padding: 0 var(--side); }
+  .no-motion .model-notes li { max-width: none; margin-top: 34px; }
+
+  .no-motion .scene-deck .spin-copy { position: static; order: -1; padding: 0 var(--side); }
+  .no-motion .deck { width: calc(100vw - 2 * var(--side)); margin: 26px auto 0; }
+  .no-motion .deck figure:last-child { margin-bottom: 0; }
+}
