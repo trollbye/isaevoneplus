@@ -305,14 +305,50 @@ const scenes = $$(".scene").map((element) => ({
   height: 0,
 }));
 
+// Высота экрана сцены. Берётся не у окна, а у самого «прилипающего» экрана (.pin): на телефоне он считается от видимой
+// области и не меняется, когда браузер прячет или показывает свои панели. Высота окна в этот момент меняется,
+// и сцены, посчитанные от неё, дёргались бы
+const pinSample = $(".pin");
 let viewport = window.innerHeight;
 let shotShift = 0; // на широком экране кадр сдвинут вправо, чтобы слева осталось место под текст
 function measure() {
-  viewport = window.innerHeight;
+  // без анимаций сцены не прилипают и могут быть выше экрана — там мерка не годится
+  viewport = (!reducedMotion && pinSample && pinSample.offsetHeight) || window.innerHeight;
   shotShift = window.STACKED.matches ? 0 : 12;
+  fitCopies();
+  window.dispatchEvent(new Event("scenes:fit")); // сценам со своим расчётом размеров (схема камеры 7 Pro) пора пересчитаться
   for (const scene of scenes) {
     scene.top = scene.element.offsetTop;
     scene.height = scene.element.offsetHeight;
+  }
+}
+
+// На телефоне (раскладка «в столбик») текст и картинка сцены делят экран по высоте. Сколько места занимает текст,
+// зависит от ширины экрана и числа строк, поэтому его высота измеряется и передаётся стилям числом --copy (в точках).
+// По нему картинка получает ровно то место, что осталось от текста, и не налезает на него ни на каком телефоне.
+// Если текстов в сцене несколько и они сменяют друг друга на одном месте, берётся самый высокий. Подписи шагов,
+// которые на телефоне висят под заголовком по одной, прибавляются к его высоте
+const lying = window.matchMedia("(orientation: landscape) and (max-height: 480px)");
+function fitCopies() {
+  for (const scene of scenes) {
+    let tall = 0;
+    let hang = 0;
+    for (const block of $$(".hero-copy, .hero-after, .shot-copy, .spin-copy, .teardown-copy, .side-copy, .strip-head, .model-notes li", scene.element)) {
+      let height = block.offsetHeight;
+      const steps = $(".steps", block);
+      // подписи шагов висят под текстом: их высота (--hang) нужна стилям, чтобы поставить весь текст по центру
+      if (steps && getComputedStyle(steps).position === "absolute") {
+        hang = 10 + Math.max(0, ...$$("li", steps).map((item) => item.offsetHeight));
+        height += hang;
+      }
+      tall = Math.max(tall, height);
+    }
+    if (tall) scene.element.style.setProperty("--copy", `${tall}px`);
+    // Телефон боком: текст стоит сбоку от картинки, по центру места под шапкой. Если он выше этого места,
+    // он слегка уменьшается (число --fit), чтобы не уходить под шапку и за нижний край
+    const space = viewport - 72;
+    scene.element.style.setProperty("--fit", lying.matches && tall > space ? Math.max(space / tall, 0.66).toFixed(3) : "1");
+    scene.element.style.setProperty("--hang", `${hang}px`);
   }
 }
 
@@ -331,7 +367,7 @@ const paint = {
     const away = live ? ease((p - 0.8) / 0.2) : ease((p - 0.35) / 0.6);
     heroPhone.style.transform = live
       ? `translate3d(0, 0, 0) scale(${(1 + p * 0.03).toFixed(3)})`
-      : `translate3d(${(tiltX * -14).toFixed(1)}px, ${(p * -16).toFixed(2)}vh, 0) ` +
+      : `translate3d(${(tiltX * -14).toFixed(1)}px, calc(var(--vh) * ${(p * -16).toFixed(2)}), 0) ` +
         `rotateY(${(tiltX * 7).toFixed(2)}deg) rotateX(${(tiltY * -5).toFixed(2)}deg) scale(${(1 + p * 0.16).toFixed(3)})`;
     heroPhone.style.opacity = (1 - away).toFixed(3);
     heroCopy.style.opacity = (1 - ease(p / (live ? 0.24 : 0.4))).toFixed(3);

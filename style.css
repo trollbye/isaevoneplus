@@ -15,11 +15,21 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   /* поля страницы; у телефона с вырезом, повёрнутого боком, поле не меньше выреза */
   --side: max(6vw, calc((100vw - 1320px) / 2), env(safe-area-inset-left), env(safe-area-inset-right));
+  /* Сотая часть высоты экрана. Все высоты на сайте считаются от неё, а не от vh: на телефоне vh меряется от экрана
+     со свёрнутыми панелями браузера, а видно меньше — и всё, что задано в vh, оказывалось крупнее экрана: заголовки
+     уезжали под шапку, тексты не помещались (особенно в Safari на iPhone). svh — это высота того, что видно на самом
+     деле. На компьютере vh и svh равны, там ничего не меняется */
+  --vh: 1vh;
+}
+@supports (height: 1svh) {
+  :root { --vh: 1svh; }
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 0; background: var(--bg); scrollbar-color: #2a3350 var(--bg); }
+/* text-size-adjust — чтобы телефон, повёрнутый боком, сам не увеличивал текст; overflow-x — чтобы ничто широкое
+   (слова-призраки за сценами) не давало странице ездить вбок и уменьшаться под ширину */
+html { scroll-behavior: smooth; scroll-padding-top: 0; background: var(--bg); scrollbar-color: #2a3350 var(--bg); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: hidden; overflow-x: clip; }
 
 body {
   font-family: var(--body);
@@ -97,11 +107,15 @@ h1, h2, .bar, .kicker, .facts, .steps, .stats, .swatches, .spec, .versus, .hint 
 .menu-open .menu-button i:last-child { transform: rotate(-45deg); }
 .menu-open .bar { background: none; border-color: transparent; }
 
-.menu { position: fixed; inset: 0; z-index: 45; display: grid; align-content: center; padding: 84px var(--side) max(32px, env(safe-area-inset-bottom)); counter-reset: item; background: rgb(4 6 12 / 0.98); opacity: 0; visibility: hidden; overflow-y: auto; overscroll-behavior: contain; transition: opacity 0.3s, visibility 0.3s; }
+.menu { position: fixed; inset: 0; z-index: 45; display: flex; flex-direction: column; padding: 84px var(--side) max(32px, env(safe-area-inset-bottom)); counter-reset: item; background: rgb(4 6 12 / 0.98); opacity: 0; visibility: hidden; overflow-y: auto; overscroll-behavior: contain; transition: opacity 0.3s, visibility 0.3s; }
 .menu-open .menu { opacity: 1; visibility: visible; }
+/* ссылки стоят по середине экрана, пока помещаются. Если их больше, чем экран, список начинается сверху и листается:
+   при простом выравнивании по центру верхние ссылки уезжали за край экрана и до них было не долистать */
+.menu a:first-child { margin-top: auto; }
+.menu a:last-child { margin-bottom: auto; }
 /* строки меню выезжают по очереди: --i выставляет page.js */
-.menu a { display: flex; align-items: baseline; gap: 16px; min-height: 56px; padding: 12px 0; font-family: var(--display); font-size: clamp(22px, 6.4vw, 30px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; border-bottom: 1px solid var(--line); opacity: 0; translate: 0 14px; transition: opacity 0.4s var(--ease), translate 0.4s var(--ease), color 0.2s; transition-delay: calc(var(--i, 0) * 40ms + 60ms); }
-.menu a::before { content: counter(item, decimal-leading-zero); counter-increment: item; flex: none; font-size: 11px; font-weight: 400; letter-spacing: 0.2em; color: var(--gold); }
+.menu a { display: flex; flex: none; align-items: baseline; gap: 16px; min-height: 56px; padding: 12px 0; font-family: var(--display); font-size: clamp(22px, 6.4vw, 30px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; border-bottom: 1px solid var(--line); opacity: 0; translate: 0 14px; transition: opacity 0.4s var(--ease), translate 0.4s var(--ease), color 0.2s; transition-delay: calc(var(--i, 0) * 40ms + 60ms); }
+.menu a::before { content: counter(item, decimal-leading-zero); counter-increment: item; flex: none; width: 24px; font-size: 11px; font-weight: 400; letter-spacing: 0.2em; color: var(--gold); }
 .menu-open .menu a { opacity: 1; translate: 0 0; }
 .menu a:active { color: var(--gold); }
 
@@ -114,10 +128,10 @@ h1, h2, .bar, .kicker, .facts, .steps, .stats, .swatches, .spec, .versus, .hint 
 /* ---------- Сцены: .scene задаёт длину прокрутки, .pin прилипает к экрану ---------- */
 
 .scene { position: relative; }
-.pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.scene-hero { height: 190vh; }
-.scene-spin { height: 340vh; }
-.scene-shot { height: 220vh; }
+.pin { position: sticky; top: 0; height: calc(var(--vh) * 100); height: 100svh; overflow: hidden; }
+.scene-hero { height: calc(var(--vh) * 190); }
+.scene-spin { height: calc(var(--vh) * 340); }
+.scene-shot { height: calc(var(--vh) * 220); }
 
 .glow { position: absolute; inset: 0; pointer-events: none; }
 
@@ -135,7 +149,7 @@ h1, h2, .bar, .kicker, .facts, .steps, .stats, .swatches, .spec, .versus, .hint 
   top: 50%; right: -3vw;
   translate: 0 -50%;
   font-family: var(--display);
-  font-size: 74vh;
+  font-size: calc(var(--vh) * 74);
   font-weight: 800;
   line-height: 0.8;
   letter-spacing: -0.07em;
@@ -151,7 +165,7 @@ h1, h2, .bar, .kicker, .facts, .steps, .stats, .swatches, .spec, .versus, .hint 
 .hero-phone {
   position: absolute;
   top: 50%; right: calc(var(--side) + 3vw);
-  height: 92vh;
+  height: calc(var(--vh) * 92);
   aspect-ratio: 954 / 2230;
   translate: 0 -47%;
   perspective: 1200px;
@@ -181,9 +195,9 @@ h1 { margin-top: 26px; font-family: var(--display); font-size: clamp(42px, 6.2vw
 /* название цвета огромными буквами проезжает за телефоном */
 .spin-word {
   position: absolute;
-  bottom: 2vh; left: 0;
+  bottom: calc(var(--vh) * 2); left: 0;
   font-family: var(--display);
-  font-size: 25vh;
+  font-size: calc(var(--vh) * 25);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.05em;
@@ -197,7 +211,7 @@ h1 { margin-top: 26px; font-family: var(--display); font-size: clamp(42px, 6.2vw
 }
 
 /* шесть кадров лежат стопкой: прозрачность каждого выставляет page.js */
-.spin-phone { position: absolute; top: 50%; left: 50%; height: 92vh; aspect-ratio: 540 / 1200; margin: -46vh 0 0 -20.7vh; will-change: transform, opacity; }
+.spin-phone { position: absolute; top: 50%; left: 50%; height: calc(var(--vh) * 92); aspect-ratio: 540 / 1200; margin: calc(var(--vh) * -46) 0 0 calc(var(--vh) * -20.7); will-change: transform, opacity; }
 .spin-phone img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; }
 .spin-phone img:first-child { opacity: 1; }
 
@@ -227,9 +241,9 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 /* огромное слово проезжает поверх кадра: сдвиг выставляет page.js */
 .shot-word {
   position: absolute;
-  top: 6vh; left: 0;
+  top: calc(var(--vh) * 6); left: 0;
   font-family: var(--display);
-  font-size: 26vh;
+  font-size: calc(var(--vh) * 26);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.05em;
@@ -260,7 +274,7 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 
 /* ---------- Объёмный разбор камеры (модель рисует teardown3d.js) ---------- */
 
-.scene-teardown { height: 360vh; }
+.scene-teardown { height: calc(var(--vh) * 360); }
 .glow-teardown { background: radial-gradient(46% 50% at 64% 50%, rgb(76 125 255 / 0.2), transparent 72%), radial-gradient(30% 34% at 70% 58%, rgb(217 205 187 / 0.1), transparent 70%); }
 .teardown-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .teardown-copy { position: absolute; top: 50%; left: var(--side); max-width: 340px; translate: 0 -50%; }
@@ -373,79 +387,100 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 
 @media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
   .bar-nav { display: none; }
+  /* шапка одной высоты и вверху страницы, и при прокрутке (60 точек: 44 под палец и по 8 сверху и снизу) */
+  body:not(.home) .bar, body:not(.home) .bar.is-scrolled { padding-block: max(8px, env(safe-area-inset-top)) 8px; }
 
-  .scene-hero { height: 170vh; }
-  .bigword { right: 50%; translate: 50% -62%; font-size: 44vh; }
-  .hero-phone { top: 8vh; right: 50%; height: 56vh; translate: 50% 0; }
-  .hero-copy { top: auto; right: 22px; bottom: 9vh; left: 22px; max-width: none; translate: none; }
+  /* Экран сцены на телефоне делят шапка, текст и картинка. Общие для всех сцен числа:
+     --bar  — высота шапки; --top — отсюда начинается верхний текст или картинка; --foot — поле снизу;
+     --gap  — просвет между текстом и картинкой; --copy — высота текста сцены, её измеряет page.js;
+     --room — сколько высоты остаётся картинке, когда текст занял своё. Картинка каждой сцены получает именно
+     это место, поэтому на низком экране она становится меньше, но на текст не налезает */
+  .pin {
+    --bar: calc(52px + max(8px, env(safe-area-inset-top)));
+    --top: calc(var(--bar) + clamp(2px, calc(var(--vh) * 1.4), 14px));
+    --foot: max(clamp(14px, calc(var(--vh) * 3.4), 36px), env(safe-area-inset-bottom));
+    --gap: clamp(8px, calc(var(--vh) * 2.2), 22px);
+    --room: calc(var(--vh) * 100 - var(--top) - var(--copy, calc(var(--vh) * 42)) - var(--gap) - var(--foot));
+  }
+
+  .scene-hero { height: calc(var(--vh) * 170); }
+  .bigword { top: calc(var(--top) + var(--room) / 2); right: 50%; translate: 50% -50%; font-size: calc(var(--room) * 0.9); }
+  .hero-phone { top: var(--top); right: 50%; height: var(--room); translate: 50% 0; }
+  .hero-copy { top: auto; right: var(--side); bottom: var(--foot); left: var(--side); max-width: none; translate: none; }
   .hero-copy h1 { width: auto; max-width: none; }
-  h1 { margin-top: 16px; font-size: clamp(34px, 10.5vw, 60px); }
-  .lead { margin-top: 14px; font-size: 15px; }
-  .facts { gap: 20px; margin-top: 20px; padding-top: 16px; }
+  /* заголовки и текст подобраны и под ширину, и под высоту экрана: на низком экране они чуть мельче */
+  h1 { margin-top: 12px; font-size: clamp(28px, min(10.5vw, calc(var(--vh) * 6.8)), 60px); }
+  .lead { max-width: none; margin-top: 12px; font-size: 15px; line-height: 1.5; }
+  .facts { gap: 18px; margin-top: 16px; padding-top: 14px; }
   .facts b { font-size: 15px; }
-  .facts span { font-size: 10px; }
+  .facts span { font-size: 11px; letter-spacing: 0.1em; }
   .hint { display: none; }
 
-  .scene-spin { height: 300vh; }
-  .spin-word { font-size: 17vh; }
-  .spin-phone { top: 59%; height: 56vh; margin: -28vh 0 0 -12.6vh; }
-  .spin-copy { top: 11vh; right: 22px; left: 22px; max-width: none; translate: none; }
-  h2 { margin-top: 14px; font-size: clamp(26px, 7.6vw, 40px); }
+  .scene-spin { height: calc(var(--vh) * 300); }
+  .spin-word { font-size: calc(var(--vh) * 17); }
+  .spin-phone { top: calc(var(--top) + var(--copy) + var(--gap)); height: var(--room); margin: 0 0 0 calc(var(--room) * -0.225); }
+  .spin-copy { top: var(--top); right: var(--side); left: var(--side); max-width: none; translate: none; }
+  h2 { margin-top: 10px; font-size: clamp(22px, min(7.6vw, calc(var(--vh) * 5.2)), 40px); }
   /* на телефоне видна только та подпись, которая сейчас активна */
   .steps { position: absolute; top: 100%; left: 0; right: 0; margin-top: 10px; }
   .steps li { position: absolute; top: 0; left: 0; right: 0; margin: 0 !important; padding-left: 14px; opacity: 0; }
   .steps li.is-on { opacity: 1; }
-  .steps b { font-size: 19px; }
-  .steps span { font-size: 13px; }
-  .swatches { top: auto; right: 12px; bottom: 5vh; left: 12px; grid-auto-flow: column; justify-content: center; gap: 4px; translate: none; }
+  .steps b { font-size: 18px; }
+  .steps span { font-size: 14px; line-height: 1.45; }
+  .swatches { top: auto; right: 12px; bottom: calc(var(--vh) * 5); left: 12px; grid-auto-flow: column; justify-content: center; gap: 4px; translate: none; }
   .swatch { gap: 8px; padding: 6px 12px 6px 6px; }
   .swatch i { width: 22px; height: 22px; }
   .swatch b { font-size: 12px; }
   .swatch small { display: none; }
 
-  .scene-shot { height: 200vh; }
-  .shot-image { height: 52%; }
-  .shot-image { transform-origin: 50% 50%; }
-  .shot-shade { background: linear-gradient(0deg, var(--bg) 46%, transparent 62%, transparent 88%, var(--bg)); }
-  .shot-copy { top: auto; right: 22px; bottom: 7vh; left: 22px; max-width: none; translate: none; }
-  .shot-text { margin-top: 14px; font-size: 15px; }
-  .stats { gap: 10px 24px; margin-top: 20px; padding-top: 16px; }
+  .scene-shot { height: calc(var(--vh) * 200); }
+  /* кадр занимает всё, что выше текста, и чуть заходит под его начало: там его гасит затемнение */
+  .shot-image { height: calc(var(--vh) * 100 - var(--copy, calc(var(--vh) * 42)) - var(--foot) + calc(var(--vh) * 7)); transform-origin: 50% 50%; }
+  .shot-shade { background: linear-gradient(0deg, var(--bg) calc(var(--copy, calc(var(--vh) * 42)) + var(--foot) - calc(var(--vh) * 2)), transparent calc(var(--copy, calc(var(--vh) * 42)) + var(--foot) + calc(var(--vh) * 12)), transparent 88%, var(--bg)); }
+  .shot-copy { top: auto; right: var(--side); bottom: var(--foot); left: var(--side); max-width: none; translate: none; }
+  .shot-text { max-width: none; margin-top: 12px; font-size: 15px; line-height: 1.5; }
+  .stats { gap: 8px 22px; margin-top: 16px; padding-top: 14px; }
+  .stats b { font-size: clamp(22px, 6.6vw, 30px); }
+  .stats span { font-size: 11px; letter-spacing: 0.1em; }
 
-  .scene-teardown { height: 320vh; }
+  .scene-teardown { height: calc(var(--vh) * 320); }
   .glow-teardown { background: radial-gradient(60% 40% at 50% 46%, rgb(76 125 255 / 0.2), transparent 72%); }
-  .teardown-copy { top: 10vh; right: 22px; left: 22px; max-width: none; translate: none; }
+  .teardown-copy { top: var(--top); right: var(--side); left: var(--side); max-width: none; translate: none; }
   .teardown-copy .shot-text { display: none; }
   /* вместо выносок — кружок с номером у каждого слоя и список названий под заголовком */
   .part-label .part-text, .part-label i { display: none; }
   .part-label em { display: grid; place-items: center; width: 26px; height: 26px; font-family: var(--display); font-size: 11px; font-style: normal; color: var(--bg); border-radius: 50%; background: var(--sand); }
-  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; margin-top: 14px; counter-reset: layer; font-size: 12px; line-height: 1.3; }
+  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; margin-top: 12px; counter-reset: layer; font-size: 13px; line-height: 1.3; }
   .legend li { counter-increment: layer; display: flex; gap: 8px; }
-  .legend li::before { content: counter(layer); flex: none; font-family: var(--display); font-size: 10px; color: var(--sand); }
+  .legend li::before { content: counter(layer); flex: none; font-family: var(--display); font-size: 11px; color: var(--sand); }
   .legend span { display: none; }
   .legend b { font-weight: 500; }
 
   .rail { display: none; }
-  .shot-word { top: 2vh; font-size: 13vh; }
+  .shot-word { top: calc(var(--vh) * 2); font-size: calc(var(--vh) * 13); }
 
-  .spec-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 40px; }
+  /* разделы под сценами: на телефоне поля сверху и снизу меньше, чем на широком окне */
+  .section { padding: 68px 0; }
+  .section-title { margin-top: 14px; }
+  .spec-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 32px; }
   .spec { padding: 22px 16px 20px; border-radius: 16px; }
   .spec::before { left: 16px; }
 
   /* заголовок сравнения мельче: строка «и Galaxy S25 Ultra» помещается целиком */
   .versus-title { font-size: clamp(25px, 7.6vw, 44px); }
-  .score { top: 56px; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 34px; padding: 8px; border-radius: 16px; }
+  .score { top: calc(52px + max(8px, env(safe-area-inset-top))); grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 28px; padding: 8px; border-radius: 16px; }
   .score-note { display: none; }
   .score-card { flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px; }
-  .score-card span { font-size: 9px; }
+  .score-card span { font-size: 11px; line-height: 1.25; }
   .score-card b { font-size: 28px; }
   .vgroup { border-radius: 16px; }
   .vgroup h3 { padding: 18px 12px 12px; }
   .versus-row { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px 8px 8px; }
   .versus-row:last-child { padding-bottom: 12px; }
-  .versus-label { grid-column: 1 / -1; padding: 8px 4px 2px; font-size: 12px; }
-  .versus-cell { min-height: 50px; padding: 8px 10px; border-radius: 10px; }
-  .versus-cell b { font-size: 13px; }
-  .versus-row.is-text .versus-cell b { font-size: 12px; }
+  .versus-label { grid-column: 1 / -1; padding: 10px 4px 2px; font-size: 13px; }
+  .versus-cell { min-height: 52px; padding: 8px; border-radius: 10px; }
+  .versus-cell b { font-size: 14px; }
+  .versus-row.is-text .versus-cell b { font-size: 13px; line-height: 1.3; }
   .footer-row { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
 
@@ -478,7 +513,7 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 .home-sub { margin-top: clamp(12px, 1.5vw, 24px); font-family: var(--display); font-size: clamp(15px, 1.9vw, 30px); font-weight: 300; letter-spacing: -0.02em; color: var(--sand); }
 
 /* страница «такой страницы нет» (404.html): тот же верх, что у главной, и кнопка назад */
-.lost-top { display: grid; align-content: center; min-height: 100vh; min-height: 100svh; }
+.lost-top { display: grid; align-content: center; min-height: calc(var(--vh) * 100); min-height: 100svh; }
 .lost-link { display: inline-flex; align-items: center; min-height: 48px; margin-top: clamp(28px, 4vw, 48px); padding: 0 28px; font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #1c1304; border-radius: 999px; background: linear-gradient(135deg, #f7d58c, var(--gold)); transition: translate 0.3s var(--ease), box-shadow 0.3s; }
 .lost-link:hover { translate: 0 -3px; box-shadow: 0 16px 40px -14px rgb(240 196 104 / 0.7); }
 .lost-link:active { translate: 0 0; }
@@ -533,8 +568,8 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
   .models { grid-template-columns: repeat(2, 1fr); gap: 34px 16px; }
   .unit, .unit-hit { gap: 16px; }
   .unit-title { font-size: clamp(15px, 4.6vw, 20px); }
-  .unit-title small { font-size: 10px; }
-  .unit-tag { padding: 5px 12px; font-size: 10px; }
+  .unit-title small { font-size: 11px; letter-spacing: 0.24em; }
+  .unit-tag { padding: 6px 12px; font-size: 11px; letter-spacing: 0.12em; }
 }
 
 /* ---------- Живой объёмный телефон на первом экране ---------- */
@@ -542,7 +577,7 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 
 /* пока объёмный телефон не готов (или если он не может быть нарисован), виден обычный снимок */
 .hero-phone canvas { display: none; width: 100%; height: 100%; }
-.hero-phone.is-live { right: calc(var(--side) + 1vw); height: 98vh; aspect-ratio: 440 / 940; translate: 0 -50%; }
+.hero-phone.is-live { right: calc(var(--side) + 1vw); height: calc(var(--vh) * 98); aspect-ratio: 440 / 940; translate: 0 -50%; }
 .hero-phone.is-live img { display: none; }
 .hero-phone.is-live canvas { display: block; }
 
@@ -558,11 +593,34 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 .hero-color-name { margin-left: 10px; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted); }
 
 @media (max-width: 900px) and (orientation: portrait), (max-width: 900px) and (min-height: 481px) {
-  /* телефон занимает верхнюю половину экрана, текст — нижнюю: они не пересекаются */
-  .hero-phone.is-live { top: 6vh; right: 50%; height: 45vh; translate: 50% 0; }
-  .hero-after { top: auto; right: 22px; bottom: 9vh; left: 22px; max-width: none; translate: none; }
-  .hero-colors { margin-top: 16px; }
+  /* телефон занимает всё место над текстом (--room, см. выше), текст стоит внизу: они не пересекаются */
+  .hero-phone.is-live { top: var(--top); right: 50%; height: var(--room); translate: 50% 0; }
+  .hero-after { top: auto; right: var(--side); bottom: var(--foot); left: var(--side); max-width: none; translate: none; }
+  .hero-colors { margin-top: 10px; }
   .hero-color { width: 32px; height: 32px; }
+}
+
+/* меню на невысоком экране: строки ниже, чтобы все разделы помещались без прокрутки (или почти все) */
+@media (max-width: 900px) and (orientation: portrait) and (max-height: 720px) {
+  .menu { padding-top: 70px; }
+  .menu a { min-height: 48px; padding: 9px 0; font-size: 20px; }
+}
+
+/* Телефон стоя с низким экраном (небольшие и старые модели, увеличенный масштаб в настройках): текст набран чуть
+   плотнее, чтобы картинке над ним или под ним осталось заметное место */
+@media (max-width: 900px) and (orientation: portrait) and (max-height: 600px) {
+  .kicker { font-size: 11px; letter-spacing: 0.22em; }
+  h1 { margin-top: 8px; }
+  h2 { margin-top: 8px; }
+  .lead, .shot-text { margin-top: 8px; font-size: 14px; line-height: 1.42; }
+  .facts { gap: 14px; margin-top: 10px; padding-top: 10px; }
+  .stats { gap: 6px 18px; margin-top: 10px; padding-top: 10px; }
+  .stats b { font-size: 21px; }
+  .hero-colors { margin-top: 4px; }
+  .steps { margin-top: 8px; }
+  .steps b { font-size: 17px; }
+  .steps span { font-size: 13px; line-height: 1.4; }
+  .legend { gap: 4px 12px; margin-top: 8px; font-size: 12px; }
 }
 /* ---------- Объёмные модели, которые можно крутить (spin.js) ---------- */
 
@@ -596,27 +654,41 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 @media (orientation: landscape) and (max-height: 480px) {
   .bar, .bar.is-scrolled { padding-block: max(6px, env(safe-area-inset-top)) 6px; }
   .rail, .hint { display: none; }
-  .menu { align-content: start; grid-template-columns: 1fr 1fr; column-gap: 36px; padding-top: 64px; }
+  .menu { display: grid; align-content: start; grid-template-columns: 1fr 1fr; column-gap: 36px; padding-top: 64px; }
+  .menu a:first-child, .menu a:last-child { margin-block: 0; }
   .menu a { min-height: 48px; padding: 8px 0; font-size: 19px; }
 
   .kicker { gap: 10px; font-size: 11px; letter-spacing: 0.24em; }
   .kicker::before { width: 22px; }
-  h1 { margin-top: 10px; font-size: clamp(28px, 10vh, 44px); }
-  h2 { margin-top: 10px; font-size: clamp(21px, 7.6vh, 34px); }
-  .lead { max-width: 360px; margin-top: 10px; font-size: 13px; line-height: 1.45; }
+  h1 { margin-top: 8px; font-size: clamp(26px, calc(var(--vh) * 9), 42px); }
+  h2 { margin-top: 8px; font-size: clamp(19px, calc(var(--vh) * 6.6), 32px); }
+  .lead { max-width: 360px; margin-top: 8px; font-size: 12.5px; line-height: 1.42; }
   .facts { gap: 22px; margin-top: 12px; padding-top: 10px; }
   .facts b { font-size: 14px; }
-  .facts span { font-size: 9px; }
+  .facts span { font-size: 10px; letter-spacing: 0.08em; }
   .hero-copy { max-width: 46vw; }
-  .hero-after, .shot-copy, .spin-copy, .teardown-copy { max-width: 40vw; }
+  .hero-after, .shot-copy, .spin-copy, .teardown-copy { max-width: 42vw; }
+  /* Место под шапкой: --bar — её высота, --mid — середина этого места, --tall — его высота. Текст и картинка сцены
+     стоят рядом, и оба выровнены по этой середине, а не по середине экрана: иначе верх уходил под шапку.
+     --fit — во сколько раз уменьшить текст, если он выше этого места (считает page.js) */
+  .pin { --bar: calc(50px + max(6px, env(safe-area-inset-top))); --mid: calc(50% + var(--bar) / 2 - 3px); --tall: calc(var(--vh) * 100 - var(--bar) - 14px); }
+  .hero-copy, .hero-after, .shot-copy, .spin-copy, .teardown-copy { top: var(--mid); scale: var(--fit, 1); transform-origin: 0 50%; }
+  /* у текста с подписями шагов видна только активная подпись (все три по высоте не помещаются); она висит под
+     заголовком, поэтому сам заголовок стоит выше середины на половину её высоты (--hang считает page.js) */
+  .spin-copy { top: calc(var(--mid) - var(--hang, 0px) / 2); }
+  .hero-phone, .hero-phone.is-live { top: var(--mid); height: var(--tall); translate: 0 -50%; }
+  .bigword { top: var(--mid); font-size: calc(var(--tall) * 0.8); }
   .hero-colors { margin-top: 8px; }
-  .shot-text { margin-top: 10px; font-size: 13px; line-height: 1.45; }
-  .stats { gap: 6px 22px; margin-top: 12px; padding-top: 10px; }
-  .stats b { font-size: 22px; }
-  .stats span { font-size: 9px; }
-  .steps { margin-top: 12px; }
-  .steps li { padding: 2px 0 2px 14px; }
-  .steps li + li { margin-top: 8px; }
+  /* текст сцены может быть уменьшен (--fit), а кнопка цвета должна остаться 44 точки под пальцем: она настолько же
+     крупнее, а отрицательное поле оставляет ей прежнее место в строке */
+  .hero-color { width: calc(44px / var(--fit, 1)); height: calc(44px / var(--fit, 1)); margin: calc((44px - 44px / var(--fit, 1)) / 2); }
+  .shot-text { margin-top: 8px; font-size: 12.5px; line-height: 1.42; }
+  .stats { gap: 4px 18px; margin-top: 8px; padding-top: 8px; }
+  .stats b { font-size: 19px; }
+  .stats span { font-size: 10px; letter-spacing: 0.08em; }
+  .steps { position: absolute; top: 100%; right: 0; left: 0; margin-top: 8px; }
+  .steps li { position: absolute; top: 0; right: 0; left: 0; margin: 0 !important; padding: 2px 0 2px 14px; opacity: 0; }
+  .steps li.is-on { opacity: 1; }
   .steps b { font-size: 16px; }
   .steps span { margin-top: 2px; font-size: 12px; line-height: 1.35; }
   .swatch { gap: 10px; padding: 4px 14px 4px 6px; }
@@ -627,6 +699,29 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
   .score { top: 50px; margin-top: 28px; padding: 8px 18px; }
   .score-card { padding: 6px 12px; }
   .score-card b { font-size: 26px; }
+}
+
+/* телефон боком и при этом узкий (старые небольшие телефоны): плитки с цифрами в три колонки, в четыре цифры не влезают */
+@media (orientation: landscape) and (max-height: 480px) and (max-width: 640px) {
+  .spec-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .spec { padding: 22px 16px 20px; }
+  .spec b { font-size: 28px; }
+}
+
+/* самый низкий экран (старый iPhone SE боком: видно 568×270): заголовки и отступы ещё компактнее, колонка текста шире —
+   так текст сцены меньше приходится уменьшать целиком (--fit) */
+@media (orientation: landscape) and (max-height: 300px) {
+  .kicker { gap: 8px; font-size: 10px; letter-spacing: 0.16em; }
+  .kicker::before { width: 16px; }
+  h1 { margin-top: 6px; font-size: 24px; }
+  h2 { margin-top: 6px; font-size: 18px; }
+  .lead, .shot-text { margin-top: 6px; font-size: 12px; line-height: 1.36; }
+  .facts { gap: 14px; margin-top: 8px; padding-top: 8px; }
+  .facts b { font-size: 13px; }
+  .stats { gap: 2px 14px; margin-top: 6px; padding-top: 6px; }
+  .stats b { font-size: 17px; }
+  .hero-copy { max-width: 50vw; }
+  .hero-after, .shot-copy, .spin-copy, .teardown-copy { max-width: 46vw; }
 }
 
 /* телефон боком: подписи к слоям разбора камеры короче, иначе они наезжают друг на друга */
@@ -641,10 +736,15 @@ h2 { margin-top: 22px; font-family: var(--display); font-size: clamp(30px, 3.8vw
 /* ---------- Без анимаций: сцены не прилипают, всё показано сразу ---------- */
 
 .no-motion .scene { height: auto; }
-.no-motion .pin { min-height: 100vh; }
+.no-motion .pin { min-height: calc(var(--vh) * 100); }
 .no-motion .shot-copy { opacity: 1; }
 .no-motion .spin-phone img:last-child { opacity: 1; }
 .no-motion .steps li { opacity: 1; }
+/* на телефоне подписи шагов лежат одна на другой и видна только активная; без анимаций они идут обычным списком */
+.no-motion .steps, .no-motion .steps li { position: static !important; opacity: 1 !important; }
+@media (max-width: 900px), (orientation: landscape) and (max-height: 480px) {
+  .no-motion .steps li + li { margin-top: 10px !important; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
